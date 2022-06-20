@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "validator.fullname" . }}-query-server
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.queryServer.service.type }}
+  ports:
+    - port: {{ .Values.queryServer.service.port }}
+      targetPort: 4000
+      protocol: TCP
+      name: graphql
+  selector:
+    {{- include "validator.selectorLabels" . | nindent 4 }}
+    app: {{ include "validator.fullname" . }}-query-server

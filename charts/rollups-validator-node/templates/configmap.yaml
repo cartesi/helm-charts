@@ -1,0 +1,55 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "validator.fullname" . }}-database-config
+  labels: {{- include "validator.labels" . | nindent 4 }}
+data:
+  POSTGRES_HOSTNAME: {{ required "A valid .Values.dapp.postgres.hostname is required" .Values.dapp.postgres.hostname }}
+  POSTGRES_PORT: {{ default "5432" .Values.dapp.postgres.port | quote }}
+  POSTGRES_USER: {{ default "postgres" .Values.dapp.postgres.user }}
+  POSTGRES_DB: {{ default "postgres" .Values.dapp.postgres.dbname }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "validator.fullname" . }}-rollups-config-files
+  labels: {{- include "validator.labels" . | nindent 4 }}
+data:
+  bs-config.toml: |
+    [block_subscriber]
+    max_delay = 64
+    max_retries = 5
+    timeout = 120
+  logic-config.toml: |
+    [logic_config]
+    session_id = "default_rollups_id"
+    initial_epoch = 0
+    gas_multiplier = 1
+    gas_price_multiplier = 1
+    rate = 20
+    confirmations = 10
+    state_fold_grpc_endpoint = "http://localhost:50051"
+    mm_endpoint = "http://localhost:5001"
+    provider_http_endpoint = {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
+    ws_endpoint = {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
+  sf-config.toml: |
+    [state_fold]
+    concurrent_events_fetch = 16
+    genesis_block = "0x1"
+    query_limit_error_codes = [-32005]
+    safety_margin = 0
+  tm-config.toml: |
+    [tx_manager]
+    max_delay = 64
+    max_retries = 5
+    transaction_timeout = 5
+  indexer-config.toml: |
+    [indexer_config]
+    session_id = "default_rollups_id"
+    initial_epoch = 0
+    epoch_index = 0
+    interval = 10
+    state_server_endpoint = "http://localhost:50051"
+    mm_endpoint = "http://localhost:5001"
+    dapp_contract_address = {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | quote }}

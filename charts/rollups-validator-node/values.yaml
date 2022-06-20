@@ -1,0 +1,220 @@
+# REQUIRED dapp.*
+dapp:
+  image:
+  contractAddress:
+  mnemonic:
+  httpProvider:
+  wsProvider:
+  chainID:
+  postgres:
+    hostname:
+    port:
+    user:
+    password:
+    dbname:
+
+cartesi:
+  rollupsVersion: 0.4.0
+  registryNamespace: cartesi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+fullnameOverride: ""
+nameOverride: ""
+
+image:
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+validator:
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  podAnnotations: {}
+
+  dispatcher:
+    replicaCount: 1
+
+    image:
+      registry: docker.io
+      repository: cartesi/rollups-dispatcher
+      tag: "0.4.0"
+
+    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    logLevel: info
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+  stateServer:
+    replicaCount: 1
+
+    image:
+      registry: docker.io
+      repository: cartesi/delegate-server
+      tag: "0.4.0"
+
+    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    logLevel: info
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+  serverManager:
+    replicaCount: 1
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+  indexer:
+    replicaCount: 1
+
+    postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
+
+    image:
+      registry: docker.io
+      repository: cartesi/rollups-indexer
+      tag: "0.4.0"
+
+    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    logLevel: info
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+queryServer:
+  image:
+    registry: docker.io
+    repository: cartesi/query-server
+    tag: "0.4.0"
+
+  # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+  logLevel: info
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 4000
+
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
