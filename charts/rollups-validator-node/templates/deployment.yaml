@@ -47,7 +47,7 @@ spec:
             - "--tm-config"
             - "/opt/cartesi/share/config/tm-config.toml"
             - "--chain-id"
-            - {{ required "A valid .Values.dapp.chainID is required" .Values.dapp.chainID | toString | quote }}
+            - {{ include "dapp.chainID" . | toString | quote }}
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}

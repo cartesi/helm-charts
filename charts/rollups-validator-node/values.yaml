@@ -5,7 +5,7 @@ dapp:
   mnemonic:
   httpProvider:
   wsProvider:
-  chainID:
+  network:
   postgres:
     hostname:
     port:

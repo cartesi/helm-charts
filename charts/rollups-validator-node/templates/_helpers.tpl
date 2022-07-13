@@ -121,3 +121,11 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
+
+{{/*
+Return the chainID based on the network
+*/}}
+{{- define "dapp.chainID" -}}
+{{- $networkIDs := dict "mainnet" "1" "ropsten" "2" "rinkeby" "4" "goerli" "5" "kovan" "42" "bsc_testnet" "57" "avax_fuji" "43113" "polygon_mumbai" "80001" "local" "1337" -}}
+{{- get $networkIDs (required "A valid .Values.dapp.network is required" .Values.dapp.network) -}}
+{{- end -}}
