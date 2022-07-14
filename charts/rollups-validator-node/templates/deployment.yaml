@@ -25,6 +25,10 @@ spec:
       serviceAccountName: {{ include "validator.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.validator.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.validator.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
       containers:
         - name: rollups-dispatcher
           image: {{ include "dispatcher.image" . }}
@@ -160,6 +164,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        {{- if .Values.queryServer.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.queryServer.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
       containers:
         #TODO: target the new reader implementation
         - name: query-server
