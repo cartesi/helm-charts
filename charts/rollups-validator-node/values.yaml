@@ -238,3 +238,8 @@ queryServer:
   tolerations: []
 
   affinity: {}
+
+ingress:
+  enabled: false
+  subdomain: "local"
+  annotations: {}
