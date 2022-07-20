@@ -57,8 +57,6 @@ validator:
   podAnnotations: {}
 
   dispatcher:
-    replicaCount: 1
-
     image:
       registry: docker.io
       repository: cartesi/rollups-dispatcher
@@ -90,8 +88,6 @@ validator:
       #   memory: 128Mi
 
   stateServer:
-    replicaCount: 1
-
     image:
       registry: docker.io
       repository: cartesi/delegate-server
@@ -123,8 +119,6 @@ validator:
       #   memory: 128Mi
 
   indexer:
-    replicaCount: 1
-
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
 
     image:
@@ -181,8 +175,6 @@ machineManager:
   podAnnotations: {}
 
   inspectServer:
-    replicaCount: 1
-
     image:
       registry: docker.io
       repository: cartesi/rollups-inspect-server
@@ -248,6 +240,8 @@ machineManager:
       #   memory: 128Mi
 
 queryServer:
+  replicaCount: 1
+
   image:
     registry: docker.io
     repository: cartesi/query-server

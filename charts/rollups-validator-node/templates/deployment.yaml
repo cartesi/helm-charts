@@ -240,6 +240,7 @@ metadata:
   name: {{ include "validator.fullname" . }}-query-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.queryServer.replicaCount }}
   selector:
     matchLabels:
       {{- include "validator.selectorLabels" . | nindent 6 }}
