@@ -82,15 +82,6 @@ spec:
             - name: {{ include "validator.fullname" . }}-config-volume
               mountPath: /opt/cartesi/share/config/
 
-        - name: server-manager
-          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.validator.serverManager.resources | nindent 12 }}
-          ports:
-            - containerPort: 5001
-
-        #TODO: target the new indexer implementation
         - name: rollups-indexer
           image: {{ include "indexer.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -176,6 +167,76 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ include "validator.fullname" . }}-machine-manager
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+      app: {{ include "validator.fullname" . }}-machine-manager
+  template:
+    metadata:
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+        app: {{ include "validator.fullname" . }}-machine-manager
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        {{- if .Values.machineManager.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.machineManager.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: server-manager
+          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.machineManager.serverManager.resources | nindent 12 }}
+          ports:
+            - containerPort: 5001
+        - name: rollups-inspect-server
+          image: {{ include "inspectServer.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.machineManager.inspectServer.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5005
+            initialDelaySeconds: 3
+          args:
+            - "--inspect-server-address"
+            - "0.0.0.0:5005"
+            - "--server-manager-address"
+            - "localhost:5001"
+            - "--session-id"
+            - "default_rollups_id"
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.machineManager.inspectServer.logLevel }}
+          ports:
+            - containerPort: 5005
+
+      {{- with .Values.machineManager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.machineManager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.machineManager.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: {{ include "validator.fullname" . }}-query-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
@@ -198,7 +259,6 @@ spec:
         {{- include "tplvalues.render" ( dict "value" .Values.queryServer.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
       containers:
-        #TODO: target the new reader implementation
         - name: query-server
           image: {{ include "queryServer.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}

@@ -9,10 +9,13 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
+  {{- range $key, $value := .Values.queryServer.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   rules:
     - host: {{ .Values.dapp.contractAddress }}.{{ .Values.ingress.subDomain }}
-      http: &query-server
+      http:
         paths:
           - pathType: Prefix
             path: /
@@ -21,4 +24,29 @@ spec:
                 name: {{ include "validator.fullname" . }}-query-server
                 port:
                   number: {{ .Values.queryServer.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "validator.fullname" . }}-inspect
+  labels: {{- include "validator.labels" . | nindent 4 }}
+  annotations:
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.machineManager.inspectServer.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.dapp.contractAddress }}.{{ .Values.ingress.subDomain }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /inspect
+            backend:
+              service:
+                name: {{ include "validator.fullname" . }}-inspect-server
+                port:
+                  number: {{ .Values.machineManager.inspectServer.service.port }}
 {{- end -}}

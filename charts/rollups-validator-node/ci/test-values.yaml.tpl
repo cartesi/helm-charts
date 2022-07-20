@@ -26,6 +26,12 @@ validator:
       repository: cartesicorp/rollups-indexer
       tag: develop
 
+machineManager:
+  inspectServer:
+    image:
+      repository: cartesicorp/rollups-inspect-server
+      tag: develop
+
 queryServer:
   image:
     repository: cartesicorp/query-server

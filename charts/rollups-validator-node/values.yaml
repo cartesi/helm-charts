@@ -122,8 +122,18 @@ validator:
       #   cpu: 100m
       #   memory: 128Mi
 
-  serverManager:
+  indexer:
     replicaCount: 1
+
+    postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
+
+    image:
+      registry: docker.io
+      repository: cartesi/rollups-indexer
+      tag: "0.4.0"
+
+    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    logLevel: info
 
     securityContext:
       {}
@@ -147,18 +157,73 @@ validator:
       #   cpu: 100m
       #   memory: 128Mi
 
-  indexer:
-    replicaCount: 1
+machineManager:
+  nodeSelector: {}
 
-    postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
+  tolerations: []
+
+  affinity: {}
+
+  ## @param validator.initContainers Add additional init containers to the validator-node pod(s)
+  ## Example
+  ##
+  ## initContainers:
+  ##   - name: do-something
+  ##     image: busybox
+  ##     command: ['do', 'something']
+  ##
+  initContainers: []
+
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  podAnnotations: {}
+
+  inspectServer:
+    replicaCount: 1
 
     image:
       registry: docker.io
-      repository: cartesi/rollups-indexer
+      repository: cartesi/rollups-inspect-server
       tag: "0.4.0"
 
     # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    ingress:
+      annotations: {}
+
+    service:
+      type: ClusterIP
+      port: 4000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+  serverManager:
+    service:
+      type: ClusterIP
+      port: 5001
 
     securityContext:
       {}
@@ -215,6 +280,9 @@ queryServer:
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
     # runAsUser: 1000
+
+  ingress:
+    annotations: {}
 
   service:
     type: ClusterIP
