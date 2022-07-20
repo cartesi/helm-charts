@@ -111,9 +111,30 @@ spec:
               value: /var/run/secrets/postgres/PASSWORD
             - name: POSTGRES_MIGRATION_FOLDER
               value: /usr/local/bin/migrations/
+          {{- if .Values.postgresOperator.enabled }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-indexer
+                  key: ROLE
+                  optional: false
+            - name: POSTGRES_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-indexer
+                  key: HOST
+                  optional: false
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-indexer
+                  key: DATABASE_NAME
+                  optional: false
+          {{ else }}
           envFrom:
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
+          {{ end -}}
           volumeMounts:
             - name: {{ include "validator.fullname" . }}-config-volume
               mountPath: /opt/cartesi/share/config/
@@ -129,8 +150,16 @@ spec:
           secret:
             secretName: {{ include "validator.fullname" . }}-mnemonic
         - name: {{ include "validator.fullname" . }}-postgres
+          {{ if .Values.postgresOperator.enabled }}
+          secret:
+            secretName: secret-{{ include "validator.fullname" . }}-indexer
+            items:
+              - key: PASSWORD
+                path: PASSWORD
+          {{- else -}}
           secret:
             secretName: {{ include "validator.fullname" . }}-postgres
+          {{- end -}}
       {{- with .Values.validator.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -189,9 +218,30 @@ spec:
               value: "4000"
             - name: POSTGRES_PASSWORD_FILE
               value: /var/run/secrets/postgres/PASSWORD
+          {{ if .Values.postgresOperator.enabled }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  key: ROLE
+                  optional: false
+            - name: POSTGRES_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  key: HOST
+                  optional: false
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  key: DATABASE_NAME
+                  optional: false
+          {{ else }}
           envFrom:
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
+          {{ end }}
           volumeMounts:
             - name: {{ include "validator.fullname" . }}-postgres
               mountPath: /var/run/secrets/postgres
@@ -213,5 +263,13 @@ spec:
 
       volumes:
         - name: {{ include "validator.fullname" . }}-postgres
+        {{ if .Values.postgresOperator.enabled }}
+          secret:
+            secretName: secret-{{ include "validator.fullname" . }}-query-server 
+            items:
+              - key: PASSWORD
+                path: PASSWORD
+        {{ else }}
           secret:
             secretName: {{ include "validator.fullname" . }}-postgres
+        {{ end }}

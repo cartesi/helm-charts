@@ -1,3 +1,4 @@
+{{- if eq .Values.postgresOperator.enabled false }}
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -9,6 +10,7 @@ data:
   POSTGRES_PORT: {{ default "5432" .Values.dapp.postgres.port | quote }}
   POSTGRES_USER: {{ default "postgres" .Values.dapp.postgres.user }}
   POSTGRES_DB: {{ default "postgres" .Values.dapp.postgres.dbname }}
+{{ end -}}
 ---
 apiVersion: v1
 kind: ConfigMap

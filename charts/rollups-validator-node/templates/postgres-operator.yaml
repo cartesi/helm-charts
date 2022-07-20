@@ -1,0 +1,33 @@
+{{- if .Values.postgresOperator.enabled }}
+---
+apiVersion: db.movetokube.com/v1alpha1
+kind: Postgres
+metadata:
+  name: {{ include "validator.fullname" . }}-postgres-operator
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  database: {{ .Values.postgresOperator.database.name }}
+  dropOnDelete: {{ .Values.postgresOperator.database.dropOnDelete }}
+---
+apiVersion: db.movetokube.com/v1alpha1
+kind: PostgresUser
+metadata:
+  name: {{ include "validator.fullname" $ }}-indexer
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  role: indexer
+  database: {{ include "validator.fullname" . }}-postgres-operator
+  secretName: secret
+  privileges: OWNER
+---
+apiVersion: db.movetokube.com/v1alpha1
+kind: PostgresUser
+metadata:
+  name: {{ include "validator.fullname" . }}-query-server
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  role: query-server
+  database: {{ include "validator.fullname" . }}-postgres-operator
+  secretName: secret
+  privileges: READER
+{{- end }}

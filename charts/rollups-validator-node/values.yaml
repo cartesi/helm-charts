@@ -243,3 +243,9 @@ ingress:
   enabled: false
   subdomain: "local"
   annotations: {}
+
+postgresOperator:
+  enabled: false
+  database:
+    name: postgres
+    dropOnDelete: false
