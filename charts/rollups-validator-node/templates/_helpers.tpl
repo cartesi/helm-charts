@@ -50,7 +50,7 @@ Selector labels
 TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
-dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | quote }}
+dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

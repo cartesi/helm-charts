@@ -309,5 +309,5 @@ ingress:
 postgresOperator:
   enabled: false
   database:
-    name: postgres
+    name:
     dropOnDelete: false

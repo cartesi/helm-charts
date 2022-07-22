@@ -6,7 +6,7 @@ metadata:
   name: {{ include "validator.fullname" . }}-postgres-operator
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  database: {{ coalesce .Values.postgresOperator.database.name .Values.dapp.contractAddress }}
+  database: {{ coalesce .Values.postgresOperator.database.name ( .Values.dapp.contractAddress | lower ) }}
   dropOnDelete: {{ .Values.postgresOperator.database.dropOnDelete }}
 ---
 apiVersion: db.movetokube.com/v1alpha1

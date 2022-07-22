@@ -14,7 +14,7 @@ metadata:
   {{- end }}
 spec:
   rules:
-    - host: {{ .Values.dapp.contractAddress }}.{{ .Values.ingress.subDomain }}
+    - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
       http:
         paths:
           - pathType: Prefix
@@ -39,7 +39,7 @@ metadata:
   {{- end }}
 spec:
   rules:
-    - host: {{ .Values.dapp.contractAddress }}.{{ .Values.ingress.subDomain }}
+    - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
       http:
         paths:
           - pathType: Prefix

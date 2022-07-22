@@ -54,4 +54,4 @@ data:
     interval = 10
     state_server_endpoint = "http://localhost:50051"
     mm_endpoint = "http://{{ include "validator.fullname" . }}-server-manager:5001"
-    dapp_contract_address = {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | quote }}
+    dapp_contract_address = {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
