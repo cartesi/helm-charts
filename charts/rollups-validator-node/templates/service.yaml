@@ -5,15 +5,15 @@ metadata:
   name: {{ include "validator.fullname" . }}-query-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.queryServer.service.type }}
+  type: {{ .Values.endpoints.queryServer.service.type }}
   ports:
-    - port: {{ .Values.queryServer.service.port }}
+    - port: {{ .Values.endpoints.queryServer.service.port }}
       targetPort: 4000
       protocol: TCP
       name: graphql
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    app: {{ include "validator.fullname" . }}-query-server
+    rollups.cartesi.io/component: endpoints
 ---
 apiVersion: v1
 kind: Service
@@ -21,15 +21,15 @@ metadata:
   name: {{ include "validator.fullname" . }}-inspect-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.machineManager.inspectServer.service.type }}
+  type: {{ .Values.endpoints.inspectServer.service.type }}
   ports:
-    - port: {{ .Values.machineManager.inspectServer.service.port }}
+    - port: {{ .Values.endpoints.inspectServer.service.port }}
       targetPort: 5005
       protocol: TCP
       name: inspect-server
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    app: {{ include "validator.fullname" . }}-machine-manager
+    rollups.cartesi.io/component: endpoints
 ---
 apiVersion: v1
 kind: Service
@@ -37,12 +37,12 @@ metadata:
   name: {{ include "validator.fullname" . }}-server-manager
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.machineManager.serverManager.service.type }}
+  type: {{ .Values.validator.serverManager.service.type }}
   ports:
-    - port: {{ .Values.machineManager.serverManager.service.port }}
+    - port: {{ .Values.validator.serverManager.service.port }}
       targetPort: 5001
       protocol: TCP
       name: server-manager
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    app: {{ include "validator.fullname" . }}-machine-manager
+    rollups.cartesi.io/component: validator

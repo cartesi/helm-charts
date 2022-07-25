@@ -106,14 +106,14 @@ Return the proper indexer image name
 Return the proper queryServer image name
 */}}
 {{- define "queryServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.queryServer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.endpoints.queryServer.image) }}
 {{- end -}}
 
 {{/*
 Return the proper inspectServer image name
 */}}
 {{- define "inspectServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.machineManager.inspectServer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.endpoints.inspectServer.image) }}
 {{- end -}}
 
 {{/*

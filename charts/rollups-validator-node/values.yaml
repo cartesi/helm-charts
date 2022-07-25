@@ -33,6 +33,17 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+ingress:
+  enabled: false
+  subdomain: "local"
+  annotations: {}
+
+postgresOperator:
+  enabled: false
+  database:
+    name:
+    dropOnDelete: false
+
 validator:
   nodeSelector: {}
 
@@ -118,6 +129,33 @@ validator:
       #   cpu: 100m
       #   memory: 128Mi
 
+  serverManager:
+    service:
+      type: ClusterIP
+      port: 5001
+
+    securityContext:
+      {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
   indexer:
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
 
@@ -151,7 +189,9 @@ validator:
       #   cpu: 100m
       #   memory: 128Mi
 
-machineManager:
+endpoints:
+  replicaCount: 1
+
   nodeSelector: {}
 
   tolerations: []
@@ -212,10 +252,14 @@ machineManager:
       #   cpu: 100m
       #   memory: 128Mi
 
-  serverManager:
-    service:
-      type: ClusterIP
-      port: 5001
+  queryServer:
+    image:
+      registry: docker.io
+      repository: cartesi/query-server
+      tag: "0.4.0"
+
+    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    logLevel: info
 
     securityContext:
       {}
@@ -225,6 +269,13 @@ machineManager:
       # readOnlyRootFilesystem: true
       # runAsNonRoot: true
       # runAsUser: 1000
+
+    ingress:
+      annotations: {}
+
+    service:
+      type: ClusterIP
+      port: 4000
 
     resources:
       {}
@@ -238,76 +289,3 @@ machineManager:
       # requests:
       #   cpu: 100m
       #   memory: 128Mi
-
-queryServer:
-  replicaCount: 1
-
-  image:
-    registry: docker.io
-    repository: cartesi/query-server
-    tag: "0.4.0"
-
-  # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
-  logLevel: info
-
-  ## @param validator.initContainers Add additional init containers to the validator-node pod(s)
-  ## Example
-  ##
-  ## initContainers:
-  ##   - name: do-something
-  ##     image: busybox
-  ##     command: ['do', 'something']
-  ##
-  initContainers: []
-
-  podAnnotations: {}
-
-  podSecurityContext:
-    {}
-    # fsGroup: 2000
-
-  securityContext:
-    {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
-
-  ingress:
-    annotations: {}
-
-  service:
-    type: ClusterIP
-    port: 4000
-
-  resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-ingress:
-  enabled: false
-  subdomain: "local"
-  annotations: {}
-
-postgresOperator:
-  enabled: false
-  database:
-    name:
-    dropOnDelete: false

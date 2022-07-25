@@ -32,7 +32,7 @@ data:
     rate = 20
     confirmations = 10
     state_fold_grpc_endpoint = "http://localhost:50051"
-    mm_endpoint = "http://{{ include "validator.fullname" . }}-server-manager:5001"
+    mm_endpoint = "http://localhost:5001"
     provider_http_endpoint = {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
     ws_endpoint = {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
   sf-config.toml: |
@@ -53,5 +53,5 @@ data:
     epoch_index = 0
     interval = 10
     state_server_endpoint = "http://localhost:50051"
-    mm_endpoint = "http://{{ include "validator.fullname" . }}-server-manager:5001"
+    mm_endpoint = "http://localhost:5001"
     dapp_contract_address = {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}

@@ -9,7 +9,7 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- range $key, $value := .Values.queryServer.ingress.annotations }}
+  {{- range $key, $value := .Values.endpoints.queryServer.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -23,7 +23,7 @@ spec:
               service:
                 name: {{ include "validator.fullname" . }}-query-server
                 port:
-                  number: {{ .Values.queryServer.service.port }}
+                  number: {{ .Values.endpoints.queryServer.service.port }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -34,7 +34,7 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- range $key, $value := .Values.machineManager.inspectServer.ingress.annotations }}
+  {{- range $key, $value := .Values.endpoints.inspectServer.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -48,5 +48,5 @@ spec:
               service:
                 name: {{ include "validator.fullname" . }}-inspect-server
                 port:
-                  number: {{ .Values.machineManager.inspectServer.service.port }}
+                  number: {{ .Values.endpoints.inspectServer.service.port }}
 {{- end -}}

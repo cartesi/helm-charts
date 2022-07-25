@@ -10,5 +10,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "validator.fullname" . }}-query-server:{{ .Values.queryServer.service.port }}']
+      args: ['{{ include "validator.fullname" . }}-query-server:{{ .Values.endpoints.queryServer.service.port }}']
   restartPolicy: Never
