@@ -73,7 +73,7 @@ nameOverride: ""
 ## image configuration to be used by the rollups-validator-node
 ##
 image:
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   pullSecrets: []
 
 ## ingress defines whether an Ingress will be created for the dapp
