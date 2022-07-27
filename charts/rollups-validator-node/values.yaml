@@ -60,7 +60,7 @@ cartesi:
 ##
 serviceAccount:
   ## serviceAccount.create defines whether a service account should be created
-  create: true
+  create: false
   ## serviceAccount.annottions defines the annotations to add to the service account
   annotations: {}
   ## serviceAccount.name defines the name of the service account to use.
