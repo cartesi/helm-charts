@@ -1,49 +1,112 @@
-# REQUIRED dapp.*
+## dapp deployment paramaters
+##
 dapp:
+  ## dapp.image is a complete image name, e.g. "cartesi/dapp:echo-python-0.7.0-server"
+  ## REQUIRED
   image:
+  ## dapp.contractAddress is the contract address of the dapp deployed on the blockchain
+  ## REQUIRED
   contractAddress:
+  ## dapp.mnemonic is the mnemonic for the wallet
+  ## REQUIRED
   mnemonic:
+  ## dapp.httpProvider is the URL for the http:// endpoint of the provider
+  ## REQUIRED
   httpProvider:
+  ## dapp.wsProvider is the URL for the ws:// endpoint of the provider
+  ## REQUIRED
   wsProvider:
+  ## dapp.network is the name of the network the dapp is deployed on
+  ## REQUIRED
+  ##
+  ## Available options are:
+  ##   - mainnet
+  ##   - goerli
+  ##   - bsc-testnet
+  ##   - avax-fuji
+  ##   - polygon-mumbai
   network:
+  ## dapp.postgres is the postgres configuration
+  ## REQUIRED, unless postgresOperator.enabled == true
   postgres:
+    ## dapp.postgres.hostname is the hostname of the postgres server
     hostname:
+    ## dapp.postgres.hostname is the port of the postgres server (default: 5432)
     port:
+    ## dapp.postgres.user is the username of the postgres server (default: postgres)
     user:
+    ## dapp.postgres.password is the password of the postgres server (default: "")
     password:
+    ## dapp.postgres.dbname is the name of the postgres database (default: postgres)
     dbname:
 
+## cartesi holds the configuration for the default containers images
+##
 cartesi:
+  ## cartesi.rollupsVersion is the version of the cartesi/rollups project to use
   rollupsVersion: 0.4.0
+  ## cartesi.registryNamespace is the name for the namespace where the
+  ## cartesi/rollups images are stored
+  ##
+  ## default: cartesi
+  ##
+  ## By default, we look for images at the hub.docker.io registry, but you can
+  ## override this by setting this value.
+  ##
+  ## e.g. dapp.registryNamespace = "ghcr.io/my-org/my-repo"
   registryNamespace: cartesi
 
+## seviceAccount configuration to be used by the rollups-validator-node
+##
 serviceAccount:
-  # Specifies whether a service account should be created
+  ## serviceAccount.create defines whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  ## serviceAccount.annottions defines the annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  ## serviceAccount.name defines the name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
   name: ""
 
 fullnameOverride: ""
 nameOverride: ""
 
+## image configuration to be used by the rollups-validator-node
+##
 image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+## ingress defines whether an Ingress will be created for the dapp
+## The default Ingress has a default path / that points to the endpoints.queryServer
+## And an /inspect path that points to the endpoints.inspectServer
+## The dapp.contractAddress is used a a hostname suffixed by the ingress.subDomain
+## e.g.
+## host: 0xabcde.local
+##
 ingress:
   enabled: false
-  subdomain: "local"
+  subDomain: "local"
+  ## ingress.annotation defines the annotations for both ingresses
   annotations: {}
 
+## postgresOperator configuration
+## You should already have postgres-operator installed on your cluster.
+## See: https://github.com/movetokube/postgres-operator/
+##
 postgresOperator:
+  ## postgresOperator.enabled defines whether the postgres operator should
+  ## used by the indexer and query-server
   enabled: false
   database:
+    ## postgresOperator.database.name defines the name of the database to
+    ## be created (default: dapp.contractAddress)
     name:
+    ## postgresOperatos.dataase.dropOnDelete defines if the database should
+    ## be droped when the resources are delete
     dropOnDelete: false
 
+## rollups-validator-node Pod configuration
+##
 validator:
   nodeSelector: {}
 
@@ -51,7 +114,7 @@ validator:
 
   affinity: {}
 
-  ## @param validator.initContainers Add additional init containers to the validator-node pod(s)
+  ## validator.initContainers add additional init containers to the validator-node pod(s)
   ## Example
   ##
   ## initContainers:
@@ -63,7 +126,7 @@ validator:
 
   podSecurityContext:
     {}
-    # fsGroup: 2000
+    ## fsGroup: 2000
 
   podAnnotations: {}
 
@@ -73,30 +136,26 @@ validator:
       repository: cartesi/rollups-dispatcher
       tag: "0.4.0"
 
-    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
   stateServer:
     image:
@@ -104,30 +163,26 @@ validator:
       repository: cartesi/delegate-server
       tag: "0.4.0"
 
-    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
   serverManager:
     service:
@@ -136,25 +191,21 @@ validator:
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
   indexer:
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
@@ -164,31 +215,29 @@ validator:
       repository: cartesi/rollups-indexer
       tag: "0.4.0"
 
-    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
+## rollups-validator-node-endpoints Pod configuration
+##
 endpoints:
   replicaCount: 1
 
@@ -198,7 +247,7 @@ endpoints:
 
   affinity: {}
 
-  ## @param validator.initContainers Add additional init containers to the validator-node pod(s)
+  ## endpoints.initContainers Add additional init containers to the endpoints pod(s)
   ## Example
   ##
   ## initContainers:
@@ -210,7 +259,7 @@ endpoints:
 
   podSecurityContext:
     {}
-    # fsGroup: 2000
+    ## fsGroup: 2000
 
   podAnnotations: {}
 
@@ -220,19 +269,21 @@ endpoints:
       repository: cartesi/rollups-inspect-server
       tag: "0.4.0"
 
-    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     ingress:
+      ## endpoints.inspectServer.ingress.annotations defines extra anotations
+      ## specifically for the endpoints.inspectServer.service
       annotations: {}
 
     service:
@@ -241,16 +292,12 @@ endpoints:
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
   queryServer:
     image:
@@ -258,19 +305,21 @@ endpoints:
       repository: cartesi/query-server
       tag: "0.4.0"
 
-    # The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
     securityContext:
       {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
     ingress:
+      ## endpoints.queryServer.ingress.annotations defines extra anotations
+      ## specifically for the endpoints.queryServer.service
       annotations: {}
 
     service:
@@ -279,13 +328,9 @@ endpoints:
 
     resources:
       {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
