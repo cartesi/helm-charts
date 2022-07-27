@@ -195,6 +195,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
       initContainers:
         {{- if .Values.endpoints.initContainers }}
         {{- include "tplvalues.render" ( dict "value" .Values.endpoints.initContainers "context" $ ) | nindent 8 }}
