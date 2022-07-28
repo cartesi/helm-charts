@@ -84,14 +84,6 @@ spec:
             - name: {{ include "validator.fullname" . }}-config-volume
               mountPath: /opt/cartesi/share/config/
 
-        - name: server-manager
-          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.validator.serverManager.resources | nindent 12 }}
-          ports:
-            - containerPort: 5001
-
         - name: rollups-indexer
           image: {{ include "indexer.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -170,6 +162,59 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.validator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "validator.fullname" . }}-server-manager
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+      rollups.cartesi.io/component: server-manager
+  template:
+    metadata:
+      {{- with .Values.validator.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+        rollups.cartesi.io/component: server-manager
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.serverManager.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.serverManager.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: server-manager
+          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.serverManager.resources | nindent 12 }}
+          ports:
+            - containerPort: 5001
+      {{- with .Values.serverManager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serverManager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serverManager.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

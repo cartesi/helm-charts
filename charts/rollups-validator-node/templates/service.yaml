@@ -37,12 +37,12 @@ metadata:
   name: {{ include "validator.fullname" . }}-server-manager
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.validator.serverManager.service.type }}
+  type: {{ .Values.serverManager.service.type }}
   ports:
-    - port: {{ .Values.validator.serverManager.service.port }}
+    - port: {{ .Values.serverManager.service.port }}
       targetPort: 5001
       protocol: TCP
       name: server-manager
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    rollups.cartesi.io/component: validator
+    rollups.cartesi.io/component: server-manager
