@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add postgres-operator optional values configuration
 - Replace .Values.dapp.chainID for .Values.dapp.network
 
+### Fixed
+
+- validator Pod values
+
 ## [0.1.0] 2022-07-11
 
 ### Add
