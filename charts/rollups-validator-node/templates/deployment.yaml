@@ -38,26 +38,30 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
-            - "--dapp-contract-address"
+            - "--rd-dapp-contract-address"
             - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
-            - "--logic-config-path"
-            - "/opt/cartesi/share/config/logic-config.toml"
-            - "--sf-config"
-            - "/opt/cartesi/share/config/sf-config.toml"
-            - "--bs-config"
-            - "/opt/cartesi/share/config/bs-config.toml"
-            - "--tm-config"
-            - "/opt/cartesi/share/config/tm-config.toml"
-            - "--chain-id"
+            - "--mm-endpoint"
+            - "http://{{ include "validator.fullname" . }}-server-manager:5001"
+            - "--mm-session-id"
+            - "default_rollups_id"
+            - "--rd-initial-epoch"
+            - "0"
+            - "--sc-grpc-endpoint"
+            - "http://localhost:50051"
+            - "--sc-default-confirmations"
+            - "1"
+            - "--tx-provider-http-endpoint"
+            - {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
+            - "--tx-default-confirmations"
+            - "2"
+            - "--tx-chain-id"
             - {{ include "dapp.chainID" . | toString | quote }}
+            - "--tx-mnemonic-file"
+            - "/var/run/secrets/mnemonic/MNEMONIC"
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}
-            - name: MNEMONIC_FILE
-              value: /var/run/secrets/mnemonic/MNEMONIC
           volumeMounts:
-            - name: {{ include "validator.fullname" . }}-config-volume
-              mountPath: /opt/cartesi/share/config/
             - name: {{ include "validator.fullname" . }}-mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
@@ -68,21 +72,21 @@ spec:
           resources:
             {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
           args:
-            - "--sf-config"
-            - "/opt/cartesi/share/config/sf-config.toml"
-            - "--url"
-            - {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
-            - "--ws-url"
-            - {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
-            - "rollups"
+            - "--sf-genesis-block"
+            -  "0x1"
+            -  "--sf-safety-margin"
+            -  "1"
+            -  "--bh-http-endpoint"
+            -  {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
+            -  "--bh-ws-endpoint"
+            -  {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
+            -  "--bh-block-timeout"
+            -  "120"
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.stateServer.logLevel }}
           ports:
             - containerPort: 50051
-          volumeMounts:
-            - name: {{ include "validator.fullname" . }}-config-volume
-              mountPath: /opt/cartesi/share/config/
 
         - name: rollups-indexer
           image: {{ include "indexer.image" . }}
@@ -90,8 +94,20 @@ spec:
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
-            - "--indexer-config-path"
-            - "/opt/cartesi/share/config/indexer-config.toml"
+            - "--dapp-contract-address"
+            - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
+            - "--session-id"
+            - "default_rollups_id"
+            - "--initial-epoch"
+            - "0"
+            - "--interval"
+            - "10"
+            - "--confirmations"
+            - "1"
+            - "--state-server-endpoint"
+            - "http://localhost:50051"
+            - "--mm-endpoint"
+            - "http://{{ include "validator.fullname" . }}-server-manager:5001"
           livenessProbe:
             httpGet:
               path: /healthz
@@ -129,16 +145,11 @@ spec:
                 name: {{ include "validator.fullname" . }}-database-config
           {{ end -}}
           volumeMounts:
-            - name: {{ include "validator.fullname" . }}-config-volume
-              mountPath: /opt/cartesi/share/config/
             - name: {{ include "validator.fullname" . }}-postgres
               mountPath: /var/run/secrets/postgres
               readOnly: true
 
       volumes:
-        - name: {{ include "validator.fullname" . }}-config-volume
-          configMap:
-            name: {{ include "validator.fullname" . }}-rollups-config-files
         - name: {{ include "validator.fullname" . }}-mnemonic
           secret:
             secretName: {{ include "validator.fullname" . }}-mnemonic

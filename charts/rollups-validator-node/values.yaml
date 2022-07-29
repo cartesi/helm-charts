@@ -160,7 +160,7 @@ validator:
   stateServer:
     image:
       registry: docker.io
-      repository: cartesi/delegate-server
+      repository: cartesi/rollups-state-server
       tag: "0.4.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.

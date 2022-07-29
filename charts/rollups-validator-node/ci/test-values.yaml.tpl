@@ -1,5 +1,5 @@
 dapp:
-  image: cartesi/dapp:echo-python-0.7.0-server
+  image: cartesicorp/dapp:echo-python-next-server
   contractAddress: "0x5a4ac602d25e86b853cdd07836445f576382f4db"
   mnemonic: "${MNEMONIC}"
   httpProvider: https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}
@@ -24,6 +24,14 @@ validator:
   indexer:
     image:
       repository: cartesicorp/rollups-indexer
+      tag: develop
+  dispatcher:
+    image:
+      repository: cartesicorp/rollups-dispatcher
+      tag: develop
+  stateServer:
+    image:
+      repository: cartesicorp/rollups-state-server
       tag: develop
 
 endpoints:
