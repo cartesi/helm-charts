@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
+### Added
 
 - Add rollups-inspect-server container
 - Add postgres-operator optional values configuration
+- .Values.validator.dispatcher.txDatabasePath option
+
+### Changed
+
 - Replace .Values.dapp.chainID for .Values.dapp.network
 - Extract server-manager to its own Pod
 - Adapt to new state-server and dispatcher containers

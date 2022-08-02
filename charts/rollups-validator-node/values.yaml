@@ -139,6 +139,8 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    txDatabasePath: /opt/cartesi/rollups-dispatcher/lib/tx-manager.db
+
     securityContext:
       {}
       ## capabilities:
