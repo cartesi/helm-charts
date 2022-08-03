@@ -38,6 +38,7 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
+            {{- if empty .Values.validator.dispatcher.args }}
             - "--rd-dapp-contract-address"
             - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
             - "--mm-endpoint"
@@ -60,6 +61,11 @@ spec:
             - "/var/run/secrets/mnemonic/MNEMONIC"
             - "--tx-database-path"
             - {{ .Values.validator.dispatcher.txDatabasePath }}
+            {{- else }}
+            {{- range .Values.validator.dispatcher.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}
@@ -77,6 +83,7 @@ spec:
           resources:
             {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
           args:
+            {{- if empty .Values.validator.stateServer.args }}
             - "--sf-genesis-block"
             -  "0x1"
             -  "--sf-safety-margin"
@@ -87,6 +94,11 @@ spec:
             -  {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
             -  "--bh-block-timeout"
             -  "120"
+            {{- else }}
+            {{- range .Values.validator.stateServer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.stateServer.logLevel }}
@@ -99,6 +111,7 @@ spec:
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
+            {{- if empty .Values.validator.indexer.args }}
             - "--dapp-contract-address"
             - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
             - "--session-id"
@@ -113,6 +126,11 @@ spec:
             - "http://localhost:50051"
             - "--mm-endpoint"
             - "http://{{ include "validator.fullname" . }}-server-manager:5001"
+            {{- else }}
+            {{- range .Values.validator.indexer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -277,12 +295,18 @@ spec:
               port: 5005
             initialDelaySeconds: 3
           args:
+            {{- if empty .Values.endpoints.inspectServer.args }}
             - "--inspect-server-address"
             - "0.0.0.0:5005"
             - "--server-manager-address"
             - "{{ include "validator.fullname" . }}-server-manager:5001"
             - "--session-id"
             - "default_rollups_id"
+            {{- else }}
+            {{- range .Values.endpoints.inspectServer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.endpoints.inspectServer.logLevel }}
