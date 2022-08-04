@@ -143,6 +143,14 @@ validator:
 
     args: []
 
+    ## extraEnvVars Array with extra environment variables to add to validator.dispatcher container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
+
     configFile:
 
     securityContext:
@@ -174,6 +182,14 @@ validator:
 
     args: []
 
+    ## extraEnvVars Array with extra environment variables to add to validator.stateServer container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
+
     securityContext:
       {}
       ## capabilities:
@@ -204,6 +220,14 @@ validator:
     logLevel: info
 
     args: []
+
+    ## extraEnvVars Array with extra environment variables to add to validator.indexer container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
 
     securityContext:
       {}
@@ -248,8 +272,17 @@ serverManager:
 
   podAnnotations: {}
 
+  # FIXME: there's no RUST_LOG on serverManager
   ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
   logLevel: info
+
+  ## extraEnvVars Array with extra environment variables to add to serverManager container
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
 
   service:
     type: ClusterIP
@@ -311,6 +344,14 @@ endpoints:
 
     args: []
 
+    ## extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
+
     securityContext:
       {}
       ## capabilities:
@@ -346,6 +387,14 @@ endpoints:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
+
+    ## extraEnvVars Array with extra environment variables to add to endpoints.queryServer container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
 
     securityContext:
       {}

@@ -69,6 +69,9 @@ spec:
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}
+            {{- if .Values.validator.dispatcher.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: {{ include "validator.fullname" . }}-mnemonic
               mountPath: /var/run/secrets/mnemonic
@@ -102,6 +105,9 @@ spec:
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.stateServer.logLevel }}
+            {{- if .Values.validator.stateServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           ports:
             - containerPort: 50051
 
@@ -139,6 +145,9 @@ spec:
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.indexer.logLevel }}
+            {{- if .Values.validator.indexer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.indexer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
             - name: POSTGRES_PASSWORD_FILE
               value: /var/run/secrets/postgres/PASSWORD
             - name: POSTGRES_MIGRATION_FOLDER
@@ -242,6 +251,12 @@ spec:
             {{- toYaml .Values.serverManager.resources | nindent 12 }}
           ports:
             - containerPort: 5001
+          env:
+            - name: LOG_LEVEL
+              value: {{ .Values.serverManager.logLevel }}
+            {{- if .Values.serverManager.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.serverManager.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
       {{- with .Values.serverManager.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -310,6 +325,9 @@ spec:
           env:
             - name: RUST_LOG
               value: {{ .Values.endpoints.inspectServer.logLevel }}
+            {{- if .Values.endpoints.inspectServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.endpoints.inspectServer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           ports:
             - containerPort: 5005
         - name: query-server
@@ -325,6 +343,9 @@ spec:
           env:
             - name: RUST_LOG
               value: {{ .Values.endpoints.queryServer.logLevel }}
+            {{- if .Values.endpoints.queryServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.endpoints.queryServer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
             - name: GRAPHQL_HOST
               value: "0.0.0.0"
             - name: GRAPHQL_PORT

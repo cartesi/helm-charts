@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add postgres-operator optional values configuration
 - .Values.validator.dispatcher.txDatabasePath option
 - Optional `args: []` to some containers
+- Optional `extraEnvVars: []` to some containers
 
 ### Changed
 

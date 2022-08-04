@@ -29,6 +29,9 @@ validator:
     image:
       repository: cartesicorp/rollups-dispatcher
       tag: develop
+    extraEnvVars:
+      - name: MY_ENV_VAR
+        value: "a-value"
   stateServer:
     image:
       repository: cartesicorp/rollups-state-server
