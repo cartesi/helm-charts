@@ -15,7 +15,7 @@ metadata:
 spec:
   rules:
     - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
-      http:
+      http: &http
         paths:
           - pathType: Prefix
             path: /
@@ -24,6 +24,8 @@ spec:
                 name: {{ include "validator.fullname" . }}-query-server
                 port:
                   number: {{ .Values.endpoints.queryServer.service.port }}
+    - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
+      http: *http
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -40,7 +42,7 @@ metadata:
 spec:
   rules:
     - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
-      http:
+      http: &http
         paths:
           - pathType: Prefix
             path: /inspect
@@ -49,4 +51,6 @@ spec:
                 name: {{ include "validator.fullname" . }}-inspect-server
                 port:
                   number: {{ .Values.endpoints.inspectServer.service.port }}
+    - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
+      http: *http
 {{- end -}}
