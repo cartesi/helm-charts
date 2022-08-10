@@ -4,7 +4,7 @@ dapp:
   mnemonic: "${MNEMONIC}"
   httpProvider: https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}
   wsProvider: wss://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  network: polygon_mumbai
+  network: polygon-mumbai
   postgres:
     hostname: postgresql
     port: "5432"
