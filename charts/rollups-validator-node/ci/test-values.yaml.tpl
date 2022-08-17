@@ -1,10 +1,10 @@
 dapp:
-  image: cartesicorp/dapp:echo-python-next-server
-  contractAddress: "0x5a4ac602d25e86b853cdd07836445f576382f4db"
+  image: cartesi/dapp:echo-python-0.8.0-server
+  contractAddress: "0xaf500c1c68d412b6fd18edc190f45b98604e0697"
   mnemonic: "${MNEMONIC}"
-  httpProvider: https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  wsProvider: wss://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  network: polygon-mumbai
+  httpProvider: https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
+  wsProvider: wss://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
+  network: goerli
   postgres:
     hostname: postgresql
     port: "5432"
