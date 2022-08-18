@@ -171,6 +171,8 @@ spec:
                   name: secret-{{ include "validator.fullname" . }}-indexer
                   key: DATABASE_NAME
                   optional: false
+            - name: POSTGRES_PORT
+              value: "5432"
           {{ else }}
           envFrom:
             - configMapRef:
