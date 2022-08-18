@@ -139,9 +139,32 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
-    txDatabasePath: /opt/cartesi/rollups-dispatcher/lib/tx-manager.db
+    ## TODO: add documentation for each parameter
+    machineManager:
+      endpoint:
+      sessionID: "default_rollups_id"
+
+    rollupsDapp:
+      initialEpoch: 0
+      minimumRequiredFee:
+      numBufferEpochs:
+      numClaimsTriggerRedeem:
+
+    transactionManager:
+      chainID:
+      databasePath: /opt/cartesi/rollups-dispatcher/lib/tx-manager.db
+      defaultConfirmations: 2
+      gasOracleAPIKey:
+      mnemonic:
+      mnemonicAccountIndex:
+      providerHTTPEndpoint:
+
+    stateClient:
+      defaultConfirmations: 1
+      grpcEndpoint: http://localhost:50051
 
     args: []
+    extraArgs: []
 
     ## extraEnvVars Array with extra environment variables to add to validator.dispatcher container
     ## e.g:

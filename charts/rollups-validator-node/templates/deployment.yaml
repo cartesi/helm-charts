@@ -38,33 +38,44 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee }}
+            - {{ print "--rd-minimum-required-fee=" .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.rollupsDapp.numBufferEpochs }}
+            - {{ print "--rd-num-buffer-epochs=" .Values.validator.dispatcher.rollupsDapp.numBufferEpochs | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.rollupsDapp.numClaimsTriggerRedeem }}
+            - {{ print "--rd-num-claims-trigger-redeem=" .Values.validator.dispatcher.rollupsDapp.numClaimsTriggerRedeem | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.transactionManager.gasOracleAPIKey }}
+            - {{ print "--tx-gas-oracle-api-key=" .Values.validator.dispatcher.transactionManager.gasOracleAPIKey | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex }}
+            - {{ print "--tx-mnemonic-account-index=" .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex | quote }}
+            {{- end }}
             {{- if empty .Values.validator.dispatcher.args }}
-            - "--rd-dapp-contract-address"
-            - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
-            - "--mm-endpoint"
-            - "http://{{ include "validator.fullname" . }}-server-manager:5001"
-            - "--mm-session-id"
-            - "default_rollups_id"
-            - "--rd-initial-epoch"
-            - "0"
-            - "--sc-grpc-endpoint"
-            - "http://localhost:50051"
-            - "--sc-default-confirmations"
-            - "1"
-            - "--tx-provider-http-endpoint"
-            - {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
-            - "--tx-default-confirmations"
-            - "2"
-            - "--tx-chain-id"
-            - {{ include "dapp.chainID" . | toString | quote }}
-            - "--tx-mnemonic-file"
-            - "/var/run/secrets/mnemonic/MNEMONIC"
-            - "--tx-database-path"
-            - {{ .Values.validator.dispatcher.txDatabasePath }}
+            - {{ print "--rd-dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
+            {{- if .Values.validator.dispatcher.machineManager.endpoint }}
+            - {{ print "--mm-endpoint=" .Values.validator.dispatcher.machineManager.endpoint | quote }}
+            {{- else }}
+            - {{ print "--mm-endpoint=http://" (include "validator.fullname" .) "-server-manager:5001" | quote }}
+            {{- end }}
+            - {{ print "--mm-session-id=" .Values.validator.dispatcher.machineManager.sessionID | quote }}
+            - {{ print "--rd-initial-epoch=" .Values.validator.dispatcher.rollupsDapp.initialEpoch | quote }}
+            - {{ print "--sc-grpc-endpoint=" .Values.validator.dispatcher.stateClient.grpcEndpoint | quote }}
+            - {{ print "--sc-default-confirmations=" .Values.validator.dispatcher.stateClient.defaultConfirmations | quote }}
+            - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            - {{ print "--tx-default-confirmations=" .Values.validator.dispatcher.transactionManager.defaultConfirmations | quote }}
+            - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
+            - "--tx-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC"
+            - {{ print "--tx-database-path=" .Values.validator.dispatcher.transactionManager.databasePath | quote }}
             {{- else }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
             {{- end }}
+            {{- end }}
+            {{- range .Values.validator.dispatcher.extraArgs }}
+            - {{ . | quote}}
             {{- end }}
           env:
             - name: RUST_LOG
