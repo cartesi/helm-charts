@@ -432,7 +432,7 @@ endpoints:
 
     service:
       type: ClusterIP
-      port: 4000
+      port: 5005
 
     resources:
       {}
