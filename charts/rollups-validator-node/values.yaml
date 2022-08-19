@@ -86,6 +86,11 @@ image:
 ingress:
   enabled: false
   subDomain: "local"
+  ## ingress.addReleaseNameCNAME adds the helm release name to the ingress as an additional rules[].host: {}
+  ## You should be careful to use a release name that's safe to use as a hostname
+  ## e.g. "my-release-name"
+  ## You shouldn't use "_" as a character in a hostname
+  addReleaseNameAsHost: false
   ## ingress.annotation defines the annotations for both ingresses
   annotations: {}
 
