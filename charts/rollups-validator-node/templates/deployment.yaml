@@ -136,24 +136,24 @@ spec:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
             {{- if empty .Values.validator.indexer.args }}
-            - "--dapp-contract-address"
-            - {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
-            - "--session-id"
-            - "default_rollups_id"
-            - "--initial-epoch"
-            - "0"
-            - "--interval"
-            - "10"
-            - "--confirmations"
-            - "1"
-            - "--state-server-endpoint"
-            - "http://localhost:50051"
-            - "--mm-endpoint"
-            - "http://{{ include "validator.fullname" . }}-server-manager:5001"
+            - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
+            - {{ print "--session-id=" .Values.validator.indexer.machineManager.sessionID | quote }}
+            - {{ print "--initial-epoch=" .Values.validator.indexer.config.initialEpoch | quote }}
+            - {{ print "--interval=" .Values.validator.indexer.config.interval | quote }}
+            - {{ print "--confirmations=" .Values.validator.indexer.config.confirmations | quote }}
+            - {{ print "--state-server-endpoint=" .Values.validator.indexer.stateServer.endpoint | quote }}
+            {{- if .Values.validator.indexer.machineManager.endpoint }}
+            - {{ print "--mm-endpoint=" .Values.validator.indexer.machineManager.endpoint | quote }}
+            {{- else }}
+            - {{ print "--mm-endpoint=http://" (include "validator.fullname" .) "-server-manager:5001" | quote }}
+            {{- end }}
             {{- else }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
             {{- end }}
+            {{- end }}
+            {{- range .Values.validator.indexer.extraArgs }}
+            - {{ . | quote}}
             {{- end }}
           livenessProbe:
             httpGet:

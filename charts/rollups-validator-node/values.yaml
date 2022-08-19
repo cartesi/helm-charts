@@ -259,6 +259,18 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    machineManager:
+      endpoint:
+      sessionID: "default_rollups_id"
+
+    stateServer:
+      endpoint: http://localhost:50051
+
+    config:
+      confirmations: 1
+      initialEpoch: 0
+      interval: 10
+
     args: []
 
     ## extraEnvVars Array with extra environment variables to add to validator.indexer container
