@@ -269,6 +269,18 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.serverManager.resources | nindent 12 }}
+          args:
+            {{- if empty .Values.serverManager.args }}
+            - "/opt/cartesi/bin/server-manager"
+            - "--manager-address=0.0.0.0:5001"
+            {{- else }}
+            {{- range .Values.serverManager.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
+            {{- range .Values.serverManager.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
           ports:
             - containerPort: 5001
           env:

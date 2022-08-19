@@ -328,6 +328,9 @@ serverManager:
   ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
   logLevel: info
 
+  args: []
+  extraArgs: []
+
   ## extraEnvVars Array with extra environment variables to add to serverManager container
   ## e.g:
   ## extraEnvVars:
