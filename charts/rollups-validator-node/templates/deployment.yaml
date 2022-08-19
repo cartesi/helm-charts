@@ -97,21 +97,28 @@ spec:
           resources:
             {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.stateServer.blockHistory.maxDepth }}
+            - {{ print "--bh-max-depth=" .Values.validator.stateServer.blockHistory.maxDepth | quote }}
+            {{- end }}
+            {{- if .Values.validator.stateServer.stateFold.concurrentEventsFetch }}
+            - {{ print "--sf-concurrent-events-fetch=" .Values.validator.stateServer.stateFold.concurrentEventsFetch | quote }}
+            {{- end }}
+            {{- if .Values.validator.stateServer.stateFold.queryLimitErrorCodes }}
+            - {{ print "--sf-query-limit-error-codes=" .Values.validator.stateServer.stateFold.queryLimitErrorCodes | quote }}
+            {{- end }}
             {{- if empty .Values.validator.stateServer.args }}
-            - "--sf-genesis-block"
-            -  "0x1"
-            -  "--sf-safety-margin"
-            -  "1"
-            -  "--bh-http-endpoint"
-            -  {{ required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider | quote }}
-            -  "--bh-ws-endpoint"
-            -  {{ required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider | quote }}
-            -  "--bh-block-timeout"
-            -  "120"
+            - {{ print "--sf-genesis-block=" .Values.validator.stateServer.stateFold.genesisBlock | quote }}
+            - {{ print "--sf-safety-margin=" .Values.validator.stateServer.stateFold.safetyMargin | quote }}
+            - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
+            - {{ print "--bh-block-timeout=" .Values.validator.stateServer.blockHistory.blockTimeout | quote }}
             {{- else }}
             {{- range .Values.validator.stateServer.args }}
             - {{ . | quote}}
             {{- end }}
+            {{- end }}
+            {{- range .Values.validator.stateServer.extraArgs }}
+            - {{ . | quote}}
             {{- end }}
           env:
             - name: RUST_LOG
@@ -412,7 +419,7 @@ spec:
         - name: {{ include "validator.fullname" . }}-postgres
         {{ if .Values.postgresOperator.enabled }}
           secret:
-            secretName: secret-{{ include "validator.fullname" . }}-query-server 
+            secretName: secret-{{ include "validator.fullname" . }}-query-server
             items:
               - key: PASSWORD
                 path: PASSWORD

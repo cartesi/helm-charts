@@ -203,7 +203,24 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    ## TODO: add documentation for each parameter
+    blockHistory:
+      blockTimeout: "120"
+      httpEndpoint:
+      maxDepth:
+      wsEndpoint:
+
+    stateFold:
+      concurrentEventsFetch:
+      genesisBlock: "0x1"
+      queryLimitErrorCodes:
+      safetyMargin: "1"
+
+    stateServer:
+      serverAddress:
+
     args: []
+    extraArgs: []
 
     ## extraEnvVars Array with extra environment variables to add to validator.stateServer container
     ## e.g:
