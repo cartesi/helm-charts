@@ -397,7 +397,16 @@ endpoints:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    ## TODO: add documentation for each parameter
+    config:
+      address: 0.0.0.0:5005
+
+    machineManager:
+      endpoint:
+      sessionID: "default_rollups_id"
+
     args: []
+    extraArgs: []
 
     ## extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
     ## e.g:
