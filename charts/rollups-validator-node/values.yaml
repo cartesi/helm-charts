@@ -25,6 +25,8 @@ dapp:
   ##   - bsc-testnet
   ##   - avax-fuji
   ##   - polygon-mumbai
+  ##   - optimism-goerli
+  ##   - arbitrum-goerli
   network:
   ## dapp.postgres is the postgres configuration
   ## REQUIRED, unless postgresOperator.enabled == true

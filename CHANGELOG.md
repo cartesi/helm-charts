@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - indexer
   - server-manager
   - inspect-server
+- configuration for Optimism Goerli and Arbitrum Goerli
 
 ### Changed
 
