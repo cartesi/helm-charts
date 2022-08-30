@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - configuration for Optimism Goerli and Arbitrum Goerli
+- gRPC livenessProbe for state-server
 
 ## [0.3.0] 2022-08-30
 

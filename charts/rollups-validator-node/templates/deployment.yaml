@@ -120,6 +120,12 @@ spec:
             {{- range .Values.validator.stateServer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - grpc-health-probe
+                - -addr=:50051
+            initialDelaySeconds: 3
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.stateServer.logLevel }}
