@@ -3,6 +3,18 @@ entries:
   rollups-validator-node:
   - apiVersion: v2
     appVersion: 0.5.0
+    created: "2022-08-30T18:57:10.435487321Z"
+    description: A Helm chart for a Cartesi Rollups Validator Node
+    digest: a481d3c32c2d2201c137b77c8e5c19d3bf52dbc45986b25166322c555cee1d62
+    maintainers:
+    - name: endersonmaia
+    name: rollups-validator-node
+    type: application
+    urls:
+    - https://github.com/cartesi/helm-charts/releases/download/rollups-validator-node-0.3.0/rollups-validator-node-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.5.0
     created: "2022-08-18T12:14:29.824949323Z"
     description: A Helm chart for a Cartesi Rollups Validator Node
     digest: 88660a1eac85915471f3c50e247c1d98fd7e44f0a024311f7d737317ceb97084
@@ -25,4 +37,4 @@ entries:
     urls:
     - https://github.com/cartesi/helm-charts/releases/download/rollups-validator-node-0.1.3/rollups-validator-node-0.1.3.tgz
     version: 0.1.3
-generated: "2022-08-18T12:14:29.824962123Z"
+generated: "2022-08-30T18:57:10.435500721Z"
