@@ -354,7 +354,7 @@ spec:
             {{- if .Values.endpoints.inspectServer.machineManager.endpoint }}
             - {{ print "--server-manager-address=" .Values.endpoints.inspectServer.machineManager.endpoint | quote }}
             {{- else }}
-            - {{ print "--server-manager-address=http://" (include "validator.fullname" .) "-server-manager:5001" | quote }}
+            - {{ print "--server-manager-address=" (include "validator.fullname" .) "-server-manager:5001" | quote }}
             {{- end }}
             {{- else }}
             {{- range .Values.endpoints.inspectServer.args }}
