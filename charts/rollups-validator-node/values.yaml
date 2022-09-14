@@ -46,7 +46,7 @@ dapp:
 ##
 cartesi:
   ## cartesi.rollupsVersion is the version of the cartesi/rollups project to use
-  rollupsVersion: 0.5.0
+  rollupsVersion: 0.6.0
   ## cartesi.registryNamespace is the name for the namespace where the
   ## cartesi/rollups images are stored
   ##
@@ -141,7 +141,7 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-dispatcher
-      tag: "0.5.0"
+      tag: "0.6.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -205,7 +205,7 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-state-server
-      tag: "0.5.0"
+      tag: "0.6.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -261,7 +261,7 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-indexer
-      tag: "0.5.0"
+      tag: "0.6.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -399,7 +399,7 @@ endpoints:
     image:
       registry: docker.io
       repository: cartesi/rollups-inspect-server
-      tag: "0.5.0"
+      tag: "0.6.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -454,7 +454,7 @@ endpoints:
     image:
       registry: docker.io
       repository: cartesi/query-server
-      tag: "0.5.0"
+      tag: "0.6.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
