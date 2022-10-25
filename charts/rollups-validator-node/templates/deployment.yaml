@@ -53,14 +53,17 @@ spec:
             {{- if .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex }}
             - {{ print "--tx-mnemonic-account-index=" .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex | quote }}
             {{- end }}
+            {{- if .Values.validator.dispatcher.transactionManager.chainIsLegacy }}
+            - {{ print "--tx-chain-is-legacy=" .Values.validator.dispatcher.transactionManager.chainIsLegacy | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.claimsConsumeTimeout }}
+            - {{ print "--claims-consume-timeout=" .Values.validator.dispatcher.claimsConsumeTimeout | quote }}
+            {{- end }}
+            {{- if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
+            {{- end }}
             {{- if empty .Values.validator.dispatcher.args }}
             - {{ print "--rd-dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
-            {{- if .Values.validator.dispatcher.machineManager.endpoint }}
-            - {{ print "--mm-endpoint=" .Values.validator.dispatcher.machineManager.endpoint | quote }}
-            {{- else }}
-            - {{ print "--mm-endpoint=http://" (include "validator.fullname" .) "-server-manager:5001" | quote }}
-            {{- end }}
-            - {{ print "--mm-session-id=" .Values.validator.dispatcher.machineManager.sessionID | quote }}
             - {{ print "--rd-initial-epoch=" .Values.validator.dispatcher.rollupsDapp.initialEpoch | quote }}
             - {{ print "--sc-grpc-endpoint=" .Values.validator.dispatcher.stateClient.grpcEndpoint | quote }}
             - {{ print "--sc-default-confirmations=" .Values.validator.dispatcher.stateClient.defaultConfirmations | quote }}
@@ -270,11 +273,106 @@ spec:
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
       containers:
+        - name: broker-proxy
+          image: {{ include "serverManager.brokerProxy.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.serverManager.brokerProxy.resources | nindent 12 }}
+          args:
+            {{- if .Values.serverManager.brokerProxy.serverManagerEndpoint }}
+            - {{ print "--server-manager-endpoint=" .Values.serverManager.brokerProxy.serverManagerEndpoint | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.sessionID }}
+            - {{ print "--session-id=" .Values.serverManager.brokerProxy.sessionID | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.pendinInputsSleepDuration }}
+            - {{ print "--sm-pending-inputs-sleep-duration=" .Values.serverManager.brokerProxy.pendingInputsSleepDuration | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.pendingInputsMaxRetries }}
+            - {{ print "--sm-pending-inputs-max-retries=" .Values.serverManager.brokerProxy.pendingInputsMaxRetries | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.concurrencyUpdateMerkleTree }}
+            - {{ print "--sm-concurrency-update-merkle-tree=" .Values.serverManager.brokerProxy.concurrencyUpdateMerkleTree | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineCheckin }}
+            - {{ print "--sm-deadline-checkin=" .Values.serverManager.brokerProxy.deadlineCheckin | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineAdvanceState }}
+            - {{ print "--sm-deadline-advance-state=" .Values.serverManager.brokerProxy.deadlineAdvanceState | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineAdvanceStateIncrement }}
+            - {{ print "--sm-deadline-advance-state-increment=" .Values.serverManager.brokerProxy.deadlineAdvanceStateIncrement | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineInspectState }}
+            - {{ print "--sm-deadline-inspect-state=" .Values.serverManager.brokerProxy.deadlineInspectState | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineInspectStateIncrement }}
+            - {{ print "--sm-deadline-inspect-state-increment=" .Values.serverManager.brokerProxy.deadlineInspectStateIncrement | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineMachine }}
+            - {{ print "--sm-deadline-machine=" .Values.serverManager.brokerProxy.deadlineMachine | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineStore }}
+            - {{ print "--sm-deadline-store=" .Values.serverManager.brokerProxy.deadlineStore | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.deadlineFast }}
+            - {{ print "--sm-deadline-fast=" .Values.serverManager.brokerProxy.deadlineFast | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.cyclesMaxAdvanceState }}
+            - {{ print "--sm-cycles-max-advance-state=" .Values.serverManager.brokerProxy.cyclesMaxAdvanceState | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.cyclesAdvanceStateIncrement }}
+            - {{ print "--sm-cycles-advance-state-increment=" .Values.serverManager.brokerProxy.cyclesAdvanceStateIncrement | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.cyclesMaxInspectState }}
+            - {{ print "--sm-cycles-max-inspect-state=" .Values.serverManager.brokerProxy.cyclesMaxInspectState | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.cyclesInspectStateIncrement }}
+            - {{ print "--sm-cycles-inspect-state-increment=" .Values.serverManager.brokerProxy.cyclesInspectStateIncrement | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.consumeTimeout }}
+            - {{ print "--consume-timeout=" .Values.serverManager.brokerProxy.consumeTimeout | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.healthCheckAddress }}
+            - {{ print "--health-check-address=" .Values.serverManager.brokerProxy.healthCheckAddress | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.healthCheckPort }}
+            - {{ print "--health-check-port=" .Values.serverManager.brokerProxy.healthCheckPort | quote }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.backoffMaxElapsedDuration }}
+            - {{ print "--backoff-max-elapsed-duration=" .Values.serverManager.brokerProxy.backoffMaxElapsedDuration | quote }}
+            {{- end }}
+            {{- if empty .Values.serverManager.brokerProxy.args }}
+            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
+            - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
+            {{- else }}
+            {{- range .Values.serverManager.brokerProxy.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- end }}
+            {{- range .Values.serverManager.brokerProxy.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.serverManager.brokerProxy.logLevel }}
+            {{- if .Values.serverManager.brokerProxy.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.serverManager.brokerProxy.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+
         - name: server-manager
           image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.serverManager.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - grpc-health-probe
+                - -addr=:5001
+            initialDelaySeconds: 5
+            periodSeconds: 5
           args:
             {{- if empty .Values.serverManager.args }}
             - "/opt/cartesi/bin/server-manager"

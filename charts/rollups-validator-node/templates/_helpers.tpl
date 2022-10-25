@@ -117,6 +117,13 @@ Return the proper inspectServer image name
 {{- end -}}
 
 {{/*
+Return the proper serverManager.brokerProxy image name
+*/}}
+{{- define "serverManager.brokerProxy.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.serverManager.brokerProxy.image) }}
+{{- end -}}
+
+{{/*
 Renders a value that contains template.
 Usage:
 {{ include "tplvalues.render" ( dict "value" .Values.path.to.the.Value "context" $) }}

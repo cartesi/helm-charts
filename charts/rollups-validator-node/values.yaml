@@ -1,7 +1,7 @@
 ## dapp deployment paramaters
 ##
 dapp:
-  ## dapp.image is a complete image name, e.g. "cartesi/dapp:echo-python-0.7.0-server"
+  ## dapp.image is a complete image name, e.g. "cartesi/dapp:echo-python-0.8.0-server"
   ## REQUIRED
   image:
   ## dapp.contractAddress is the contract address of the dapp deployed on the blockchain
@@ -46,17 +46,7 @@ dapp:
 ##
 cartesi:
   ## cartesi.rollupsVersion is the version of the cartesi/rollups project to use
-  rollupsVersion: 0.7.0
-  ## cartesi.registryNamespace is the name for the namespace where the
-  ## cartesi/rollups images are stored
-  ##
-  ## default: cartesi
-  ##
-  ## By default, we look for images at the hub.docker.io registry, but you can
-  ## override this by setting this value.
-  ##
-  ## e.g. dapp.registryNamespace = "ghcr.io/my-org/my-repo"
-  registryNamespace: cartesi
+  rollupsVersion: 0.8.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -112,6 +102,12 @@ postgresOperator:
     ## be droped when the resources are delete
     dropOnDelete: false
 
+## redis configuration
+redis:
+  ## redis.endpoint: e.g.: redis://localhost:6379
+  ## REQUIRED
+  endpoint:
+
 ## rollups-validator-node Pod configuration
 ##
 validator:
@@ -141,15 +137,13 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-dispatcher
-      tag: "0.7.0"
+      tag: "0.8.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
-
-    ## TODO: add documentation for each parameter
-    machineManager:
-      endpoint:
-      sessionID: "default_rollups_id"
+    ## --claims-consume-timeout <claims-consume-timeout>
+    ##     Consume timeout when waiting for the rollups claims in ms [env: CLAIMS_CONSUME_TIMEOUT=]  [default: 300000]
+    claimsConsumeTimeout: 300000
 
     rollupsDapp:
       initialEpoch: 0
@@ -165,6 +159,7 @@ validator:
       mnemonic:
       mnemonicAccountIndex:
       providerHTTPEndpoint:
+      chainIsLegacy: "false"
 
     stateClient:
       defaultConfirmations: 1
@@ -205,7 +200,7 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-state-server
-      tag: "0.7.0"
+      tag: "0.8.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -261,7 +256,7 @@ validator:
     image:
       registry: docker.io
       repository: cartesi/rollups-indexer
-      tag: "0.7.0"
+      tag: "0.8.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -331,9 +326,116 @@ serverManager:
 
   podAnnotations: {}
 
-  # FIXME: there's no RUST_LOG on serverManager
-  ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+  ## serverManager.logLevel set LOG_LEVEL env, can be set to trace, debug, info, warn, error, or off.
   logLevel: info
+
+  brokerProxy:
+    image:
+      registry: docker.io
+      repository: cartesi/rollups-server-manager-broker-proxy
+      tag: "0.8.0"
+
+    ## serverManager.brokerProxy.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
+    logLevel: info
+
+    ## --server-manager-endpoint <SERVER_MANAGER_ENDPOINT>
+    ##    Server-manager gRPC endpoint [env: SERVER_MANAGER_ENDPOINT=] [default: http://127.0.0.1:5001]
+    serverManagerEndpoint:
+    ## --session-id <SESSION_ID>
+    ##     Server-manager session id [env: SESSION_ID=] [default: default_rollups_id]
+    sessionID:
+    ## --sm-pending-inputs-sleep-duration <SM_PENDING_INPUTS_SLEEP_DURATION>
+    ##     Sleep duration while polling for server-manager pending inputs (in millis) [env: SM_PENDING_INPUTS_SLEEP_DURATION=] [default:
+    pendingInputsSleepDuration:
+    ## --sm-pending-inputs-max-retries <SM_PENDING_INPUTS_MAX_RETRIES>
+    ##     Max number of retries while polling server-manager for pending inputs [env: SM_PENDING_INPUTS_MAX_RETRIES=] [default: 60]
+    pendingInputsMaxRetries:
+    ## --sm-concurrency-update-merkle-tree <SM_CONCURRENCY_UPDATE_MERKLE_TREE>
+    ##     Defines the number of threads to use while calculating the merkle tree [env: SM_CONCURRENCY_UPDATE_MERKLE_TREE=] [default: 0]
+    concurrencyUpdateMerkleTree:
+    ## --sm-deadline-checkin <SM_DEADLINE_CHECKIN>
+    ##     Deadline for receiving checkin from spawned machine server [env: SM_DEADLINE_CHECKIN=] [default: 5000]
+    deadlineCheckin:
+    ## --sm-deadline-advance-state <SM_DEADLINE_ADVANCE_STATE>
+    ##     Deadline for advancing the state [env: SM_DEADLINE_ADVANCE_STATE=] [default: 180000]
+    deadlineAdvanceState:
+    ## --sm-deadline-advance-state-increment <SM_DEADLINE_ADVANCE_STATE_INCREMENT>
+    ##     Deadline for each increment when advancing state [env: SM_DEADLINE_ADVANCE_STATE_INCREMENT=] [default: 10000]
+    deadlineAdvanceStateIncrement:
+    ## --sm-deadline-inspect-state <SM_DEADLINE_INSPECT_STATE>
+    ##     Deadline for inspecting state [env: SM_DEADLINE_INSPECT_STATE=] [default: 180000]
+    deadlineInspectState:
+    ## --sm-deadline-inspect-state-increment <SM_DEADLINE_INSPECT_STATE_INCREMENT>
+    ##     Deadline for each increment when inspecting state [env: SM_DEADLINE_INSPECT_STATE_INCREMENT=] [default: 10000]
+    deadlineInspectStateIncrement:
+    ## --sm-deadline-machine <SM_DEADLINE_MACHINE>
+    ##     Deadline for instantiating a machine [env: SM_DEADLINE_MACHINE=] [default: 300000]
+    deadlineMachine:
+    ## --sm-deadline-store <SM_DEADLINE_STORE>
+    ##     Deadline for storing a machine [env: SM_DEADLINE_STORE=] [default: 180000]
+    deadlineStore:
+    ## --sm-deadline-fast <SM_DEADLINE_FAST>
+    ##     Deadline for quick machine server tasks [env: SM_DEADLINE_FAST=] [default: 5000]
+    deadlineFast:
+    ## --sm-cycles-max-advance-state <SM_CYCLES_MAX_ADVANCE_STATE>
+    ##     Maximum number of cycles that processing the input in an AdvanceState can take [env: SM_CYCLES_MAX_ADVANCE_STATE=] [default: 4611686018427387903]
+    cyclesMaxAdvanceState:
+    ## --sm-cycles-advance-state-increment <SM_CYCLES_ADVANCE_STATE_INCREMENT>
+    ##     Number of cycles in each increment to processing an input [env: SM_CYCLES_ADVANCE_STATE_INCREMENT=] [default: 4194304]
+    cyclesAdvanceStateIncrement:
+    ## --sm-cycles-max-inspect-state <SM_CYCLES_MAX_INSPECT_STATE>
+    ##     Maximum number of cycles that processing the query in an InspectState can take [env: SM_CYCLES_MAX_INSPECT_STATE=] [default: 4611686018427387903]
+    cyclesMaxInspectState:
+    ## --sm-cycles-inspect-state-increment <SM_CYCLES_INSPECT_STATE_INCREMENT>
+    ##     Number of cycles in each increment to processing a query [env: SM_CYCLES_INSPECT_STATE_INCREMENT=] [default: 4194304]
+    cyclesInspectStateIncrement:
+    ## --dapp-contract-address <DAPP_CONTRACT_ADDRESS>
+    ##     Address of rollups dapp [env: DAPP_CONTRACT_ADDRESS=]
+    dappContractAddress:
+    ## --dapp-contract-address-file <DAPP_CONTRACT_ADDRESS_FILE>
+    ##     Path to file with address of rollups dapp [env: DAPP_CONTRACT_ADDRESS_FILE=]
+    dappContractAddressFile:
+    ## --consume-timeout <CONSUME_TIMEOUT>
+    ##     Timeout when consuming input events (in millis) [env: CONSUME_TIMEOUT=] [default: 5000]
+    consumeTimeout:
+    ## --health-check-address <HEALTH_CHECK_ADDRESS>
+    ##     Host address of health check [env: HEALTH_CHECK_ADDRESS=] [default: 0.0.0.0]
+    healthCheckAddress:
+    ## --health-check-port <HEALTH_CHECK_PORT>
+    ##     Port of health check [env: HEALTH_CHECK_PORT=] [default: 8080]
+    healthCheckPort: 8080
+    ## --backoff-max-elapsed-duration <BACKOFF_MAX_ELAPSED_DURATION>
+    ##     The max elapsed time for backoff in ms [env: BACKOFF_MAX_ELAPSED_DURATION=] [default: 120000]
+    backoffMaxElapsedDuration:
+
+    args: []
+    extraArgs: []
+
+    ## extraEnvVars Array with extra environment variables to add to serverManager.brokerProxy container
+    ## e.g:
+    ## extraEnvVars:
+    ##   - name: FOO
+    ##     value: "bar"
+    ##
+    extraEnvVars: []
+
+    securityContext:
+      {}
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
+
+    resources:
+      {}
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
   args: []
   extraArgs: []
@@ -399,7 +501,7 @@ endpoints:
     image:
       registry: docker.io
       repository: cartesi/rollups-inspect-server
-      tag: "0.7.0"
+      tag: "0.8.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -454,7 +556,7 @@ endpoints:
     image:
       registry: docker.io
       repository: cartesi/query-server
-      tag: "0.7.0"
+      tag: "0.8.0"
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
