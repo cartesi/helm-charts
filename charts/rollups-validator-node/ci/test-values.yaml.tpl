@@ -13,7 +13,7 @@ dapp:
     db: postgres
 
 cartesi:
-  rollupsVersion: "0.6.1"
+  rollupsVersion: "0.7.0"
 
 image:
   pullPolicy: Always
@@ -24,26 +24,26 @@ validator:
   indexer:
     image:
       repository: cartesi/rollups-indexer
-      tag: 0.6.1
+      tag: 0.7.0
   dispatcher:
     image:
       repository: cartesi/rollups-dispatcher
-      tag: 0.6.1
+      tag: 0.7.0
     extraEnvVars:
       - name: MY_ENV_VAR
         value: "a-value"
   stateServer:
     image:
       repository: cartesi/rollups-state-server
-      tag: 0.6.1
+      tag: 0.7.0
 
 endpoints:
   inspectServer:
     image:
       repository: cartesi/rollups-inspect-server
-      tag: 0.6.1
+      tag: 0.7.0
 
   queryServer:
     image:
       repository: cartesi/query-server
-      tag: 0.6.1
+      tag: 0.7.0
