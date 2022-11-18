@@ -10,6 +10,8 @@ spec:
     matchLabels:
       {{- include "validator.selectorLabels" . | nindent 6 }}
       rollups.cartesi.io/component: validator
+  strategy:
+    type: Recreate
   template:
     metadata:
       {{- with .Values.validator.podAnnotations }}
@@ -251,6 +253,8 @@ spec:
     matchLabels:
       {{- include "validator.selectorLabels" . | nindent 6 }}
       rollups.cartesi.io/component: server-manager
+  strategy:
+    type: Recreate
   template:
     metadata:
       {{- with .Values.validator.podAnnotations }}
