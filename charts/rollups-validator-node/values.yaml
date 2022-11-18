@@ -144,6 +144,12 @@ validator:
     ## --claims-consume-timeout <claims-consume-timeout>
     ##     Consume timeout when waiting for the rollups claims in ms [env: CLAIMS_CONSUME_TIMEOUT=]  [default: 300000]
     claimsConsumeTimeout: 300000
+    ## --hc-host-address <hc-host-address>
+    ##     Host address of health check [env: HC_HOST_ADDRESS=]
+    healthCheckAddress: "0.0.0.0"
+    ## --hc-port <hc-port>
+    ##     Port of health check [env: HC_PORT=]
+    healthCheckPort: "8080"
 
     rollupsDapp:
       initialEpoch: 0
@@ -260,6 +266,10 @@ validator:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
+    ## --http-health-hostname <http-health-hostname>                 [env: HTTP_HEALTH_HOSTNAME=]
+    healthCheckAddress: "0.0.0.0"
+    ## --http-health-port <http-health-port>                         [env: HTTP_HEALTH_PORT=]
+    healthCheckPort: "8081"
 
     machineManager:
       endpoint:

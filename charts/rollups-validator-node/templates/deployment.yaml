@@ -40,6 +40,12 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.dispatcher.healthCheckAddress }}
+            - {{ print "--hc-host-address=" .Values.validator.dispatcher.healthCheckAddress | quote }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.healthCheckPort }}
+            - {{ print "--hc-port=" .Values.validator.dispatcher.healthCheckPort | quote }}
+            {{- end }}
             {{- if .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee }}
             - {{ print "--rd-minimum-required-fee=" .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee | quote }}
             {{- end }}
@@ -82,6 +88,13 @@ spec:
             {{- range .Values.validator.dispatcher.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.validator.dispatcher.healthCheckPort }}
+              port: {{ print .Values.validator.dispatcher.healthCheckPort}}
+            {{- end }}
+            initialDelaySeconds: 3
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}
@@ -146,6 +159,12 @@ spec:
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.indexer.healthCheckAddress }}
+            - {{ print "--http-health-hostname=" .Values.validator.indexer.healthCheckAddress | quote }}
+            {{- end }}
+            {{- if .Values.validator.indexer.healthCheckPort }}
+            - {{ print "--http-health-port=" .Values.validator.indexer.healthCheckPort | quote }}
+            {{- end }}
             {{- if empty .Values.validator.indexer.args }}
             - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
             - {{ print "--session-id=" .Values.validator.indexer.machineManager.sessionID | quote }}
@@ -169,7 +188,9 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 80
+            {{- if .Values.validator.indexer.healthCheckPort }}
+              port: {{ print .Values.validator.indexer.healthCheckPort}}
+            {{- end }}
             initialDelaySeconds: 3
           env:
             - name: RUST_LOG
@@ -358,6 +379,13 @@ spec:
             {{- range .Values.serverManager.brokerProxy.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.serverManager.brokerProxy.healthCheckPort }}
+              port: {{ print .Values.serverManager.brokerProxy.healthCheckPort}}
+            {{- end }}
+            initialDelaySeconds: 3
           env:
             - name: RUST_LOG
               value: {{ .Values.serverManager.brokerProxy.logLevel }}
