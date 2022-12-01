@@ -420,8 +420,10 @@ spec:
           ports:
             - containerPort: 5001
           env:
-            - name: LOG_LEVEL
+            - name: SERVER_MANAGER_LOG_LEVEL
               value: {{ .Values.serverManager.logLevel }}
+            - name: REMOTE_CARTESI_MACHINE_LOG_LEVEL
+              value: {{ coalesce .Values.serverManager.remoteCartesiMachine.logLevel .Values.serverManager.logLevel }}
             {{- if .Values.serverManager.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.serverManager.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

@@ -336,8 +336,13 @@ serverManager:
 
   podAnnotations: {}
 
-  ## serverManager.logLevel set LOG_LEVEL env, can be set to trace, debug, info, warn, error, or off.
+  ## serverManager.logLevel set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
   logLevel: info
+
+  remoteCartesiMachine:
+    ## serverManager.remoteCartesiMachine.logLevel set REMOTE_CARTESI_MACHINE_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
+    ## defaults to serverManager.logLevel unless you provide a different value
+    logLevel:
 
   brokerProxy:
     image:
