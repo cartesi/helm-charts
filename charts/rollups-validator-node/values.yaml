@@ -44,9 +44,10 @@ dapp:
 
 ## cartesi holds the configuration for the default containers images
 ##
-cartesi:
-  ## cartesi.rollupsVersion is the version of the cartesi/rollups project to use
-  rollupsVersion: 0.8.1
+global:
+  image:
+    registry: docker.io
+    tag: 0.8.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -135,9 +136,10 @@ validator:
 
   dispatcher:
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/rollups-dispatcher
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -204,9 +206,10 @@ validator:
 
   stateServer:
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/rollups-state-server
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -260,9 +263,10 @@ validator:
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
 
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/rollups-indexer
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -346,9 +350,10 @@ serverManager:
 
   brokerProxy:
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/rollups-server-manager-broker-proxy
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## serverManager.brokerProxy.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
@@ -514,9 +519,10 @@ endpoints:
 
   inspectServer:
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/rollups-inspect-server
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
@@ -569,9 +575,10 @@ endpoints:
 
   queryServer:
     image:
-      registry: docker.io
+      registry:
       repository: cartesi/query-server
-      tag: "0.8.0"
+      tag:
+      digest:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info

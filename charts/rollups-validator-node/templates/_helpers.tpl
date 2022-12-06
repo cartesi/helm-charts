@@ -37,7 +37,7 @@ TODO: diff between query and validator
 {{- define "validator.labels" -}}
 helm.sh/chart: {{ include "validator.chart" . }}
 cartesi.io/project: rollups
-cartesi.io/rollups-version: {{ .Values.cartesi.rollupsVersion }}
+cartesi.io/rollups-version: {{ .Values.global.image.tag }}
 {{ include "validator.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -68,59 +68,60 @@ Create the name of the service account to use
 
 {{/*
 Return the proper image name
-{{ include "images.image" ( dict "imageRoot" .Values.path.to.the.image ) }}
+{{ include "images.image" ( dict "imageRoot" .Values.path.to.the.image "global" $) }}
 */}}
 {{- define "images.image" -}}
-{{- $registryName := .imageRoot.registry -}}
+{{- $registryName := coalesce .imageRoot.registry .global.image.registry -}}
 {{- $repositoryName := .imageRoot.repository -}}
-{{- $tag := .imageRoot.tag | toString -}}
-{{- if $registryName }}
-{{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
-{{- else -}}
-{{- printf "%s:%s" $repositoryName $tag -}}
+{{- $separator := ":" -}}
+{{- $termination := coalesce .imageRoot.tag .global.image.tag | toString -}}
+{{- if .imageRoot.digest }}
+    {{- $separator = "@" -}}
+    {{- $termination = .imageRoot.digest | toString -}}
 {{- end -}}
+{{- printf "%s/%s%s%s" $registryName $repositoryName $separator $termination -}}
 {{- end -}}
 
 {{/*
 Return the proper dispatcher image name
 */}}
 {{- define "dispatcher.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.dispatcher.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.validator.dispatcher.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper stateServer image name
 */}}
 {{- define "stateServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.stateServer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.validator.stateServer.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper indexer image name
 */}}
 {{- define "indexer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.indexer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.validator.indexer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
 Return the proper queryServer image name
 */}}
 {{- define "queryServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.endpoints.queryServer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.endpoints.queryServer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
 Return the proper inspectServer image name
 */}}
 {{- define "inspectServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.endpoints.inspectServer.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.endpoints.inspectServer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
 Return the proper serverManager.brokerProxy image name
 */}}
 {{- define "serverManager.brokerProxy.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.serverManager.brokerProxy.image) }}
+{{ include "images.image" (dict "imageRoot" .Values.serverManager.brokerProxy.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
