@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- option to define secretRef for an existing secret that holds the MNEMONIC value
+
 ## [0.4.2] 2023-01-06
 
 ### Changed
@@ -18,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.1] 2022-12-12
 
-## Changed
+### Changed
 
 - rename network from gnosis-chiado to chiado
 

@@ -7,9 +7,15 @@ dapp:
   ## dapp.contractAddress is the contract address of the dapp deployed on the blockchain
   ## REQUIRED
   contractAddress:
-  ## dapp.mnemonic is the mnemonic for the wallet
-  ## REQUIRED
+  ## mnemonic defines the configuration for the mnemonic
+  ## use value or secretRef, never both
   mnemonic:
+    ## dapp.mnemonic.value is the 12 words mnemonic for the wallet
+    ## a secret will be created with its content
+    value:
+    ## dapp.mnemonic.secretRef is the name of the secret that should exist in the same namespace
+    ## the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}`
+    secretRef:
   ## dapp.httpProvider is the URL for the http:// endpoint of the provider
   ## REQUIRED
   httpProvider:

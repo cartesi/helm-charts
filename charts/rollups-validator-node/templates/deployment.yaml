@@ -104,10 +104,10 @@ spec:
             {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
           volumeMounts:
-            - name: {{ include "validator.fullname" . }}-mnemonic
+            - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
-            - name: {{ include "validator.fullname" . }}-dispatcher-lib
+            - name: dispatcher-lib
               mountPath: /opt/cartesi/rollups-dispatcher/lib
               readOnly: false
             {{- if .Values.validator.dispatcher.extraVolumeMounts }}
@@ -232,13 +232,13 @@ spec:
                   optional: false
             - name: POSTGRES_PORT
               value: "5432"
-          {{ else }}
+          {{- else }}
           envFrom:
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
-          {{ end -}}
+          {{- end }}
           volumeMounts:
-            - name: {{ include "validator.fullname" . }}-postgres
+            - name: postgres
               mountPath: /var/run/secrets/postgres
               readOnly: true
             {{- if .Values.validator.indexer.extraVolumeMounts }}
@@ -246,22 +246,25 @@ spec:
             {{- end }}
 
       volumes:
-        - name: {{ include "validator.fullname" . }}-dispatcher-lib
+        - name: dispatcher-lib
           emptyDir: {}
-        - name: {{ include "validator.fullname" . }}-mnemonic
+        - name: mnemonic
           secret:
+            {{- if .Values.dapp.mnemonic.value }}
             secretName: {{ include "validator.fullname" . }}-mnemonic
-        - name: {{ include "validator.fullname" . }}-postgres
-          {{ if .Values.postgresOperator.enabled }}
+            {{- else }}
+            secretName: {{ .Values.dapp.mnemonic.secretRef }}
+            {{- end }}
+        - name: postgres
           secret:
+          {{- if .Values.postgresOperator.enabled }}
             secretName: secret-{{ include "validator.fullname" . }}-indexer
             items:
               - key: PASSWORD
                 path: PASSWORD
-          {{- else -}}
-          secret:
+          {{- else }}
             secretName: {{ include "validator.fullname" . }}-postgres
-          {{- end -}}
+          {{- end }}
         {{- if .Values.validator.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
@@ -565,7 +568,7 @@ spec:
               value: "4000"
             - name: POSTGRES_PASSWORD_FILE
               value: /var/run/secrets/postgres/PASSWORD
-          {{ if .Values.postgresOperator.enabled }}
+          {{- if .Values.postgresOperator.enabled }}
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -584,13 +587,13 @@ spec:
                   name: secret-{{ include "validator.fullname" . }}-query-server
                   key: DATABASE_NAME
                   optional: false
-          {{ else }}
+          {{- else }}
           envFrom:
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
-          {{ end }}
+          {{- end }}
           volumeMounts:
-            - name: {{ include "validator.fullname" . }}-postgres
+            - name: postgres
               mountPath: /var/run/secrets/postgres
               readOnly: true
             {{- if .Values.endpoints.inspectServer.extraVolumeMounts }}
@@ -612,17 +615,17 @@ spec:
       {{- end }}
 
       volumes:
-        - name: {{ include "validator.fullname" . }}-postgres
-        {{ if .Values.postgresOperator.enabled }}
+        - name: postgres
+        {{- if .Values.postgresOperator.enabled }}
           secret:
             secretName: secret-{{ include "validator.fullname" . }}-query-server
             items:
               - key: PASSWORD
                 path: PASSWORD
-        {{ else }}
+        {{- else }}
           secret:
             secretName: {{ include "validator.fullname" . }}-postgres
-        {{ end }}
+        {{- end }}
         {{- if .Values.endpoints.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.endpoints.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
