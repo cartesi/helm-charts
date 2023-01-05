@@ -23,7 +23,7 @@ dapp:
   ##   - mainnet
   ##   - goerli
   ##   - bsc-testnet
-  ##   - avax-fuji
+  ##   - avalanche-fuji
   ##   - polygon-mumbai
   ##   - optimism-goerli
   ##   - arbitrum-goerli
