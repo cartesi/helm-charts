@@ -27,6 +27,7 @@ dapp:
   ##   - polygon-mumbai
   ##   - optimism-goerli
   ##   - arbitrum-goerli
+  ##   - chiado
   network:
   ## dapp.postgres is the postgres configuration
   ## REQUIRED, unless postgresOperator.enabled == true
