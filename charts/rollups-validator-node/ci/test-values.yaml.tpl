@@ -13,7 +13,7 @@ dapp:
     db: postgres
 
 cartesi:
-  rollupsVersion: "0.8.1"
+  rollupsVersion: "0.8.2"
 
 redis:
   endpoint: redis://redis-master
