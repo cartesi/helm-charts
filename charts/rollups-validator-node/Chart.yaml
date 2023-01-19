@@ -3,6 +3,7 @@ name: rollups-validator-node
 description: A Helm chart for a Cartesi Rollups Validator Node
 maintainers:
   - name: endersonmaia
+  - name: oap75
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -24,3 +25,9 @@ version: 0.4.2
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.8.2"
+
+dependencies:
+  - name: redis
+    version: 17.3.11
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled

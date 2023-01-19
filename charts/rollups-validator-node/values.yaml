@@ -104,12 +104,6 @@ postgresOperator:
     ## be droped when the resources are delete
     dropOnDelete: false
 
-## redis configuration
-redis:
-  ## redis.endpoint: e.g.: redis://localhost:6379
-  ## REQUIRED
-  endpoint:
-
 ## rollups-validator-node Pod configuration
 ##
 validator:
@@ -618,3 +612,17 @@ endpoints:
       ## requests:
       ##   cpu: 100m
       ##   memory: 128Mi
+
+## redis configuration
+redis:
+  enabled: true
+  ## redis.endpoint: e.g.: redis://localhost:6379
+  ## REQUIRED if you disabled redis
+  endpoint:
+  image:
+    tag: 6.2-debian-11
+  architecture: standalone
+  auth:
+    enabled: false
+  metrics:
+    enabled: true

@@ -67,7 +67,9 @@ spec:
             {{- if .Values.validator.dispatcher.claimsConsumeTimeout }}
             - {{ print "--claims-consume-timeout=" .Values.validator.dispatcher.claimsConsumeTimeout | quote }}
             {{- end }}
-            {{- if .Values.redis.endpoint }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" (.Release.Name) "-redis-master" | quote }}
+            {{- else }}
             - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
             {{- end }}
             {{- if empty .Values.validator.dispatcher.args }}
@@ -370,7 +372,11 @@ spec:
             {{- if empty .Values.serverManager.brokerProxy.args }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" (.Release.Name) "-redis-master" | quote }}
+            {{- else }}
             - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
+            {{- end }}
             {{- else }}
             {{- range .Values.serverManager.brokerProxy.args }}
             - {{ . | quote}}
