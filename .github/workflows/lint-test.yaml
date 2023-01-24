@@ -41,6 +41,12 @@ jobs:
             echo "::set-output name=changed::true"
           fi
 
+      - name: Add dependancies
+        run: |
+          cd ./charts/rollups-validator-node
+          helm repo add redis https://charts.bitnami.com/bitnami
+          helm dependency build
+
       - name: Run chart-testing (lint)
         run: ct lint --target-branch ${{ github.base_ref }}
 
@@ -65,7 +71,8 @@ jobs:
             --namespace default \
             --wait \
             --set auth.enabled=false \
-            --set architecture=standalone
+            --set architecture=standalone \
+            --set image.tag=6.2-debian-11
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2

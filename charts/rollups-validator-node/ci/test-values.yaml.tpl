@@ -15,8 +15,9 @@ dapp:
 cartesi:
   rollupsVersion: "0.8.2"
 
-redis:
-  endpoint: redis://redis-master
-
 image:
   pullPolicy: Always
+
+redis:
+  enabled: false
+  endpoint: redis://redis-master
