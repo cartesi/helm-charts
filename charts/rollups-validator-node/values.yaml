@@ -129,6 +129,10 @@ validator:
 
   podAnnotations: {}
 
+  ## validator.extraVolumes Optionally specify extra list of additional volumes for the validator pod(s)
+  ##
+  extraVolumes: []
+
   dispatcher:
     image:
       registry:
@@ -199,6 +203,10 @@ validator:
       ##   cpu: 100m
       ##   memory: 128Mi
 
+    ## validator.dispacther.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the dispatcher container(s)
+    ##
+    extraVolumeMounts: []
+
   stateServer:
     image:
       registry:
@@ -253,6 +261,10 @@ validator:
       ## requests:
       ##   cpu: 100m
       ##   memory: 128Mi
+
+    ## validator.stateServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the stateServer container(s)
+    ##
+    extraVolumeMounts: []
 
   indexer:
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
@@ -310,6 +322,10 @@ validator:
       ##   cpu: 100m
       ##   memory: 128Mi
 
+    ## validator.indexer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the indexer container(s)
+    ##
+    extraVolumeMounts: []
+
 ## rollups-validator-node-server-manager Pod configuration
 ##
 serverManager:
@@ -334,6 +350,10 @@ serverManager:
     ## fsGroup: 2000
 
   podAnnotations: {}
+
+  ## serverManager.extraVolumes Optionally specify extra list of additional volumes for the serverManager pod(s)
+  ##
+  extraVolumes: []
 
   ## serverManager.logLevel set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
   logLevel: info
@@ -452,6 +472,10 @@ serverManager:
       ##   cpu: 100m
       ##   memory: 128Mi
 
+    ## serverManager.brokerProxy.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager.brokerProxy container(s)
+    ##
+    extraVolumeMounts: []
+
   args: []
   extraArgs: []
 
@@ -484,6 +508,9 @@ serverManager:
     ## requests:
     ##   cpu: 100m
     ##   memory: 128Mi
+  ## serverManager.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager container(s)
+  ##
+  extraVolumeMounts: []
 
 ## rollups-validator-node-endpoints Pod configuration
 ##
@@ -511,6 +538,10 @@ endpoints:
     ## fsGroup: 2000
 
   podAnnotations: {}
+
+  ## endpoints.extraVolumes Optionally specify extra list of additional volumes for the endpoints pod(s)
+  ##
+  extraVolumes: []
 
   inspectServer:
     image:
@@ -568,6 +599,10 @@ endpoints:
       ##   cpu: 100m
       ##   memory: 128Mi
 
+    ## endpoints.inspectServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s)
+    ##
+    extraVolumeMounts: []
+
   queryServer:
     image:
       registry:
@@ -612,6 +647,10 @@ endpoints:
       ## requests:
       ##   cpu: 100m
       ##   memory: 128Mi
+
+    ## endpoints.queryServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.queryServer container(s)
+    ##
+    extraVolumeMounts: []
 
 ## redis configuration
 redis:
