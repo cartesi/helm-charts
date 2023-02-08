@@ -40,61 +40,11 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
-            {{- if .Values.validator.dispatcher.healthCheckAddress }}
-            - {{ print "--hc-host-address=" .Values.validator.dispatcher.healthCheckAddress | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.healthCheckPort }}
-            - {{ print "--hc-port=" .Values.validator.dispatcher.healthCheckPort | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee }}
-            - {{ print "--rd-minimum-required-fee=" .Values.validator.dispatcher.rollupsDapp.minimumRequiredFee | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.rollupsDapp.numBufferEpochs }}
-            - {{ print "--rd-num-buffer-epochs=" .Values.validator.dispatcher.rollupsDapp.numBufferEpochs | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.rollupsDapp.numClaimsTriggerRedeem }}
-            - {{ print "--rd-num-claims-trigger-redeem=" .Values.validator.dispatcher.rollupsDapp.numClaimsTriggerRedeem | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.transactionManager.gasOracleAPIKey }}
-            - {{ print "--tx-gas-oracle-api-key=" .Values.validator.dispatcher.transactionManager.gasOracleAPIKey | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex }}
-            - {{ print "--tx-mnemonic-account-index=" .Values.validator.dispatcher.transactionManager.mnemonicAccountIndex | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.transactionManager.chainIsLegacy }}
-            - {{ print "--tx-chain-is-legacy=" .Values.validator.dispatcher.transactionManager.chainIsLegacy | quote }}
-            {{- end }}
-            {{- if .Values.validator.dispatcher.claimsConsumeTimeout }}
-            - {{ print "--claims-consume-timeout=" .Values.validator.dispatcher.claimsConsumeTimeout | quote }}
-            {{- end }}
-            {{- if .Values.redis.enabled }}
-            - {{ print "--redis-endpoint=redis://" (.Release.Name) "-redis-master" | quote }}
-            {{- else }}
-            - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
-            {{- end }}
-            {{- if empty .Values.validator.dispatcher.args }}
-            - {{ print "--rd-dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
-            - {{ print "--rd-initial-epoch=" .Values.validator.dispatcher.rollupsDapp.initialEpoch | quote }}
-            - {{ print "--sc-grpc-endpoint=" .Values.validator.dispatcher.stateClient.grpcEndpoint | quote }}
-            - {{ print "--sc-default-confirmations=" .Values.validator.dispatcher.stateClient.defaultConfirmations | quote }}
-            - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
-            - {{ print "--tx-default-confirmations=" .Values.validator.dispatcher.transactionManager.defaultConfirmations | quote }}
-            - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
-            - "--tx-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC"
-            - {{ print "--tx-database-path=" .Values.validator.dispatcher.transactionManager.databasePath | quote }}
-            {{- else }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
             {{- end }}
-            {{- end }}
             {{- range .Values.validator.dispatcher.extraArgs }}
             - {{ . | quote}}
-            {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-            {{- if .Values.validator.dispatcher.healthCheckPort }}
-              port: {{ print .Values.validator.dispatcher.healthCheckPort}}
             {{- end }}
             initialDelaySeconds: 3
           env:
@@ -120,25 +70,8 @@ spec:
           resources:
             {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
           args:
-            {{- if .Values.validator.stateServer.blockHistory.maxDepth }}
-            - {{ print "--bh-max-depth=" .Values.validator.stateServer.blockHistory.maxDepth | quote }}
-            {{- end }}
-            {{- if .Values.validator.stateServer.stateFold.concurrentEventsFetch }}
-            - {{ print "--sf-concurrent-events-fetch=" .Values.validator.stateServer.stateFold.concurrentEventsFetch | quote }}
-            {{- end }}
-            {{- if .Values.validator.stateServer.stateFold.queryLimitErrorCodes }}
-            - {{ print "--sf-query-limit-error-codes=" .Values.validator.stateServer.stateFold.queryLimitErrorCodes | quote }}
-            {{- end }}
-            {{- if empty .Values.validator.stateServer.args }}
-            - {{ print "--sf-genesis-block=" .Values.validator.stateServer.stateFold.genesisBlock | quote }}
-            - {{ print "--sf-safety-margin=" .Values.validator.stateServer.stateFold.safetyMargin | quote }}
-            - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
-            - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
-            - {{ print "--bh-block-timeout=" .Values.validator.stateServer.blockHistory.blockTimeout | quote }}
-            {{- else }}
             {{- range .Values.validator.stateServer.args }}
             - {{ . | quote}}
-            {{- end }}
             {{- end }}
             {{- range .Values.validator.stateServer.extraArgs }}
             - {{ . | quote}}
@@ -168,39 +101,12 @@ spec:
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
-            {{- if .Values.validator.indexer.healthCheckAddress }}
-            - {{ print "--http-health-hostname=" .Values.validator.indexer.healthCheckAddress | quote }}
-            {{- end }}
-            {{- if .Values.validator.indexer.healthCheckPort }}
-            - {{ print "--http-health-port=" .Values.validator.indexer.healthCheckPort | quote }}
-            {{- end }}
-            {{- if empty .Values.validator.indexer.args }}
-            - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
-            - {{ print "--session-id=" .Values.validator.indexer.machineManager.sessionID | quote }}
-            - {{ print "--initial-epoch=" .Values.validator.indexer.config.initialEpoch | quote }}
-            - {{ print "--interval=" .Values.validator.indexer.config.interval | quote }}
-            - {{ print "--confirmations=" .Values.validator.indexer.config.confirmations | quote }}
-            - {{ print "--state-server-endpoint=" .Values.validator.indexer.stateServer.endpoint | quote }}
-            {{- if .Values.validator.indexer.machineManager.endpoint }}
-            - {{ print "--mm-endpoint=" .Values.validator.indexer.machineManager.endpoint | quote }}
-            {{- else }}
-            - {{ print "--mm-endpoint=http://" (include "validator.fullname" .) "-server-manager:5001" | quote }}
-            {{- end }}
-            {{- else }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
-            {{- end }}
             {{- end }}
             {{- range .Values.validator.indexer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-            {{- if .Values.validator.indexer.healthCheckPort }}
-              port: {{ print .Values.validator.indexer.healthCheckPort}}
-            {{- end }}
-            initialDelaySeconds: 3
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.indexer.logLevel }}
@@ -323,92 +229,12 @@ spec:
           resources:
             {{- toYaml .Values.serverManager.brokerProxy.resources | nindent 12 }}
           args:
-            {{- if .Values.serverManager.brokerProxy.serverManagerEndpoint }}
-            - {{ print "--server-manager-endpoint=" .Values.serverManager.brokerProxy.serverManagerEndpoint | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.sessionID }}
-            - {{ print "--session-id=" .Values.serverManager.brokerProxy.sessionID | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.pendinInputsSleepDuration }}
-            - {{ print "--sm-pending-inputs-sleep-duration=" .Values.serverManager.brokerProxy.pendingInputsSleepDuration | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.pendingInputsMaxRetries }}
-            - {{ print "--sm-pending-inputs-max-retries=" .Values.serverManager.brokerProxy.pendingInputsMaxRetries | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.concurrencyUpdateMerkleTree }}
-            - {{ print "--sm-concurrency-update-merkle-tree=" .Values.serverManager.brokerProxy.concurrencyUpdateMerkleTree | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineCheckin }}
-            - {{ print "--sm-deadline-checkin=" .Values.serverManager.brokerProxy.deadlineCheckin | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineAdvanceState }}
-            - {{ print "--sm-deadline-advance-state=" .Values.serverManager.brokerProxy.deadlineAdvanceState | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineAdvanceStateIncrement }}
-            - {{ print "--sm-deadline-advance-state-increment=" .Values.serverManager.brokerProxy.deadlineAdvanceStateIncrement | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineInspectState }}
-            - {{ print "--sm-deadline-inspect-state=" .Values.serverManager.brokerProxy.deadlineInspectState | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineInspectStateIncrement }}
-            - {{ print "--sm-deadline-inspect-state-increment=" .Values.serverManager.brokerProxy.deadlineInspectStateIncrement | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineMachine }}
-            - {{ print "--sm-deadline-machine=" .Values.serverManager.brokerProxy.deadlineMachine | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineStore }}
-            - {{ print "--sm-deadline-store=" .Values.serverManager.brokerProxy.deadlineStore | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.deadlineFast }}
-            - {{ print "--sm-deadline-fast=" .Values.serverManager.brokerProxy.deadlineFast | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.cyclesMaxAdvanceState }}
-            - {{ print "--sm-cycles-max-advance-state=" .Values.serverManager.brokerProxy.cyclesMaxAdvanceState | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.cyclesAdvanceStateIncrement }}
-            - {{ print "--sm-cycles-advance-state-increment=" .Values.serverManager.brokerProxy.cyclesAdvanceStateIncrement | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.cyclesMaxInspectState }}
-            - {{ print "--sm-cycles-max-inspect-state=" .Values.serverManager.brokerProxy.cyclesMaxInspectState | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.cyclesInspectStateIncrement }}
-            - {{ print "--sm-cycles-inspect-state-increment=" .Values.serverManager.brokerProxy.cyclesInspectStateIncrement | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.consumeTimeout }}
-            - {{ print "--consume-timeout=" .Values.serverManager.brokerProxy.consumeTimeout | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.healthCheckAddress }}
-            - {{ print "--health-check-address=" .Values.serverManager.brokerProxy.healthCheckAddress | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.healthCheckPort }}
-            - {{ print "--health-check-port=" .Values.serverManager.brokerProxy.healthCheckPort | quote }}
-            {{- end }}
-            {{- if .Values.serverManager.brokerProxy.backoffMaxElapsedDuration }}
-            - {{ print "--backoff-max-elapsed-duration=" .Values.serverManager.brokerProxy.backoffMaxElapsedDuration | quote }}
-            {{- end }}
-            {{- if empty .Values.serverManager.brokerProxy.args }}
-            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
-            - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower) | quote }}
-            {{- if .Values.redis.enabled }}
-            - {{ print "--redis-endpoint=redis://" (.Release.Name) "-redis-master" | quote }}
-            {{- else }}
-            - {{ print "--redis-endpoint=" (required "A valid .Values.redis.endpoint is required" .Values.redis.endpoint) | quote }}
-            {{- end }}
-            {{- else }}
             {{- range .Values.serverManager.brokerProxy.args }}
             - {{ . | quote}}
-            {{- end }}
             {{- end }}
             {{- range .Values.serverManager.brokerProxy.extraArgs }}
             - {{ . | quote}}
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-            {{- if .Values.serverManager.brokerProxy.healthCheckPort }}
-              port: {{ print .Values.serverManager.brokerProxy.healthCheckPort}}
-            {{- end }}
-            initialDelaySeconds: 3
           env:
             - name: RUST_LOG
               value: {{ .Values.serverManager.brokerProxy.logLevel }}
@@ -433,13 +259,8 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           args:
-            {{- if empty .Values.serverManager.args }}
-            - "/opt/cartesi/bin/server-manager"
-            - "--manager-address=0.0.0.0:5001"
-            {{- else }}
             {{- range .Values.serverManager.args }}
             - {{ . | quote}}
-            {{- end }}
             {{- end }}
             {{- range .Values.serverManager.extraArgs }}
             - {{ . | quote}}
@@ -517,18 +338,8 @@ spec:
               port: 5005
             initialDelaySeconds: 3
           args:
-            {{- if empty .Values.endpoints.inspectServer.args }}
-            - {{ print "--inspect-server-address=" .Values.endpoints.inspectServer.config.address | quote }}
-            - {{ print "--session-id=" .Values.endpoints.inspectServer.machineManager.sessionID | quote }}
-            {{- if .Values.endpoints.inspectServer.machineManager.endpoint }}
-            - {{ print "--server-manager-address=" .Values.endpoints.inspectServer.machineManager.endpoint | quote }}
-            {{- else }}
-            - {{ print "--server-manager-address=" (include "validator.fullname" .) "-server-manager:5001" | quote }}
-            {{- end }}
-            {{- else }}
             {{- range .Values.endpoints.inspectServer.args }}
             - {{ . | quote}}
-            {{- end }}
             {{- end }}
             {{- range .Values.endpoints.inspectServer.extraArgs }}
             - {{ . | quote}}

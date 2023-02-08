@@ -152,35 +152,6 @@ validator:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
-    ## --claims-consume-timeout <claims-consume-timeout>
-    ##     Consume timeout when waiting for the rollups claims in ms [env: CLAIMS_CONSUME_TIMEOUT=]  [default: 300000]
-    claimsConsumeTimeout: 300000
-    ## --hc-host-address <hc-host-address>
-    ##     Host address of health check [env: HC_HOST_ADDRESS=]
-    healthCheckAddress: "0.0.0.0"
-    ## --hc-port <hc-port>
-    ##     Port of health check [env: HC_PORT=]
-    healthCheckPort: "8080"
-
-    rollupsDapp:
-      initialEpoch: 0
-      minimumRequiredFee:
-      numBufferEpochs:
-      numClaimsTriggerRedeem:
-
-    transactionManager:
-      chainID:
-      databasePath: /opt/cartesi/rollups-dispatcher/lib/tx-manager.db
-      defaultConfirmations: 2
-      gasOracleAPIKey:
-      mnemonic:
-      mnemonicAccountIndex:
-      providerHTTPEndpoint:
-      chainIsLegacy: "false"
-
-    stateClient:
-      defaultConfirmations: 1
-      grpcEndpoint: http://localhost:50051
 
     args: []
     extraArgs: []
@@ -192,8 +163,6 @@ validator:
     ##     value: "bar"
     ##
     extraEnvVars: []
-
-    configFile:
 
     securityContext:
       {}
@@ -226,22 +195,6 @@ validator:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
-
-    ## TODO: add documentation for each parameter
-    blockHistory:
-      blockTimeout: "120"
-      httpEndpoint:
-      maxDepth:
-      wsEndpoint:
-
-    stateFold:
-      concurrentEventsFetch:
-      genesisBlock: "0x1"
-      queryLimitErrorCodes:
-      safetyMargin: "1"
-
-    stateServer:
-      serverAddress:
 
     args: []
     extraArgs: []
@@ -287,24 +240,9 @@ validator:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
-    ## --http-health-hostname <http-health-hostname>                 [env: HTTP_HEALTH_HOSTNAME=]
-    healthCheckAddress: "0.0.0.0"
-    ## --http-health-port <http-health-port>                         [env: HTTP_HEALTH_PORT=]
-    healthCheckPort: "8081"
-
-    machineManager:
-      endpoint:
-      sessionID: "default_rollups_id"
-
-    stateServer:
-      endpoint: http://localhost:50051
-
-    config:
-      confirmations: 1
-      initialEpoch: 0
-      interval: 10
 
     args: []
+    extraArgs: []
 
     ## extraEnvVars Array with extra environment variables to add to validator.indexer container
     ## e.g:
@@ -368,6 +306,11 @@ serverManager:
   ## serverManager.logLevel set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
   logLevel: info
 
+  args:
+    - "/opt/cartesi/bin/server-manager"
+    - "--manager-address=0.0.0.0:5001"
+  extraArgs: []
+
   remoteCartesiMachine:
     ## serverManager.remoteCartesiMachine.logLevel set REMOTE_CARTESI_MACHINE_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
     ## defaults to serverManager.logLevel unless you provide a different value
@@ -382,76 +325,6 @@ serverManager:
 
     ## serverManager.brokerProxy.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
-
-    ## --server-manager-endpoint <SERVER_MANAGER_ENDPOINT>
-    ##    Server-manager gRPC endpoint [env: SERVER_MANAGER_ENDPOINT=] [default: http://127.0.0.1:5001]
-    serverManagerEndpoint:
-    ## --session-id <SESSION_ID>
-    ##     Server-manager session id [env: SESSION_ID=] [default: default_rollups_id]
-    sessionID:
-    ## --sm-pending-inputs-sleep-duration <SM_PENDING_INPUTS_SLEEP_DURATION>
-    ##     Sleep duration while polling for server-manager pending inputs (in millis) [env: SM_PENDING_INPUTS_SLEEP_DURATION=] [default:
-    pendingInputsSleepDuration:
-    ## --sm-pending-inputs-max-retries <SM_PENDING_INPUTS_MAX_RETRIES>
-    ##     Max number of retries while polling server-manager for pending inputs [env: SM_PENDING_INPUTS_MAX_RETRIES=] [default: 60]
-    pendingInputsMaxRetries:
-    ## --sm-concurrency-update-merkle-tree <SM_CONCURRENCY_UPDATE_MERKLE_TREE>
-    ##     Defines the number of threads to use while calculating the merkle tree [env: SM_CONCURRENCY_UPDATE_MERKLE_TREE=] [default: 0]
-    concurrencyUpdateMerkleTree:
-    ## --sm-deadline-checkin <SM_DEADLINE_CHECKIN>
-    ##     Deadline for receiving checkin from spawned machine server [env: SM_DEADLINE_CHECKIN=] [default: 5000]
-    deadlineCheckin:
-    ## --sm-deadline-advance-state <SM_DEADLINE_ADVANCE_STATE>
-    ##     Deadline for advancing the state [env: SM_DEADLINE_ADVANCE_STATE=] [default: 180000]
-    deadlineAdvanceState:
-    ## --sm-deadline-advance-state-increment <SM_DEADLINE_ADVANCE_STATE_INCREMENT>
-    ##     Deadline for each increment when advancing state [env: SM_DEADLINE_ADVANCE_STATE_INCREMENT=] [default: 10000]
-    deadlineAdvanceStateIncrement:
-    ## --sm-deadline-inspect-state <SM_DEADLINE_INSPECT_STATE>
-    ##     Deadline for inspecting state [env: SM_DEADLINE_INSPECT_STATE=] [default: 180000]
-    deadlineInspectState:
-    ## --sm-deadline-inspect-state-increment <SM_DEADLINE_INSPECT_STATE_INCREMENT>
-    ##     Deadline for each increment when inspecting state [env: SM_DEADLINE_INSPECT_STATE_INCREMENT=] [default: 10000]
-    deadlineInspectStateIncrement:
-    ## --sm-deadline-machine <SM_DEADLINE_MACHINE>
-    ##     Deadline for instantiating a machine [env: SM_DEADLINE_MACHINE=] [default: 300000]
-    deadlineMachine:
-    ## --sm-deadline-store <SM_DEADLINE_STORE>
-    ##     Deadline for storing a machine [env: SM_DEADLINE_STORE=] [default: 180000]
-    deadlineStore:
-    ## --sm-deadline-fast <SM_DEADLINE_FAST>
-    ##     Deadline for quick machine server tasks [env: SM_DEADLINE_FAST=] [default: 5000]
-    deadlineFast:
-    ## --sm-cycles-max-advance-state <SM_CYCLES_MAX_ADVANCE_STATE>
-    ##     Maximum number of cycles that processing the input in an AdvanceState can take [env: SM_CYCLES_MAX_ADVANCE_STATE=] [default: 4611686018427387903]
-    cyclesMaxAdvanceState:
-    ## --sm-cycles-advance-state-increment <SM_CYCLES_ADVANCE_STATE_INCREMENT>
-    ##     Number of cycles in each increment to processing an input [env: SM_CYCLES_ADVANCE_STATE_INCREMENT=] [default: 4194304]
-    cyclesAdvanceStateIncrement:
-    ## --sm-cycles-max-inspect-state <SM_CYCLES_MAX_INSPECT_STATE>
-    ##     Maximum number of cycles that processing the query in an InspectState can take [env: SM_CYCLES_MAX_INSPECT_STATE=] [default: 4611686018427387903]
-    cyclesMaxInspectState:
-    ## --sm-cycles-inspect-state-increment <SM_CYCLES_INSPECT_STATE_INCREMENT>
-    ##     Number of cycles in each increment to processing a query [env: SM_CYCLES_INSPECT_STATE_INCREMENT=] [default: 4194304]
-    cyclesInspectStateIncrement:
-    ## --dapp-contract-address <DAPP_CONTRACT_ADDRESS>
-    ##     Address of rollups dapp [env: DAPP_CONTRACT_ADDRESS=]
-    dappContractAddress:
-    ## --dapp-contract-address-file <DAPP_CONTRACT_ADDRESS_FILE>
-    ##     Path to file with address of rollups dapp [env: DAPP_CONTRACT_ADDRESS_FILE=]
-    dappContractAddressFile:
-    ## --consume-timeout <CONSUME_TIMEOUT>
-    ##     Timeout when consuming input events (in millis) [env: CONSUME_TIMEOUT=] [default: 5000]
-    consumeTimeout:
-    ## --health-check-address <HEALTH_CHECK_ADDRESS>
-    ##     Host address of health check [env: HEALTH_CHECK_ADDRESS=] [default: 0.0.0.0]
-    healthCheckAddress:
-    ## --health-check-port <HEALTH_CHECK_PORT>
-    ##     Port of health check [env: HEALTH_CHECK_PORT=] [default: 8080]
-    healthCheckPort: 8080
-    ## --backoff-max-elapsed-duration <BACKOFF_MAX_ELAPSED_DURATION>
-    ##     The max elapsed time for backoff in ms [env: BACKOFF_MAX_ELAPSED_DURATION=] [default: 120000]
-    backoffMaxElapsedDuration:
 
     args: []
     extraArgs: []
@@ -485,9 +358,6 @@ serverManager:
     ## serverManager.brokerProxy.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager.brokerProxy container(s)
     ##
     extraVolumeMounts: []
-
-  args: []
-  extraArgs: []
 
   ## extraEnvVars Array with extra environment variables to add to serverManager container
   ## e.g:
@@ -563,14 +433,6 @@ endpoints:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
-    ## TODO: add documentation for each parameter
-    config:
-      address: 0.0.0.0:5005
-
-    machineManager:
-      endpoint:
-      sessionID: "default_rollups_id"
-
     args: []
     extraArgs: []
 
@@ -622,6 +484,9 @@ endpoints:
 
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
+
+    args: []
+    extraArgs: []
 
     ## extraEnvVars Array with extra environment variables to add to endpoints.queryServer container
     ## e.g:
