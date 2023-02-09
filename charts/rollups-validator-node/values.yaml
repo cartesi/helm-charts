@@ -110,6 +110,10 @@ postgresOperator:
     ## be droped when the resources are delete
     dropOnDelete: false
 
+## extraDeploy Extra objects to deploy (value evaluated as a template)
+##
+extraDeploy: []
+
 ## rollups-validator-node Pod configuration
 ##
 validator:
