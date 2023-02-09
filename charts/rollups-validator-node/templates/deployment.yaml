@@ -53,6 +53,17 @@ spec:
             {{- if .Values.validator.dispatcher.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.validator.dispatcher.extraEnvVarsCM .Values.validator.dispatcher.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.validator.dispatcher.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
             - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
@@ -88,6 +99,17 @@ spec:
             {{- if .Values.validator.stateServer.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.validator.stateServer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.stateServer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           ports:
             - containerPort: 50051
           volumeMounts:
@@ -138,10 +160,21 @@ spec:
                   optional: false
             - name: POSTGRES_PORT
               value: "5432"
-          {{- else }}
+          {{- end }}
+          {{- if or .Values.validator.indexer.extraEnvVarsCM .Values.validator.indexer.extraEnvVarsSecret (not .Values.postgresOperator.enabled) }}
           envFrom:
+            {{- if not .Values.postgresOperator.enabled }}
             - configMapRef:
-                name: {{ include "validator.fullname" . }}-database-config
+              name: {{ include "validator.fullname" . }}-database-config
+            {{- end }}
+            {{- if .Values.validator.indexer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.indexer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
           {{- end }}
           volumeMounts:
             - name: postgres
@@ -241,6 +274,18 @@ spec:
             {{- if .Values.serverManager.brokerProxy.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.serverManager.brokerProxy.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.serverManager.brokerProxy.extraEnvVarsCM .Values.serverManager.brokerProxy.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.serverManager.brokerProxy.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.serverManager.brokerProxy.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+
           volumeMounts:
             {{- if .Values.serverManager.brokerProxy.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraVolumeMounts "context" $ ) | nindent 12 }}
@@ -275,6 +320,17 @@ spec:
             {{- if .Values.serverManager.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.serverManager.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.serverManager.extraEnvVarsCM .Values.serverManager.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.serverManager.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.serverManager.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
             {{- if .Values.serverManager.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumeMounts "context" $ ) | nindent 12 }}
@@ -350,6 +406,17 @@ spec:
             {{- if .Values.endpoints.inspectServer.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.endpoints.inspectServer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.endpoints.inspectServer.extraEnvVarsCM .Values.endpoints.inspectServer.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.endpoints.inspectServer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.endpoints.inspectServer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.endpoints.inspectServer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.endpoints.inspectServer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
             {{- if .Values.endpoints.inspectServer.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.endpoints.inspectServer.extraVolumeMounts "context" $ ) | nindent 12 }}
@@ -398,10 +465,21 @@ spec:
                   name: secret-{{ include "validator.fullname" . }}-query-server
                   key: DATABASE_NAME
                   optional: false
-          {{- else }}
+          {{- end }}
+          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret (not .Values.postgresOperator.enabled) }}
           envFrom:
+            {{- if not .Values.postgresOperator.enabled }}
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
+            {{- end }}
+            {{- if .Values.validator.stateServer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.stateServer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
           {{- end }}
           volumeMounts:
             - name: postgres

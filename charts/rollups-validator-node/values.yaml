@@ -164,6 +164,14 @@ validator:
     ##
     extraEnvVars: []
 
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for dispatcher container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for dispatcher container
+    ##
+    extraEnvVarsSecret: ""
+
     securityContext:
       {}
       ## capabilities:
@@ -206,6 +214,14 @@ validator:
     ##     value: "bar"
     ##
     extraEnvVars: []
+
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for stateServer container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for stateServer container
+    ##
+    extraEnvVarsSecret: ""
 
     securityContext:
       {}
@@ -251,6 +267,14 @@ validator:
     ##     value: "bar"
     ##
     extraEnvVars: []
+
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for indexer container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for indexer container
+    ##
+    extraEnvVarsSecret: ""
 
     securityContext:
       {}
@@ -311,6 +335,14 @@ serverManager:
     - "--manager-address=0.0.0.0:5001"
   extraArgs: []
 
+  ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for serverManager container
+  ##
+  extraEnvVarsCM: ""
+
+  ## extraEnvVarsSecret Name of existing Secret containing extra env vars for serverManager container
+  ##
+  extraEnvVarsSecret: ""
+
   remoteCartesiMachine:
     ## serverManager.remoteCartesiMachine.logLevel set REMOTE_CARTESI_MACHINE_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
     ## defaults to serverManager.logLevel unless you provide a different value
@@ -336,6 +368,14 @@ serverManager:
     ##     value: "bar"
     ##
     extraEnvVars: []
+
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for brokerProxy container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for brokerProxy container
+    ##
+    extraEnvVarsSecret: ""
 
     securityContext:
       {}
@@ -444,6 +484,14 @@ endpoints:
     ##
     extraEnvVars: []
 
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container
+    ##
+    extraEnvVarsSecret: ""
+
     securityContext:
       {}
       ## capabilities:
@@ -495,6 +543,14 @@ endpoints:
     ##     value: "bar"
     ##
     extraEnvVars: []
+
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for queryServer container
+    ##
+    extraEnvVarsCM: ""
+
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for queryServer container
+    ##
+    extraEnvVarsSecret: ""
 
     securityContext:
       {}
