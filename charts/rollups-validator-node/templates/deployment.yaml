@@ -40,13 +40,30 @@ spec:
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.dispatcher.healthCheck.enabled }}
+            {{- if .Values.validator.dispatcher.healthCheck.port }}
+            - {{ print "--hc-port=" .Values.validator.dispatcher.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--hc-port=8081" | quote }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
             {{- end }}
             {{- range .Values.validator.dispatcher.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          {{- if .Values.validator.dispatcher.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.validator.dispatcher.healthCheck.port }}
+              port: {{ .Values.validator.dispatcher.healthCheck.port }}
+            {{- else }}
+              port: 8081
+            {{- end }}
             initialDelaySeconds: 3
+          {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.dispatcher.logLevel }}
@@ -123,12 +140,30 @@ spec:
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
           args:
+            {{- if .Values.validator.indexer.healthCheck.enabled }}
+            {{- if .Values.validator.indexer.healthCheck.port }}
+            - {{ print "--health-check-port=" .Values.validator.indexer.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--health-check-port=8082" | quote }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
             {{- end }}
             {{- range .Values.validator.indexer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          {{- if .Values.validator.indexer.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.validator.indexer.healthCheck.port }}
+              port: {{ print .Values.validator.indexer.healthCheck.port}}
+            {{- else }}
+              port: 8082
+            {{- end }}
+            initialDelaySeconds: 3
+          {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.validator.indexer.logLevel }}
@@ -262,12 +297,30 @@ spec:
           resources:
             {{- toYaml .Values.serverManager.advanceRunner.resources | nindent 12 }}
           args:
+            {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
+            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
+            - {{ print "--health-check-port=" .Values.serverManager.advanceRunner.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--health-check-port=8083" | quote }}
+            {{- end }}
+            {{- end }}
             {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
             {{- end }}
             {{- range .Values.serverManager.advanceRunner.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
+              port: {{ print .Values.serverManager.advanceRunner.healthCheck.port }}
+            {{- else }}
+              port: 8083
+            {{- end }}
+            initialDelaySeconds: 3
+          {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.serverManager.advanceRunner.logLevel }}

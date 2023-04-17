@@ -153,6 +153,10 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    healthCheck:
+      enabled: false
+      port:
+
     args: []
     extraArgs: []
 
@@ -257,6 +261,10 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    healthCheck:
+      enabled: false
+      port:
+
     args: []
     extraArgs: []
 
@@ -357,6 +365,10 @@ serverManager:
 
     ## serverManager.advanceRunner.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
+
+    healthCheck:
+      enabled: false
+      port:
 
     args: []
     extraArgs: []
