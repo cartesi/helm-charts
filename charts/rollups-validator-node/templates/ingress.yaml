@@ -9,7 +9,7 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- range $key, $value := .Values.endpoints.queryServer.ingress.annotations }}
+  {{- range $key, $value := .Values.endpoints.graphqlServer.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -23,7 +23,7 @@ spec:
               service:
                 name: {{ include "validator.fullname" . }}-query-server
                 port:
-                  number: {{ .Values.endpoints.queryServer.service.port }}
+                  number: {{ .Values.endpoints.graphqlServer.service.port }}
     {{- if .Values.ingress.addReleaseNameAsHost }}
     - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
       http: *http

@@ -77,7 +77,7 @@ image:
   pullSecrets: []
 
 ## ingress defines whether an Ingress will be created for the dapp
-## The default Ingress has a default path / that points to the endpoints.queryServer
+## The default Ingress has a default path / that points to the endpoints.graphqlServer
 ## And an /inspect path that points to the endpoints.inspectServer
 ## The dapp.contractAddress is used a a hostname suffixed by the ingress.subDomain
 ## e.g.
@@ -100,7 +100,7 @@ ingress:
 ##
 postgresOperator:
   ## postgresOperator.enabled defines whether the postgres operator should
-  ## used by the indexer and query-server
+  ## used by the indexer and graphql-server
   enabled: false
   database:
     ## postgresOperator.database.name defines the name of the database to
@@ -523,10 +523,10 @@ endpoints:
     ##
     extraVolumeMounts: []
 
-  queryServer:
+  graphqlServer:
     image:
       registry:
-      repository: cartesi/query-server
+      repository: cartesi/rollups-graphql-server
       tag:
       digest:
 
@@ -536,7 +536,7 @@ endpoints:
     args: []
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to endpoints.queryServer container
+    ## extraEnvVars Array with extra environment variables to add to endpoints.graphqlServer container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -544,11 +544,11 @@ endpoints:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for queryServer container
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for graphqlServer container
     ##
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for queryServer container
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for graphqlServer container
     ##
     extraEnvVarsSecret: ""
 
@@ -562,8 +562,8 @@ endpoints:
       ## runAsUser: 1000
 
     ingress:
-      ## endpoints.queryServer.ingress.annotations defines extra anotations
-      ## specifically for the endpoints.queryServer.service
+      ## endpoints.graphqlServer.ingress.annotations defines extra anotations
+      ## specifically for the endpoints.graphqlServer.service
       annotations: {}
 
     service:
@@ -579,7 +579,7 @@ endpoints:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## endpoints.queryServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.queryServer container(s)
+    ## endpoints.graphqlServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
     ##
     extraVolumeMounts: []
 

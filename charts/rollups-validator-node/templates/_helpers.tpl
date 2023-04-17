@@ -104,10 +104,10 @@ Return the proper indexer image name
 {{- end -}}
 
 {{/*
-Return the proper queryServer image name
+Return the proper graphqlServer image name
 */}}
-{{- define "queryServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.endpoints.queryServer.image "global" .Values.global ) }}
+{{- define "graphqlServer.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.endpoints.graphqlServer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*

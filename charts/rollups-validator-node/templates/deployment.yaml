@@ -424,11 +424,11 @@ spec:
           ports:
             - containerPort: 5005
 
-        - name: query-server
-          image: {{ include "queryServer.image" . }}
+        - name: graphql-server
+          image: {{ include "graphqlServer.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.endpoints.queryServer.resources | nindent 12 }}
+            {{- toYaml .Values.endpoints.graphqlServer.resources | nindent 12 }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -436,9 +436,9 @@ spec:
             initialDelaySeconds: 3
           env:
             - name: RUST_LOG
-              value: {{ .Values.endpoints.queryServer.logLevel }}
-            {{- if .Values.endpoints.queryServer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.endpoints.queryServer.extraEnvVars "context" $) | nindent 12 }}
+              value: {{ .Values.endpoints.graphqlServer.logLevel }}
+            {{- if .Values.endpoints.graphqlServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.endpoints.graphqlServer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
             - name: GRAPHQL_HOST
               value: "0.0.0.0"
@@ -450,19 +450,19 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  name: secret-{{ include "validator.fullname" . }}-graphql-server
                   key: ROLE
                   optional: false
             - name: POSTGRES_HOSTNAME
               valueFrom:
                 secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  name: secret-{{ include "validator.fullname" . }}-graphql-server
                   key: HOST
                   optional: false
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-query-server
+                  name: secret-{{ include "validator.fullname" . }}-graphql-server
                   key: DATABASE_NAME
                   optional: false
           {{- end }}
@@ -507,7 +507,7 @@ spec:
         - name: postgres
         {{- if .Values.postgresOperator.enabled }}
           secret:
-            secretName: secret-{{ include "validator.fullname" . }}-query-server
+            secretName: secret-{{ include "validator.fullname" . }}-graphql-server
             items:
               - key: PASSWORD
                 path: PASSWORD

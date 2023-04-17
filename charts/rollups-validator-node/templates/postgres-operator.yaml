@@ -23,10 +23,10 @@ spec:
 apiVersion: db.movetokube.com/v1alpha1
 kind: PostgresUser
 metadata:
-  name: {{ include "validator.fullname" . }}-query-server
+  name: {{ include "validator.fullname" . }}-graphql-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  role: query-server
+  role: graphql-server
   database: {{ include "validator.fullname" . }}-postgres-operator
   secretName: secret
   privileges: READER
