@@ -256,39 +256,39 @@ spec:
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
       containers:
-        - name: broker-proxy
-          image: {{ include "serverManager.brokerProxy.image" . }}
+        - name: advance-runner
+          image: {{ include "serverManager.advanceRunner.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.serverManager.brokerProxy.resources | nindent 12 }}
+            {{- toYaml .Values.serverManager.advanceRunner.resources | nindent 12 }}
           args:
-            {{- range .Values.serverManager.brokerProxy.args }}
+            {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
             {{- end }}
-            {{- range .Values.serverManager.brokerProxy.extraArgs }}
+            {{- range .Values.serverManager.advanceRunner.extraArgs }}
             - {{ . | quote}}
             {{- end }}
           env:
             - name: RUST_LOG
-              value: {{ .Values.serverManager.brokerProxy.logLevel }}
-            {{- if .Values.serverManager.brokerProxy.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.serverManager.brokerProxy.extraEnvVars "context" $) | nindent 12 }}
+              value: {{ .Values.serverManager.advanceRunner.logLevel }}
+            {{- if .Values.serverManager.advanceRunner.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
-          {{- if or .Values.serverManager.brokerProxy.extraEnvVarsCM .Values.serverManager.brokerProxy.extraEnvVarsSecret }}
+          {{- if or .Values.serverManager.advanceRunner.extraEnvVarsCM .Values.serverManager.advanceRunner.extraEnvVarsSecret }}
           envFrom:
-            {{- if .Values.serverManager.brokerProxy.extraEnvVarsCM }}
+            {{- if .Values.serverManager.advanceRunner.extraEnvVarsCM }}
             - configMapRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraEnvVarsCM "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraEnvVarsCM "context" $ ) }}
             {{- end }}
-            {{- if .Values.serverManager.brokerProxy.extraEnvVarsSecret }}
+            {{- if .Values.serverManager.advanceRunner.extraEnvVarsSecret }}
             - secretRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraEnvVarsSecret "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraEnvVarsSecret "context" $ ) }}
             {{- end }}
           {{- end }}
 
           volumeMounts:
-            {{- if .Values.serverManager.brokerProxy.extraVolumeMounts }}
-            {{- include "tplvalues.render" ( dict "value" .Values.serverManager.brokerProxy.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
 
         - name: server-manager

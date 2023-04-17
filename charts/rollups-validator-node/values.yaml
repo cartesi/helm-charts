@@ -348,20 +348,20 @@ serverManager:
     ## defaults to serverManager.logLevel unless you provide a different value
     logLevel:
 
-  brokerProxy:
+  advanceRunner:
     image:
       registry:
-      repository: cartesi/rollups-server-manager-broker-proxy
+      repository: cartesi/rollups-advance-runner
       tag:
       digest:
 
-    ## serverManager.brokerProxy.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
+    ## serverManager.advanceRunner.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
 
     args: []
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to serverManager.brokerProxy container
+    ## extraEnvVars Array with extra environment variables to add to serverManager.advanceRunner container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -369,11 +369,11 @@ serverManager:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for brokerProxy container
+    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for advanceRunner container
     ##
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for brokerProxy container
+    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for advanceRunner container
     ##
     extraEnvVarsSecret: ""
 
@@ -395,7 +395,7 @@ serverManager:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## serverManager.brokerProxy.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager.brokerProxy container(s)
+    ## serverManager.advanceRunner.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s)
     ##
     extraVolumeMounts: []
 

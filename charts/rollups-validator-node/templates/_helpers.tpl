@@ -118,10 +118,10 @@ Return the proper inspectServer image name
 {{- end -}}
 
 {{/*
-Return the proper serverManager.brokerProxy image name
+Return the proper serverManager.advanceRunner image name
 */}}
-{{- define "serverManager.brokerProxy.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.serverManager.brokerProxy.image "global" .Values.global ) }}
+{{- define "serverManager.advanceRunner.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.serverManager.advanceRunner.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
