@@ -125,6 +125,12 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.command "context" $) | nindent 12 }}
           {{- end }}
           args:
+            {{- if .Values.dapp.httpProvider }}
+            - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.httpProvider }}
+            - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
+            {{- end }}
             {{- range .Values.validator.stateServer.args }}
             - {{ . | quote}}
             {{- end }}
@@ -177,6 +183,14 @@ spec:
             {{- else }}
             - {{ print "--health-check-port=8082" | quote }}
             {{- end }}
+            {{- end }}
+            {{- if .Values.dapp.contractAddress }}
+            - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
             {{- end }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
@@ -344,6 +358,17 @@ spec:
             {{- else }}
             - {{ print "--health-check-port=8083" | quote }}
             {{- end }}
+            {{- end }}
+            {{- if .Values.dapp.network }}
+            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.contractAddress }}
+            - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
             {{- end }}
             {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
