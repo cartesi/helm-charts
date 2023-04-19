@@ -7,6 +7,16 @@ dapp:
   ## dapp.contractAddress is the contract address of the dapp deployed on the blockchain
   ## REQUIRED
   contractAddress:
+  ## dapp.blockHash is the block hash of the block where the dapp was deployed
+  ## REQUIRED
+  blockHash:
+  ## dapp.blockNumber is the block number of the block where the dapp was deployed
+  ## REQUIRED
+  blockNumber:
+  ## dapp.transactionHash is the transaction hash of the transaction that deployed the dapp
+  ## REQUIRED
+  transactionHash:
+
   ## mnemonic defines the configuration for the mnemonic
   ## use value or secretRef, never both
   mnemonic:

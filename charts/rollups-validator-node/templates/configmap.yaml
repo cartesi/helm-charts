@@ -11,3 +11,17 @@ data:
   POSTGRES_USER: {{ default "postgres" .Values.dapp.postgres.user }}
   POSTGRES_DB: {{ default "postgres" .Values.dapp.postgres.dbname }}
 {{ end -}}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "validator.fullname" . }}-dapp
+  labels: {{- include "validator.labels" . | nindent 4 }}
+data:
+  "dapp.json": |
+    {
+        "address": {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | quote }},
+        "blockHash": {{ required "A valid .Values.dapp.blockHash is required" .Values.dapp.blockHash | quote }},
+        "blockNumber": {{ required "A valid .Values.dapp.blockNumber is required" .Values.dapp.blockNumber | int64 | quote }},
+        "transactionHash": {{ required "A valid .Values.dapp.transactionHash is required" .Values.dapp.transactionHash | quote }}
+    }

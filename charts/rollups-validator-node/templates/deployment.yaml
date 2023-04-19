@@ -51,6 +51,22 @@ spec:
             - {{ print "--hc-port=8081" | quote }}
             {{- end }}
             {{- end }}
+            - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (.Values.dapp.network | replace "-" "_") ".json" | quote }}
+            - {{ print "--rd-dapp-deployment-file=/deployments/" (.Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            - {{ print "--tx-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
+            {{- end }}
+            {{- if .Values.dapp.httpProvider }}
+            - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.network }}
+            - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
             {{- end }}
@@ -92,6 +108,9 @@ spec:
             - name: dispatcher-lib
               mountPath: /opt/cartesi/rollups-dispatcher/lib
               readOnly: false
+            - name: dapp
+              mountPath: "/deployments/{{ .Values.dapp.network }}/"
+              readOnly: true
             {{- if .Values.validator.dispatcher.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
@@ -234,6 +253,12 @@ spec:
       volumes:
         - name: dispatcher-lib
           emptyDir: {}
+        - name: dapp
+          configMap:
+            name: "{{ include "validator.fullname" . }}-dapp"
+            items:
+              - key: "dapp.json"
+                path: "dapp.json"
         - name: mnemonic
           secret:
             {{- if .Values.dapp.mnemonic.value }}
