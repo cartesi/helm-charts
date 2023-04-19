@@ -157,6 +157,7 @@ validator:
       enabled: false
       port:
 
+    command: []
     args: []
     extraArgs: []
 
@@ -208,6 +209,7 @@ validator:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    command: []
     args: []
     extraArgs: []
 
@@ -265,6 +267,7 @@ validator:
       enabled: false
       port:
 
+    command: []
     args: []
     extraArgs: []
 
@@ -338,6 +341,7 @@ serverManager:
   ## serverManager.logLevel set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
   logLevel: info
 
+  command: []
   args:
     - "/opt/cartesi/bin/server-manager"
     - "--manager-address=0.0.0.0:5001"
@@ -370,6 +374,7 @@ serverManager:
       enabled: false
       port:
 
+    command: []
     args: []
     extraArgs: []
 
@@ -485,6 +490,7 @@ endpoints:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    command: []
     args: []
     extraArgs: []
 
@@ -545,6 +551,7 @@ endpoints:
     ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    command: []
     args: []
     extraArgs: []
 

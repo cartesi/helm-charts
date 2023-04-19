@@ -39,6 +39,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
+          {{- if .Values.validator.dispatcher.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             {{- if .Values.validator.dispatcher.healthCheck.enabled }}
             {{- if .Values.validator.dispatcher.healthCheck.port }}
@@ -97,6 +101,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
+          {{- if .Values.validator.stateServer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             {{- range .Values.validator.stateServer.args }}
             - {{ . | quote}}
@@ -139,6 +147,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
+          {{- if .Values.validator.indexer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.indexer.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             {{- if .Values.validator.indexer.healthCheck.enabled }}
             {{- if .Values.validator.indexer.healthCheck.port }}
@@ -296,6 +308,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.serverManager.advanceRunner.resources | nindent 12 }}
+          {{- if .Values.serverManager.advanceRunner.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
@@ -356,6 +372,10 @@ spec:
                 - -addr=:5001
             initialDelaySeconds: 5
             periodSeconds: 5
+          {{- if .Values.serverManager.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.serverManager.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             {{- range .Values.serverManager.args }}
             - {{ . | quote}}
