@@ -219,34 +219,10 @@ spec:
               value: /var/run/secrets/postgres/PASSWORD
             - name: POSTGRES_MIGRATION_FOLDER
               value: /usr/local/bin/migrations/
-          {{- if .Values.postgresOperator.enabled }}
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-indexer
-                  key: ROLE
-                  optional: false
-            - name: POSTGRES_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-indexer
-                  key: HOST
-                  optional: false
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-indexer
-                  key: DATABASE_NAME
-                  optional: false
-            - name: POSTGRES_PORT
-              value: "5432"
-          {{- end }}
-          {{- if or .Values.validator.indexer.extraEnvVarsCM .Values.validator.indexer.extraEnvVarsSecret (not .Values.postgresOperator.enabled) }}
           envFrom:
-            {{- if not .Values.postgresOperator.enabled }}
             - configMapRef:
-              name: {{ include "validator.fullname" . }}-database-config
-            {{- end }}
+                name: {{ include "validator.fullname" . }}-database-config
+          {{- if or .Values.validator.indexer.extraEnvVarsCM .Values.validator.indexer.extraEnvVarsSecret }}
             {{- if .Values.validator.indexer.extraEnvVarsCM }}
             - configMapRef:
                 name: {{ include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraEnvVarsCM "context" $ ) }}
@@ -282,14 +258,7 @@ spec:
             {{- end }}
         - name: postgres
           secret:
-          {{- if .Values.postgresOperator.enabled }}
-            secretName: secret-{{ include "validator.fullname" . }}-indexer
-            items:
-              - key: PASSWORD
-                path: PASSWORD
-          {{- else }}
             secretName: {{ include "validator.fullname" . }}-postgres
-          {{- end }}
         {{- if .Values.validator.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
@@ -569,32 +538,10 @@ spec:
               value: "4000"
             - name: POSTGRES_PASSWORD_FILE
               value: /var/run/secrets/postgres/PASSWORD
-          {{- if .Values.postgresOperator.enabled }}
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-graphql-server
-                  key: ROLE
-                  optional: false
-            - name: POSTGRES_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-graphql-server
-                  key: HOST
-                  optional: false
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: secret-{{ include "validator.fullname" . }}-graphql-server
-                  key: DATABASE_NAME
-                  optional: false
-          {{- end }}
-          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret (not .Values.postgresOperator.enabled) }}
           envFrom:
-            {{- if not .Values.postgresOperator.enabled }}
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
-            {{- end }}
+          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret }}
             {{- if .Values.validator.stateServer.extraEnvVarsCM }}
             - configMapRef:
                 name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsCM "context" $ ) }}
@@ -628,16 +575,8 @@ spec:
 
       volumes:
         - name: postgres
-        {{- if .Values.postgresOperator.enabled }}
-          secret:
-            secretName: secret-{{ include "validator.fullname" . }}-graphql-server
-            items:
-              - key: PASSWORD
-                path: PASSWORD
-        {{- else }}
           secret:
             secretName: {{ include "validator.fullname" . }}-postgres
-        {{- end }}
         {{- if .Values.endpoints.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.endpoints.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}

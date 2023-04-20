@@ -46,7 +46,7 @@ dapp:
   ##   - chiado
   network:
   ## dapp.postgres is the postgres configuration
-  ## REQUIRED, unless postgresOperator.enabled == true
+  ## REQUIRED
   postgres:
     ## dapp.postgres.hostname is the hostname of the postgres server
     hostname:
@@ -103,22 +103,6 @@ ingress:
   addReleaseNameAsHost: false
   ## ingress.annotation defines the annotations for both ingresses
   annotations: {}
-
-## postgresOperator configuration
-## You should already have postgres-operator installed on your cluster.
-## See: https://github.com/movetokube/postgres-operator/
-##
-postgresOperator:
-  ## postgresOperator.enabled defines whether the postgres operator should
-  ## used by the indexer and graphql-server
-  enabled: false
-  database:
-    ## postgresOperator.database.name defines the name of the database to
-    ## be created (default: dapp.contractAddress)
-    name:
-    ## postgresOperatos.dataase.dropOnDelete defines if the database should
-    ## be droped when the resources are delete
-    dropOnDelete: false
 
 ## extraDeploy Extra objects to deploy (value evaluated as a template)
 ##
