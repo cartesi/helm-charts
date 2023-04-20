@@ -10,12 +10,6 @@ dapp:
   httpProvider: https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
   wsProvider: wss://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
   network: goerli
-  postgres:
-    hostname: postgresql
-    port: "5432"
-    user: postgres
-    password: postgres
-    db: postgres
 
 cartesi:
   rollupsVersion: "0.8.2"
@@ -26,3 +20,12 @@ image:
 redis:
   enabled: false
   endpoint: redis://redis-master
+
+postgresql:
+  enabled: false
+  auth:
+    hostname: postgresql
+    username: postgres
+    password: postgres
+    database: postgres
+    port: 5432

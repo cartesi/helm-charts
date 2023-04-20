@@ -5,10 +5,14 @@ metadata:
   name: {{ include "validator.fullname" . }}-database-config
   labels: {{- include "validator.labels" . | nindent 4 }}
 data:
-  POSTGRES_HOSTNAME: {{ required "A valid .Values.dapp.postgres.hostname is required" .Values.dapp.postgres.hostname }}
-  POSTGRES_PORT: {{ default "5432" .Values.dapp.postgres.port | quote }}
-  POSTGRES_USER: {{ default "postgres" .Values.dapp.postgres.user }}
-  POSTGRES_DB: {{ default "postgres" .Values.dapp.postgres.dbname }}
+  {{- if .Values.postgresql.enabled }}
+  POSTGRES_HOSTNAME: {{ .Release.Name }}-postgresql
+  {{- else }}
+  POSTGRES_HOSTNAME: {{ required "A valid .Values.postgresql.auth.hostname is required" .Values.postgresql.auth.hostname }}
+  {{- end }}
+  POSTGRES_PORT: {{ .Values.postgresql.auth.port | quote }}
+  POSTGRES_USER: {{ required "A valid .Values.postgresql.auth.username is required" .Values.postgresql.auth.username }}
+  POSTGRES_DB: {{ required "A valid .Values.postgresql.auth.database is required" .Values.postgresql.auth.database }}
 ---
 kind: ConfigMap
 apiVersion: v1

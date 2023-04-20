@@ -44,7 +44,7 @@ jobs:
       - name: Add dependancies
         run: |
           cd ./charts/rollups-validator-node
-          helm repo add redis https://charts.bitnami.com/bitnami
+          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm dependency build
 
       - name: Run chart-testing (lint)
@@ -61,7 +61,9 @@ jobs:
           helm install postgresql bitnami/postgresql \
             --namespace default \
             --wait \
-            --set auth.postgresPassword=postgres
+            --set auth.enablePostgresUser=true \
+            --set auth.postgresPassword=postgres \
+            --set image.tag=13.9.0-debian-11-r27
 
       - name: Install redis service to kind cluster
         if: steps.list-changed.outputs.changed == 'true'

@@ -45,19 +45,6 @@ dapp:
   ##   - arbitrum-goerli
   ##   - chiado
   network:
-  ## dapp.postgres is the postgres configuration
-  ## REQUIRED
-  postgres:
-    ## dapp.postgres.hostname is the hostname of the postgres server
-    hostname:
-    ## dapp.postgres.hostname is the port of the postgres server (default: 5432)
-    port:
-    ## dapp.postgres.user is the username of the postgres server (default: postgres)
-    user:
-    ## dapp.postgres.password is the password of the postgres server (default: "")
-    password:
-    ## dapp.postgres.dbname is the name of the postgres database (default: postgres)
-    dbname:
 
 ## cartesi holds the configuration for the default containers images
 ##
@@ -609,3 +596,15 @@ redis:
     enabled: false
   metrics:
     enabled: true
+
+## PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    username: rollups
+    password: rollups
+    database: rollups
+    hostname:
+    port: 5432
+  image:
+    tag: 13.9.0-debian-11-r27
