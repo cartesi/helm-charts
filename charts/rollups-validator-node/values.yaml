@@ -51,7 +51,7 @@ dapp:
 global:
   image:
     registry: docker.io
-    tag: 0.8.2
+    tag: 0.9.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
