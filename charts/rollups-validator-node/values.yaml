@@ -315,6 +315,11 @@ serverManager:
 
   podAnnotations: {}
 
+  storage:
+    machineSnapshots:
+      storageClass: standard
+      size: 2Gi
+
   ## serverManager.extraVolumes Optionally specify extra list of additional volumes for the serverManager pod(s)
   ##
   extraVolumes: []

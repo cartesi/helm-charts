@@ -305,6 +305,18 @@ spec:
       securityContext:
         {{- toYaml .Values.serverManager.podSecurityContext | nindent 8 }}
       initContainers:
+        - name: share-machine-snapshot
+          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
+          command:
+            - cp
+            - -avr
+            - /var/opt/cartesi/machine-snapshots/0_0
+            - /var/opt/cartesi/machine-snapshots/latest
+            - /tmp/machine-snapshots/
+          volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /tmp/machine-snapshots
+              readOnly: false
         {{- if .Values.serverManager.initContainers }}
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
@@ -371,8 +383,10 @@ spec:
                 name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraEnvVarsSecret "context" $ ) }}
             {{- end }}
           {{- end }}
-
           volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /var/opt/cartesi/machine-snapshots
+              readOnly: false
             {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
@@ -420,11 +434,16 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /var/opt/cartesi/machine-snapshots
+              readOnly: false
             {{- if .Values.serverManager.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
 
       volumes:
+        - name: shared-machine-snapshots
+          emptyDir: {}
         {{- if .Values.serverManager.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
