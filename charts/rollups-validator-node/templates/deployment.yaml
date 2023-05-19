@@ -138,10 +138,8 @@ spec:
             - {{ . | quote}}
             {{- end }}
           livenessProbe:
-            exec:
-              command:
-                - grpc-health-probe
-                - -addr=:50051
+            grpc:
+              port: 50051
             initialDelaySeconds: 3
           env:
             - name: RUST_LOG
@@ -385,11 +383,9 @@ spec:
           resources:
             {{- toYaml .Values.serverManager.resources | nindent 12 }}
           livenessProbe:
-            exec:
-              command:
-                - grpc-health-probe
-                - -addr=:5001
-            initialDelaySeconds: 5
+            grpc:
+              port: 5001
+            initialDelaySeconds: 3
             periodSeconds: 5
           {{- if .Values.serverManager.command }}
           command:
