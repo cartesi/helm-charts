@@ -566,14 +566,14 @@ spec:
             - configMapRef:
                 name: {{ include "validator.fullname" . }}-database-config
             {{- end }}
-          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret }}
-            {{- if .Values.validator.stateServer.extraEnvVarsCM }}
+          {{- if or .Values.endpoints.graphqlServer.extraEnvVarsCM .Values.endpoints.graphqlServer.extraEnvVarsSecret }}
+            {{- if .Values.endpoints.graphqlServer.extraEnvVarsCM }}
             - configMapRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsCM "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.endpoints.graphqlServer.extraEnvVarsCM "context" $ ) }}
             {{- end }}
-            {{- if .Values.validator.stateServer.extraEnvVarsSecret }}
+            {{- if .Values.endpoints.graphqlServer.extraEnvVarsSecret }}
             - secretRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsSecret "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.endpoints.graphqlServer.extraEnvVarsSecret "context" $ ) }}
             {{- end }}
           {{- end }}
           volumeMounts:
@@ -582,8 +582,8 @@ spec:
               mountPath: /var/run/secrets/postgres
               readOnly: true
             {{- end }}
-            {{- if .Values.endpoints.inspectServer.extraVolumeMounts }}
-            {{- include "tplvalues.render" ( dict "value" .Values.endpoints.inspectServer.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- if .Values.endpoints.graphqlServer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.endpoints.graphqlServer.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
           ports:
             - containerPort: 4000
