@@ -141,6 +141,6 @@ Usage:
 Return the chainID based on the network
 */}}
 {{- define "dapp.chainID" -}}
-{{- $networkIDs := dict "mainnet" "1" "goerli" "5" "bsc-testnet" "57" "avalanche-fuji" "43113" "polygon-mumbai" "80001" "optimism-goerli" "420" "arbitrum-goerli" "421613" "chiado" "10200" "local" "1337" -}}
+{{- $networkIDs := dict "mainnet" "1" "goerli" "5" "bsc-testnet" "57" "avalanche-fuji" "43113" "polygon-mumbai" "80001" "optimism-goerli" "420" "arbitrum-goerli" "421613" "chiado" "10200" "local" "1337" "sepolia" "11155111" -}}
 {{- get $networkIDs (required "A valid .Values.dapp.network is required" .Values.dapp.network) -}}
 {{- end -}}
