@@ -33,12 +33,17 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.endpoints.inspectServer.resources | nindent 12 }}
+          {{- if .Values.endpoints.inspectServer.healthCheck.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 5005
+              port: {{ default 8084 .Values.endpoints.inspectServer.healthCheck.port }}
             initialDelaySeconds: 3
+          {{- end }
           args:
+            {{- if .Values.endpoints.inspectServer.healthCheck.enabled }}
+            - {{ print "--healthcheck-port=" (default 8084 .Values.endpoints.inspectServer.healthCheck.port) | quote }}
+            {{- end }}
             {{- range .Values.endpoints.inspectServer.args }}
             - {{ . | quote}}
             {{- end }}
@@ -74,11 +79,17 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.endpoints.graphqlServer.resources | nindent 12 }}
+          {{- if .Values.endpoints.graphqlServer.healthCheck.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 4000
+              port: {{ default 8085 .Values.endpoints.graphqlServer.healthCheck.port }}
             initialDelaySeconds: 3
+          {{- end }}
+          args:
+            {{- if .Values.endpoints.graphqlServer.healthCheck.enabled }}
+            - {{ print "--healthcheck-port=" (default 8085 .Values.endpoints.graphqlServer.healthCheck.port) | quote }}
+            {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.endpoints.graphqlServer.logLevel }}

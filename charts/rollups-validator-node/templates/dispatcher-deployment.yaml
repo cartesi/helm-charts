@@ -45,11 +45,7 @@ spec:
           {{- end }}
           args:
             {{- if .Values.validator.dispatcher.healthCheck.enabled }}
-            {{- if .Values.validator.dispatcher.healthCheck.port }}
-            - {{ print "--hc-port=" .Values.validator.dispatcher.healthCheck.port | quote }}
-            {{- else }}
-            - {{ print "--hc-port=8081" | quote }}
-            {{- end }}
+            - {{ print "--healthcheck-port=" (default .Values.validator.dispatcher.healthCheck.port 8081) | quote }}
             {{- end }}
             - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (.Values.dapp.network | replace "-" "_") ".json" | quote }}
             - {{ print "--rd-dapp-deployment-file=/deployments/" (.Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
@@ -77,11 +73,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-            {{- if .Values.validator.dispatcher.healthCheck.port }}
-              port: {{ .Values.validator.dispatcher.healthCheck.port }}
-            {{- else }}
-              port: 8081
-            {{- end }}
+              port: {{ (default 8081 .Values.validator.dispatcher.healthCheck.port) }}
             initialDelaySeconds: 3
           {{- end }}
           env:
@@ -178,11 +170,7 @@ spec:
           {{- end }}
           args:
             {{- if .Values.validator.indexer.healthCheck.enabled }}
-            {{- if .Values.validator.indexer.healthCheck.port }}
-            - {{ print "--health-check-port=" .Values.validator.indexer.healthCheck.port | quote }}
-            {{- else }}
-            - {{ print "--health-check-port=8082" | quote }}
-            {{- end }}
+            - {{ print "--healthcheck-port=" (default 8082 .Values.validator.indexer.healthCheck.port) | quote }}
             {{- end }}
             {{- if .Values.dapp.contractAddress }}
             - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
@@ -202,11 +190,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-            {{- if .Values.validator.indexer.healthCheck.port }}
-              port: {{ print .Values.validator.indexer.healthCheck.port}}
-            {{- else }}
-              port: 8082
-            {{- end }}
+              port: {{ default 8082 .Values.validator.indexer.healthCheck.port }}
             initialDelaySeconds: 3
           {{- end }}
           env:

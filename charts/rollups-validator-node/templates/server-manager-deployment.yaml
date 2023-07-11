@@ -57,11 +57,7 @@ spec:
           {{- end }}
           args:
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
-            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
-            - {{ print "--health-check-port=" .Values.serverManager.advanceRunner.healthCheck.port | quote }}
-            {{- else }}
-            - {{ print "--health-check-port=8083" | quote }}
-            {{- end }}
+            - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.advanceRunner.healthCheck.port) | quote }}
             {{- end }}
             {{- if .Values.dapp.network }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
@@ -84,11 +80,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
-              port: {{ print .Values.serverManager.advanceRunner.healthCheck.port }}
-            {{- else }}
-              port: 8083
-            {{- end }}
+              port: {{ default 8083 .Values.serverManager.advanceRunner.healthCheck.port }}
             initialDelaySeconds: 3
           {{- end }}
           env:
