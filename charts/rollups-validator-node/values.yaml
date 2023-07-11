@@ -289,10 +289,11 @@ validator:
     # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
-    # -- dispatcher healthcheck
     healthCheck:
-      enabled: false
-      port:
+      # -- enable/disable health check for dispatcher
+      enabled: true
+      # -- define the health check port for dispatcher
+      port: 8081
 
     # -- Override default container command (useful when using custom images)
     command: []
@@ -411,10 +412,11 @@ validator:
     # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
-    # -- indexer healthcheck
     healthCheck:
-      enabled: false
-      port:
+      # -- enable/disable health check for indexer
+      enabled: true
+      # -- define the health check port for indexer
+      port: 8082
 
     # -- Override default container command (useful when using custom images)
     command: []
@@ -535,10 +537,11 @@ serverManager:
     # -- Set RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
 
-    # -- advanceRunner healthcheck
     healthCheck:
-      enabled: false
-      port:
+      # -- enable/disable health check for advanceRunner
+      enabled: true
+      # -- define the health check port for advanceRunner
+      port: 8083
 
     # -- verride default container command (useful when using custom images)
     command: []
@@ -671,6 +674,12 @@ endpoints:
     # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    healthCheck:
+      # -- enable/disable healthcheck for inspectServer
+      enabled: true
+      # -- define healthcheck port for inspectServer
+      port: 8084
+
     # -- Override default container command (useful when using custom images)
     command: []
 
@@ -738,6 +747,12 @@ endpoints:
 
     # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
+
+    healthCheck:
+      # -- enable/disable healthcheck for graphqlServer
+      enabled: true
+      # -- define healthcheck port for graphqlServer
+      port: 8085
 
     # -- Override default container command (useful when using custom images)
     command: []
