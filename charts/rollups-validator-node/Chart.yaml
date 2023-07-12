@@ -13,8 +13,7 @@ maintainers:
     url: https://github.com/oap75
 
 type: application
-version: 0.5.2
-appVersion: "0.9.1"
+version: 1.0.0
 
 dependencies:
   - name: redis

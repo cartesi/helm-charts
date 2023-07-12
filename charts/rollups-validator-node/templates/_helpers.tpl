@@ -44,8 +44,8 @@ helm.sh/chart: {{ include "validator.chart" . }}
 cartesi.io/project: rollups
 cartesi.io/rollups-version: {{ .Values.global.image.tag }}
 {{ include "validator.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Chart.Version }}
+app.kubernetes.io/version: {{ .Chart.Version | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
