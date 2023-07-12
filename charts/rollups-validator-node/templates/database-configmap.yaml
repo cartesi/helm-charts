@@ -1,0 +1,13 @@
+{{- if .Values.postgresql.enabled }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "validator.fullname" . }}-database-config
+  labels: {{- include "validator.labels" . | nindent 4 }}
+data:
+  POSTGRES_HOSTNAME: {{ .Release.Name }}-postgresql
+  POSTGRES_PORT: {{ .Values.postgresql.auth.port | quote }}
+  POSTGRES_USER: {{ required "A valid .Values.postgresql.auth.username is required" .Values.postgresql.auth.username }}
+  POSTGRES_DB: {{ required "A valid .Values.postgresql.auth.database is required" .Values.postgresql.auth.database }}
+{{- end }}

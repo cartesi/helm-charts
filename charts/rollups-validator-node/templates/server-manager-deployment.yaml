@@ -1,0 +1,187 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "validator.fullname" . }}-server-manager
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+      rollups.cartesi.io/component: server-manager
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.validator.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+        rollups.cartesi.io/component: server-manager
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.serverManager.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: share-machine-snapshot
+          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
+          command:
+            - cp
+            - -avr
+            - /var/opt/cartesi/machine-snapshots/0_0
+            - /var/opt/cartesi/machine-snapshots/latest
+            - /tmp/machine-snapshots/
+          volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /tmp/machine-snapshots
+              readOnly: false
+        {{- if .Values.serverManager.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: advance-runner
+          image: {{ include "serverManager.advanceRunner.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.serverManager.advanceRunner.resources | nindent 12 }}
+          {{- if .Values.serverManager.advanceRunner.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
+            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
+            - {{ print "--health-check-port=" .Values.serverManager.advanceRunner.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--health-check-port=8083" | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.dapp.network }}
+            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.contractAddress }}
+            - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
+            {{- range .Values.serverManager.advanceRunner.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.serverManager.advanceRunner.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
+              port: {{ print .Values.serverManager.advanceRunner.healthCheck.port }}
+            {{- else }}
+              port: 8083
+            {{- end }}
+            initialDelaySeconds: 3
+          {{- end }}
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.serverManager.advanceRunner.logLevel }}
+            {{- if .Values.serverManager.advanceRunner.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.serverManager.advanceRunner.extraEnvVarsCM .Values.serverManager.advanceRunner.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.serverManager.advanceRunner.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.serverManager.advanceRunner.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /var/opt/cartesi/machine-snapshots
+              readOnly: false
+            {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+        - name: server-manager
+          image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.serverManager.resources | nindent 12 }}
+          livenessProbe:
+            grpc:
+              port: 5001
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          {{- if .Values.serverManager.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.serverManager.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- range .Values.serverManager.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.serverManager.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          ports:
+            - containerPort: 5001
+          env:
+            - name: SERVER_MANAGER_LOG_LEVEL
+              value: {{ .Values.serverManager.logLevel }}
+            - name: REMOTE_CARTESI_MACHINE_LOG_LEVEL
+              value: {{ coalesce .Values.serverManager.remoteCartesiMachine.logLevel .Values.serverManager.logLevel }}
+            {{- if .Values.serverManager.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.serverManager.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.serverManager.extraEnvVarsCM .Values.serverManager.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.serverManager.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.serverManager.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.serverManager.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: shared-machine-snapshots
+              mountPath: /var/opt/cartesi/machine-snapshots
+              readOnly: false
+            {{- if .Values.serverManager.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+      volumes:
+        - name: shared-machine-snapshots
+          emptyDir: {}
+        {{- if .Values.serverManager.extraVolumes }}
+        {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumes "context" $ ) | nindent 8 }}
+        {{- end }}
+      {{- with .Values.serverManager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serverManager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serverManager.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
