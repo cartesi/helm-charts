@@ -1,0 +1,28 @@
+{{- if .Values.validator.localnode.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "validator.fullname" . }}-blockchain-data-pvc
+spec:
+  storageClassName: {{ .Values.validator.localnode.storage.blockchainData.storageClass | quote }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.validator.localnode.storage.blockchainData.size | quote }}
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "validator.fullname" . }}-deployments-pvc
+spec:
+  storageClassName: {{ .Values.validator.localnode.storage.deployments.storageClass | quote }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.validator.localnode.storage.deployments.size | quote }}
+  volumeMode: Filesystem
+{{- end }}
