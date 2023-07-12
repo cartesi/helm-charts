@@ -69,6 +69,23 @@ extraDeploy:
       SERVER_MANAGER_ADDRESS: '{{ include "validator.fullname" . }}-server-manager:5001'
 
 validator:
+  localnode:
+    enabled: true
+    anvil:
+      image:
+        registry: sunodo
+        repository: anvil
+        tag: 2.0.0
+      anvilState:
+        image:
+          registry: sunodo
+          repository: rollups-node
+          tag: 0.2.0
+    deployer:
+      image:
+        registry: cartesi
+        repository: rollups-cli
+        tag: 0.9.1
   dispatcher:
     extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
     healthCheck:
