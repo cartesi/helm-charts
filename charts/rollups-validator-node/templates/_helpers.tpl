@@ -55,7 +55,9 @@ Selector labels
 TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
+{{- if not .Values.validator.localnode.enabled -}}
 dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
+{{end -}}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -85,6 +87,20 @@ Return the proper image name
     {{- $termination = .imageRoot.digest | toString -}}
 {{- end -}}
 {{- printf "%s/%s%s%s" $registryName $repositoryName $separator $termination -}}
+{{- end -}}
+
+{{/*
+Return the proper anvil image name
+*/}}
+{{- define "anvil.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.validator.localnode.anvil.image "global" .Values.global) }}
+{{- end -}}
+
+{{/*
+Return the proper deployer image name
+*/}}
+{{- define "deployer.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.validator.localnode.deployer.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
