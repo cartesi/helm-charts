@@ -1,0 +1,36 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "validator.fullname" . }}-query-server
+  labels: {{- include "validator.labels" . | nindent 4 }}
+  annotations:
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.endpoints.graphqlServer.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
+      http: &http
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ include "validator.fullname" . }}-query-server
+                port:
+                  number: {{ .Values.endpoints.graphqlServer.service.port }}
+    {{- if .Values.ingress.addReleaseNameAsHost }}
+    - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
+      http: *http
+    {{- end }}
+{{- end }}
