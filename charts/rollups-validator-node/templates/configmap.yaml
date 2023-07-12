@@ -17,6 +17,7 @@ data:
   POSTGRES_DB: {{ required "A valid .Values.postgresql.auth.database is required" .Values.postgresql.auth.database }}
 {{- end }}
 ---
+{{- if not .Values.validator.localnode.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -30,3 +31,4 @@ data:
         "blockNumber": {{ required "A valid .Values.dapp.blockNumber is required" .Values.dapp.blockNumber | int64 | quote }},
         "transactionHash": {{ required "A valid .Values.dapp.transactionHash is required" .Values.dapp.transactionHash | quote }}
     }
+{{ end -}}
