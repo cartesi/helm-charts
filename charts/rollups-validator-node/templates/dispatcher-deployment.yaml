@@ -1,0 +1,319 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "validator.fullname" . }}
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+      rollups.cartesi.io/component: validator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.validator.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+        rollups.cartesi.io/component: validator
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.validator.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.validator.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.validator.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: rollups-dispatcher
+          image: {{ include "dispatcher.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.validator.dispatcher.resources | nindent 12 }}
+          {{- if .Values.validator.dispatcher.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.validator.dispatcher.healthCheck.enabled }}
+            {{- if .Values.validator.dispatcher.healthCheck.port }}
+            - {{ print "--hc-port=" .Values.validator.dispatcher.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--hc-port=8081" | quote }}
+            {{- end }}
+            {{- end }}
+            - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (.Values.dapp.network | replace "-" "_") ".json" | quote }}
+            - {{ print "--rd-dapp-deployment-file=/deployments/" (.Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.validator.localnode.enabled) }}
+            - {{ print "--tx-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
+            {{- end }}
+            {{- if .Values.validator.localnode.enabled }}
+            - --tx-provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
+            {{- else }}
+            - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.network }}
+            - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
+            {{- range .Values.validator.dispatcher.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.validator.dispatcher.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          {{- if .Values.validator.dispatcher.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.validator.dispatcher.healthCheck.port }}
+              port: {{ .Values.validator.dispatcher.healthCheck.port }}
+            {{- else }}
+              port: 8081
+            {{- end }}
+            initialDelaySeconds: 3
+          {{- end }}
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.validator.dispatcher.logLevel }}
+            {{- if .Values.validator.dispatcher.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.validator.dispatcher.extraEnvVarsCM .Values.validator.dispatcher.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.validator.dispatcher.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.dispatcher.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            - name: mnemonic
+              mountPath: /var/run/secrets/mnemonic
+              readOnly: true
+            {{- end }}
+            - name: dispatcher-lib
+              mountPath: /opt/cartesi/rollups-dispatcher/lib
+              readOnly: false
+            {{- if .Values.validator.localnode.enabled }}
+            - name: blockchain-data
+              mountPath: /opt/cartesi/share/deployments
+              readOnly: false
+            - name: deployments
+              mountPath: /deployments
+              readOnly: false
+            {{- else }}
+            - name: dapp
+              mountPath: "/deployments/{{ .Values.dapp.network }}/"
+              readOnly: true
+            {{- end}}
+            {{- if .Values.validator.dispatcher.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.validator.dispatcher.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+        - name: state-server
+          image: {{ include "stateServer.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.validator.stateServer.resources | nindent 12 }}
+          {{- if .Values.validator.stateServer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.validator.localnode.enabled }}
+            - --bh-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
+            - --bh-ws-endpoint=ws://{{ include "validator.fullname" . }}-localnode:8545
+            {{- else }}
+            - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
+            {{- end }}
+            {{- range .Values.validator.stateServer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.validator.stateServer.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          livenessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 3
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.validator.stateServer.logLevel }}
+            {{- if .Values.validator.stateServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.validator.stateServer.extraEnvVarsCM .Values.validator.stateServer.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.validator.stateServer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.stateServer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: 50051
+          volumeMounts:
+            {{- if .Values.validator.stateServer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.validator.stateServer.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+        - name: rollups-indexer
+          image: {{ include "indexer.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.validator.indexer.resources | nindent 12 }}
+          {{- if .Values.validator.indexer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.indexer.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.validator.indexer.healthCheck.enabled }}
+            {{- if .Values.validator.indexer.healthCheck.port }}
+            - {{ print "--health-check-port=" .Values.validator.indexer.healthCheck.port | quote }}
+            {{- else }}
+            - {{ print "--health-check-port=8082" | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.validator.localnode.enabled }}
+            - --dapp-contract-address-file=/deployments/localhost/dapp.json
+            {{- else }}
+            - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
+            {{- else if .Values.redis.endpoint }}
+            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
+            {{- range .Values.validator.indexer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.validator.indexer.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          {{- if .Values.validator.indexer.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.validator.indexer.healthCheck.port }}
+              port: {{ print .Values.validator.indexer.healthCheck.port}}
+            {{- else }}
+              port: 8082
+            {{- end }}
+            initialDelaySeconds: 3
+          {{- end }}
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.validator.indexer.logLevel }}
+            {{- if .Values.validator.indexer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.indexer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+            {{- if .Values.postgresql.enabled }}
+            - name: POSTGRES_PASSWORD_FILE
+              value: /var/run/secrets/postgres/PASSWORD
+            {{- end }}
+          envFrom:
+          {{- if .Values.postgresql.enabled }}
+            - configMapRef:
+                name: {{ include "validator.fullname" . }}-database-config
+          {{- end }}
+          {{- if or .Values.validator.indexer.extraEnvVarsCM .Values.validator.indexer.extraEnvVarsSecret }}
+            {{- if .Values.validator.indexer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.indexer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.postgresql.enabled }}
+            - name: postgres
+              mountPath: /var/run/secrets/postgres
+              readOnly: true
+            {{- end }}
+            {{- if .Values.validator.localnode.enabled }}
+            - name: blockchain-data
+              mountPath: /opt/cartesi/share/blockchain
+              readOnly: false
+            - name: deployments
+              mountPath: /deployments
+              readOnly: false
+            {{- end }}
+            {{- if .Values.validator.indexer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.validator.indexer.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+      volumes:
+        {{- if .Values.validator.localnode.enabled }}
+        - name: blockchain-data
+          persistentVolumeClaim:
+            claimName: {{ include "validator.fullname" . }}-blockchain-data-pvc
+        - name: deployments
+          persistentVolumeClaim:
+            claimName: {{ include "validator.fullname" . }}-deployments-pvc
+        {{- end }}
+        - name: dispatcher-lib
+          emptyDir: {}
+        - name: dapp
+          configMap:
+            name: "{{ include "validator.fullname" . }}-dapp"
+            items:
+              - key: "dapp.json"
+                path: "dapp.json"
+        {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+        - name: mnemonic
+          secret:
+            {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled) }}
+            secretName: {{ include "validator.fullname" . }}-mnemonic
+            {{- else }}
+            secretName: {{ .Values.dapp.mnemonic.secretRef }}
+            {{- end }}
+        {{- end }}
+        {{- if .Values.postgresql.enabled }}
+        - name: postgres
+          secret:
+            secretName: {{ include "validator.fullname" . }}-postgres
+        {{- end }}
+        {{- if .Values.validator.extraVolumes }}
+        {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumes "context" $ ) | nindent 8 }}
+        {{- end }}
+      {{- with .Values.validator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
