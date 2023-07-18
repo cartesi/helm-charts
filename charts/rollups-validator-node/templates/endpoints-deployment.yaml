@@ -90,6 +90,12 @@ spec:
             {{- if .Values.endpoints.graphqlServer.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8085 .Values.endpoints.graphqlServer.healthCheck.port) | quote }}
             {{- end }}
+            {{- range .Values.endpoints.graphqlServer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.endpoints.graphqlServer.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
           env:
             - name: RUST_LOG
               value: {{ .Values.endpoints.graphqlServer.logLevel }}
