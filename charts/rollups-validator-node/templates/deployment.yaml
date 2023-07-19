@@ -136,7 +136,7 @@ spec:
           {{- if .Values.validator.dispatcher.command }}
           command:
           {{- include "tplvalues.render" (dict "value" .Values.validator.dispatcher.command "context" $) | nindent 12 }}
-          {{- end }}
+          {{- else }}
           args:
             {{- if .Values.validator.dispatcher.healthCheck.enabled }}
             {{- if .Values.validator.dispatcher.healthCheck.port }}
@@ -162,6 +162,7 @@ spec:
             - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
             {{- else if .Values.redis.endpoint }}
             - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
             {{- end }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
@@ -228,7 +229,7 @@ spec:
           {{- if .Values.validator.stateServer.command }}
           command:
           {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.command "context" $) | nindent 12 }}
-          {{- end }}
+          {{- else }}
           args:
             {{- if .Values.validator.localnode.enabled }}
             - --bh-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
@@ -236,6 +237,7 @@ spec:
             {{- else }}
             - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
             - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
+            {{- end }}
             {{- end }}
             {{- range .Values.validator.stateServer.args }}
             - {{ . | quote}}
@@ -279,7 +281,7 @@ spec:
           {{- if .Values.validator.indexer.command }}
           command:
           {{- include "tplvalues.render" (dict "value" .Values.validator.indexer.command "context" $) | nindent 12 }}
-          {{- end }}
+          {{- else }}
           args:
             {{- if .Values.validator.indexer.healthCheck.enabled }}
             {{- if .Values.validator.indexer.healthCheck.port }}
@@ -297,6 +299,7 @@ spec:
             - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
             {{- else if .Values.redis.endpoint }}
             - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
             {{- end }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
@@ -459,7 +462,7 @@ spec:
           {{- if .Values.serverManager.advanceRunner.command }}
           command:
           {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.command "context" $) | nindent 12 }}
-          {{- end }}
+          {{- else }}
           args:
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             {{- if .Values.serverManager.advanceRunner.healthCheck.port }}
@@ -480,6 +483,7 @@ spec:
             - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
             {{- else if .Values.redis.endpoint }}
             - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
+            {{- end }}
             {{- end }}
             {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
