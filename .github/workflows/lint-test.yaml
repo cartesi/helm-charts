@@ -86,3 +86,7 @@ jobs:
             --debug \
             --namespace default \
             --target-branch ${{ github.event.repository.default_branch }}
+
+      - name: Test graphql-server connection
+        run: |
+          helm test rollups-validator-node-${{ github.event.repository.default_branch }}

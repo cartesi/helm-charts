@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-graphql-server-http-check"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: http-check
+      image: busybox
+      command: ['wget']
+      args: ['--spider', '--timeout=5', 'http://{{ include "validator.fullname" . }}-graphql-server:{{ .Values.endpoints.graphqlServer.service.port }}']
+  restartPolicy: Never
