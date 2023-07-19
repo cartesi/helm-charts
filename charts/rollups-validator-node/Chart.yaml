@@ -6,7 +6,7 @@ maintainers:
   - name: oap75
 
 type: application
-version: 0.5.0
+version: 0.5.2
 appVersion: "0.9.1"
 
 dependencies:
