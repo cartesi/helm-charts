@@ -1,0 +1,114 @@
+{{ template "chart.header" . }}
+# Package for Cartesi Rollups validator nodes
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## TL;DR
+
+```console
+helm install my-rollups-validator-node oci://docker.io/cartesi/rollups-validator-node
+```
+
+### OR
+
+```console
+helm install my-rollups-validator-node oci://ghcr.io/cartesi/charts/rollups-validator-node
+```
+
+### OR
+
+```console
+helm repo add cartesi https://cartesi.github.io/helm-charts
+helm install my-rollups-validator-node cartesi/rollups-validator-node
+```
+
+## Introduction
+
+This chart bootstraps [Cartesi Rollups Validator Nodes](https://docs.cartesi.io/cartesi-rollups/overview/) deployments on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+## Prerequisites
+
+- Kubernetes 1.19+
+- Helm 3.2.0+
+- PersistentVolume provisioner support in the underlying infrastructure
+
+## Installing the Chart
+
+To install the chart with the release name `my-rollups-validator-node`:
+
+```console
+helm install my-rollups-validator-node oci://docker.io/cartesi/rollups-validator-node
+```
+
+OR
+
+```console
+helm install my-rollups-validator-node oci://ghcr.io/cartesi/charts/rollups-validator-node
+```
+
+OR
+
+```console
+helm repo add cartesi https://cartesi.github.io/helm-charts
+helm install my-rollups-validator-node cartesi/rollups-validator-node
+```
+
+The command deploys Cartesi Rollups Validator Nodes; on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-rollups-validator-node` deployment:
+
+```console
+helm delete my-rollups-validator-node
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+{{ template "chart.valuesSection" . }}
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
+```console
+helm install my-rollups-validator-node \
+  --set postgresql.auth.password=secretpassword \
+    oci://docker.io/cartesi/rollups-validator-node
+```
+
+The above command sets the bitnami PostgreSQL server password to `secretpassword`.
+
+> NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent volumes (PVs) used by the chart and re-deploy it, or use the application's built-in administrative tools if available.
+
+Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+
+```console
+helm install my-release -f values.yaml oci://docker.io/cartesi/rollups-validator-node
+```
+
+> **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Configuration and installation details
+
+### Rolling VS Immutable tags
+
+It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
+
+Cartesi will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+## Persistence
+
+By default, the chart uses StorageClass named `standard` for the [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/). The volume is created using dynamic volume provisioning. If a your default StorageClass name is different, specify it during installation.
+
+### Setting Pod's affinity
+
+This chart allows you to set your custom affinity. Find more information about Pod's affinity in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
+
+{{ template "helm-docs.versionFooter" . }}
