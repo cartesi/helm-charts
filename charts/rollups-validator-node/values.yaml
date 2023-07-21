@@ -4,76 +4,81 @@
 ## dapp deployment paramaters
 ##
 dapp:
-  ## dapp.image is a complete image name, e.g. "cartesi/dapp:echo-python-0.8.0-server"
-  ## REQUIRED
+  # -- the complete image name, e.g. "cartesi/dapp:echo-python-0.8.0-server"
+  # (REQUIRED)
   image:
-  ## dapp.contractAddress is the contract address of the dapp deployed on the blockchain
-  ## REQUIRED
+  # -- the contract address of the dapp deployed on the blockchain
+  # (REQUIRED)
   contractAddress:
-  ## dapp.blockHash is the block hash of the block where the dapp was deployed
-  ## REQUIRED
+  # -- the block hash of the block where the dapp was deployed
+  # (REQUIRED)
   blockHash:
-  ## dapp.blockNumber is the block number of the block where the dapp was deployed
-  ## REQUIRED
+  # -- the block number of the block where the dapp was deployed
+  # (REQUIRED)
   blockNumber:
-  ## dapp.transactionHash is the transaction hash of the transaction that deployed the dapp
-  ## REQUIRED
+  # -- dapp.transactionHash is the transaction hash of the transaction that deployed the dapp
+  # (REQUIRED)
   transactionHash:
 
-  ## mnemonic defines the configuration for the mnemonic
-  ## use value or secretRef, never both
+  # -- mnemonic defines the configuration for the mnemonic
+  # use value or secretRef, never both
   mnemonic:
-    ## dapp.mnemonic.value is the 12 words mnemonic for the wallet
-    ## a secret will be created with its content
+    # -- the 12 words mnemonic for the wallet
+    # a secret will be created with its content
     value:
-    ## dapp.mnemonic.secretRef is the name of the secret that should exist in the same namespace
-    ## the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}`
+    # -- the name of the secret that should exist in the same namespace
+    # the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}`
     secretRef:
-  ## dapp.httpProvider is the URL for the http:// endpoint of the provider
-  ## REQUIRED
+  # -- the URL for the http:// endpoint of the provider
+  # (REQUIRED)
   httpProvider:
-  ## dapp.wsProvider is the URL for the ws:// endpoint of the provider
-  ## REQUIRED
+  # -- the URL for the ws:// endpoint of the provider
+  # (REQUIRED)
   wsProvider:
-  ## dapp.network is the name of the network the dapp is deployed on
-  ## REQUIRED
-  ##
-  ## Available options are:
-  ##   - mainnet
-  ##   - goerli
-  ##   - bsc-testnet
-  ##   - avalanche-fuji
-  ##   - polygon-mumbai
-  ##   - optimism-goerli
-  ##   - arbitrum-goerli
-  ##   - chiado
+  # -- sthe name of the network the dapp is deployed on
+  # (REQUIRED)
+  # Available options are:
+  #   - mainnet
+  #   - goerli
+  #   - bsc-testnet
+  #   - avalanche-fuji
+  #   - polygon-mumbai
+  #   - optimism-goerli
+  #   - arbitrum-goerli
+  #   - chiado
   network:
 
 ## cartesi holds the configuration for the default containers images
 ##
 global:
   image:
+    # -- Global Docker image registry
     registry: docker.io
+    # -- Global Docker Image tag
     tag: 0.9.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
 serviceAccount:
-  ## serviceAccount.create defines whether a service account should be created
+  # -- defines whether a service account should be created
   create: false
-  ## serviceAccount.annottions defines the annotations to add to the service account
+  # -- defines the annotations to add to the service account
   annotations: {}
-  ## serviceAccount.name defines the name of the service account to use.
-  ## If not set and create is true, a name is generated using the fullname template
+  # -- defines the name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# -- String to fully override name
 fullnameOverride: ""
+# -- String to partially override  name
 nameOverride: ""
 
 ## image configuration to be used by the rollups-validator-node
 ##
 image:
+  # -- Pullpolicy for Docker Images
   pullPolicy: Always
+  # -- Cartesi Rollups Validator Nodes pull secrets
   pullSecrets: []
 
 ## ingress defines whether an Ingress will be created for the dapp
@@ -84,30 +89,36 @@ image:
 ## host: 0xabcde.local
 ##
 ingress:
+  # -- Specifies whether a Ingress should be created
   enabled: false
+  # -- Ingress Sub domain name
   subDomain: "local"
   ## ingress.addReleaseNameCNAME adds the helm release name to the ingress as an additional rules[].host: {}
   ## You should be careful to use a release name that's safe to use as a hostname
   ## e.g. "my-release-name"
   ## You shouldn't use "_" as a character in a hostname
+  # -- dditional rules[].host
   addReleaseNameAsHost: false
-  ## ingress.annotation defines the annotations for both ingresses
+  # -- defines the annotations for ingresses
   annotations: {}
 
 ## extraDeploy Extra objects to deploy (value evaluated as a template)
-##
+# -- Array of extra objects to deploy with the release
 extraDeploy: []
 
 ## rollups-validator-node Pod configuration
 ##
 validator:
+  # -- Node labels for validator pods assignment
   nodeSelector: {}
 
+  # -- Tolerations for validator pods assignment
   tolerations: []
 
+  # -- Affinity for validator pods assignment
   affinity: {}
 
-  ## validator.initContainers add additional init containers to the validator-node pod(s)
+  # -- add additional init containers to the validator-node pod(s)
   ## Example
   ##
   ## initContainers:
@@ -117,35 +128,43 @@ validator:
   ##
   initContainers: []
 
+  # -- validator replicas pod's Security Context
   podSecurityContext:
     {}
     ## fsGroup: 2000
 
+  # -- Annotations for Validator replicas pods
   podAnnotations: {}
 
-  ## validator.extraVolumes Optionally specify extra list of additional volumes for the validator pod(s)
-  ##
+  # -- Optionally specify extra list of additional volumes for the validator pod(s)
   extraVolumes: []
 
   dispatcher:
+    # -- Set the dispatcher docker image
     image:
       registry:
       repository: cartesi/rollups-dispatcher
       tag:
       digest:
 
-    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- dispatcher healthcheck
     healthCheck:
       enabled: false
       port:
 
+    # -- Override default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for dispatcher
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to validator.dispatcher container
+    # -- Array with extra environment variables to add to validator.dispatcher container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -153,14 +172,15 @@ validator:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for dispatcher container
+    # -- Name of existing ConfigMap containing extra env vars for dispatcher container
     ##
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for dispatcher container
+    # -- Name of existing Secret containing extra env vars for dispatcher container
     ##
     extraEnvVarsSecret: ""
 
+    # -- Set dispatcher container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -170,6 +190,7 @@ validator:
       ## runAsNonRoot: true
       ## runAsUser: 1000
 
+    # -- Set dispatcher container resources
     resources:
       {}
       ## limits:
@@ -179,25 +200,30 @@ validator:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## validator.dispacther.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the dispatcher container(s)
-    ##
+    # -- Optionally specify extra list of additional volumeMounts for the dispatcher container(s)
     extraVolumeMounts: []
 
   stateServer:
+    # -- Set the stateServer docker image
     image:
       registry:
       repository: cartesi/rollups-state-server
       tag:
       digest:
 
-    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- Override default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for StateServer
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to validator.stateServer container
+    # -- Array with extra environment variables to add to validator.stateServer container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -205,14 +231,13 @@ validator:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for stateServer container
-    ##
+    # -- Name of existing ConfigMap containing extra env vars for stateServer container
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for stateServer container
-    ##
+    # -- Name of existing Secret containing extra env vars for stateServer container
     extraEnvVarsSecret: ""
 
+    # -- Set StateServer container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -222,6 +247,7 @@ validator:
       ## runAsNonRoot: true
       ## runAsUser: 1000
 
+    # -- Set StateServer container resources
     resources:
       {}
       ## limits:
@@ -231,31 +257,36 @@ validator:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## validator.stateServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the stateServer container(s)
-    ##
+    # -- Optionally specify extra list of additional volumeMounts for the stateServer container(s)
     extraVolumeMounts: []
 
   indexer:
     postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
-
+    # -- Set the indexer docker image
     image:
       registry:
       repository: cartesi/rollups-indexer
       tag:
       digest:
 
-    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- indexer healthcheck
     healthCheck:
       enabled: false
       port:
 
+    # -- Override default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for indexer
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to validator.indexer container
+    # -- Array with extra environment variables to add to validator.indexer container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -263,14 +294,15 @@ validator:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for indexer container
+    # -- Name of existing ConfigMap containing extra env vars for indexer container
     ##
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for indexer container
+    # -- Name of existing Secret containing extra env vars for indexer container
     ##
     extraEnvVarsSecret: ""
 
+    # -- Set indexer container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -280,6 +312,7 @@ validator:
       ## runAsNonRoot: true
       ## runAsUser: 1000
 
+    # -- Set indexer container resources
     resources:
       {}
       ## limits:
@@ -289,20 +322,24 @@ validator:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## validator.indexer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the indexer container(s)
+    # -- Optionally specify extra list of additional volumeMounts for the indexer container(s)
     ##
     extraVolumeMounts: []
 
 ## rollups-validator-node-server-manager Pod configuration
 ##
 serverManager:
+
+  # -- Node labels for pods assignment
   nodeSelector: {}
 
+  # -- Tolerations for pods assignment
   tolerations: []
 
+  # -- Affinity for pods assignment
   affinity: {}
 
-  ## validator.initContainers add additional init containers to the validator-node pod(s)
+  # -- additional init containers to the ServerManager pod(s)
   ## Example
   ##
   ## initContainers:
@@ -312,62 +349,76 @@ serverManager:
   ##
   initContainers: []
 
+  # -- Set serverManager replicas pod's Security Context
   podSecurityContext:
     {}
     ## fsGroup: 2000
 
+  # -- Annotations for serverManager replicas pods
   podAnnotations: {}
 
   storage:
     machineSnapshots:
+      # -- Persistent Volume storage class for the serverManager
       storageClass: standard
+      # -- Persistent Volume storage size for the serverManager
       size: 2Gi
 
-  ## serverManager.extraVolumes Optionally specify extra list of additional volumes for the serverManager pod(s)
+  # -- Optionally specify extra list of additional volumes for the serverManager pod(s)
   ##
   extraVolumes: []
 
-  ## serverManager.logLevel set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
+  # -- set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
   logLevel: info
 
+  # -- Override default container command (useful when using custom images)
   command: []
+
+  # -- Override default container args (useful when using custom images)
   args:
     - "/opt/cartesi/bin/server-manager"
     - "--manager-address=0.0.0.0:5001"
+
+  # -- Extra arguments for serverManager
   extraArgs: []
 
-  ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for serverManager container
-  ##
+  # -- Name of existing ConfigMap containing extra env vars for serverManager container
   extraEnvVarsCM: ""
 
-  ## extraEnvVarsSecret Name of existing Secret containing extra env vars for serverManager container
-  ##
+  # -- Name of existing Secret containing extra env vars for serverManager container
   extraEnvVarsSecret: ""
 
   remoteCartesiMachine:
-    ## serverManager.remoteCartesiMachine.logLevel set REMOTE_CARTESI_MACHINE_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
-    ## defaults to serverManager.logLevel unless you provide a different value
+    # -- Set REMOTE_CARTESI_MACHINE_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal.
+    # defaults to serverManager.logLevel unless you provide a different value
     logLevel:
 
   advanceRunner:
+    # -- Set the advanceRunner docker image
     image:
       registry:
       repository: cartesi/rollups-advance-runner
       tag:
       digest:
 
-    ## serverManager.advanceRunner.logLevel sets RUST_LOG env, can be trace, debug, info, warn, error, or off.
+    # -- Set RUST_LOG env, can be trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- advanceRunner healthcheck
     healthCheck:
       enabled: false
       port:
 
+    # -- verride default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for advanceRunner
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to serverManager.advanceRunner container
+    # -- Array with extra environment variables to add to serverManager.advanceRunner container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -375,14 +426,13 @@ serverManager:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for advanceRunner container
-    ##
+    # -- Name of existing ConfigMap containing extra env vars for advanceRunner container
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for advanceRunner container
-    ##
+    # -- Name of existing Secret containing extra env vars for advanceRunner container
     extraEnvVarsSecret: ""
 
+    # -- Set advanceRunner container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -392,6 +442,7 @@ serverManager:
       ## runAsNonRoot: true
       ## runAsUser: 1000
 
+    # -- Set advanceRunner container resources
     resources:
       {}
       ## limits:
@@ -401,11 +452,10 @@ serverManager:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## serverManager.advanceRunner.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s)
-    ##
+    # -- Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s)
     extraVolumeMounts: []
 
-  ## extraEnvVars Array with extra environment variables to add to serverManager container
+  # -- Array with extra environment variables to add to serverManager container
   ## e.g:
   ## extraEnvVars:
   ##   - name: FOO
@@ -414,9 +464,12 @@ serverManager:
   extraEnvVars: []
 
   service:
+    # -- serverManager service type
     type: ClusterIP
+    # -- serverManager service port
     port: 5001
 
+  # -- Set serverManager container Security Context
   securityContext:
     {}
     ## capabilities:
@@ -426,6 +479,7 @@ serverManager:
     ## runAsNonRoot: true
     ## runAsUser: 1000
 
+  # -- Set serverManager container resources
   resources:
     {}
     ## limits:
@@ -434,22 +488,27 @@ serverManager:
     ## requests:
     ##   cpu: 100m
     ##   memory: 128Mi
-  ## serverManager.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the serverManager container(s)
-  ##
+
+  # -- Optionally specify extra list of additional volumeMounts for the serverManager container(s)
   extraVolumeMounts: []
 
 ## rollups-validator-node-endpoints Pod configuration
 ##
 endpoints:
+
+  # -- Number of endpoints replicas to deploy
   replicaCount: 1
 
+  # -- Node labels for pods assignment
   nodeSelector: {}
 
+  # -- Tolerations for pods assignment
   tolerations: []
 
+  # -- Affinity for pods assignment
   affinity: {}
 
-  ## endpoints.initContainers Add additional init containers to the endpoints pod(s)
+  # -- Add additional init containers to the endpoints pod(s)
   ## Example
   ##
   ## initContainers:
@@ -459,31 +518,39 @@ endpoints:
   ##
   initContainers: []
 
+  # -- Set endpoints replicas pod's Security Context
   podSecurityContext:
     {}
     ## fsGroup: 2000
 
+  # -- Annotations for endpoints replicas pods
   podAnnotations: {}
 
-  ## endpoints.extraVolumes Optionally specify extra list of additional volumes for the endpoints pod(s)
+  # -- Optionally specify extra list of additional volumes for the endpoints pod(s)
   ##
   extraVolumes: []
 
   inspectServer:
+    # -- Set the inspectServer docker image
     image:
       registry:
       repository: cartesi/rollups-inspect-server
       tag:
       digest:
 
-    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- Override default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for inspectServer
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
+    # -- extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -491,14 +558,13 @@ endpoints:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container
-    ##
+    # -- extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container
-    ##
+    # -- extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container
     extraEnvVarsSecret: ""
 
+    # -- Set inspectServer container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -509,14 +575,17 @@ endpoints:
       ## runAsUser: 1000
 
     ingress:
-      ## endpoints.inspectServer.ingress.annotations defines extra anotations
-      ## specifically for the endpoints.inspectServer.service
+      # -- defines extra anotations
+      # specifically for the endpoints.inspectServer.service
       annotations: {}
 
     service:
+      # -- inspectServer service type
       type: ClusterIP
+      # -- inspectServer service port
       port: 5005
 
+    # -- Set inspectServer container resources
     resources:
       {}
       ## limits:
@@ -526,25 +595,30 @@ endpoints:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## endpoints.inspectServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s)
-    ##
+    # -- Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s)
     extraVolumeMounts: []
 
   graphqlServer:
+    # -- Set the graphqlServer docker image
     image:
       registry:
       repository: cartesi/rollups-graphql-server
       tag:
       digest:
 
-    ## The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    # -- Override default container command (useful when using custom images)
     command: []
+
+    # -- Override default container args (useful when using custom images)
     args: []
+
+    # -- Extra arguments for graphqlServer
     extraArgs: []
 
-    ## extraEnvVars Array with extra environment variables to add to endpoints.graphqlServer container
+    # -- Array with extra environment variables to add to endpoints.graphqlServer container
     ## e.g:
     ## extraEnvVars:
     ##   - name: FOO
@@ -552,14 +626,13 @@ endpoints:
     ##
     extraEnvVars: []
 
-    ## extraEnvVarsCM Name of existing ConfigMap containing extra env vars for graphqlServer container
-    ##
+    # -- Name of existing ConfigMap containing extra env vars for graphqlServer container
     extraEnvVarsCM: ""
 
-    ## extraEnvVarsSecret Name of existing Secret containing extra env vars for graphqlServer container
-    ##
+    # -- Name of existing Secret containing extra env vars for graphqlServer container
     extraEnvVarsSecret: ""
 
+    # -- Set graphqlServer container Security Context
     securityContext:
       {}
       ## capabilities:
@@ -570,14 +643,17 @@ endpoints:
       ## runAsUser: 1000
 
     ingress:
-      ## endpoints.graphqlServer.ingress.annotations defines extra anotations
-      ## specifically for the endpoints.graphqlServer.service
+      # -- defines extra anotations
+      # specifically for the endpoints.graphqlServer.service
       annotations: {}
 
     service:
+      # -- graphqlServer service type
       type: ClusterIP
+      # -- graphqlServer service port
       port: 4000
 
+    # -- Set graphqlServer container resources
     resources:
       {}
       ## limits:
@@ -587,27 +663,33 @@ endpoints:
       ##   cpu: 100m
       ##   memory: 128Mi
 
-    ## endpoints.graphqlServer.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
-    ##
+    # -- Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
     extraVolumeMounts: []
 
 ## redis configuration
 redis:
+  # -- Use bitnami Redis&reg; pod.
   enabled: true
-  ## redis.endpoint: e.g.: redis://localhost:6379
-  ## REQUIRED if you disabled redis
+  # -- redis.endpoint: e.g.: redis://localhost:6379
+  # REQUIRED if you disabled redis
   endpoint:
   image:
+    # -- Redis&reg; docker image tag.
     tag: 6.2-debian-11
+  # -- Redis&reg; architecture. Allowed values: `standalone` or `replication`
   architecture: standalone
   auth:
+    # -- Redis&reg; Enable password authentication
     enabled: false
   metrics:
+    # -- sidecar prometheus exporter to expose Redis&reg; metrics
     enabled: true
 
 ## PostgreSQL configuration
 postgresql:
+  # -- Use bitnami postgreSQL pod.
   enabled: true
+  # -- Set bitnami postgreSQL`username`, `password`,`database`
   auth:
     username: rollups
     password: rollups
@@ -615,4 +697,5 @@ postgresql:
     hostname:
     port: 5432
   image:
+    # -- bitnami postgreSQL docker image tag.
     tag: 13.9.0-debian-11-r27
