@@ -60,7 +60,6 @@ jobs:
       - name: Install postgres service to kind cluster
         if: steps.list-changed.outputs.changed == 'true'
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm install postgresql bitnami/postgresql \
             --namespace default \
             --wait \
@@ -71,7 +70,6 @@ jobs:
       - name: Install redis service to kind cluster
         if: steps.list-changed.outputs.changed == 'true'
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm install redis bitnami/redis \
             --namespace default \
             --wait \
