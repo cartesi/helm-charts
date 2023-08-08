@@ -46,6 +46,7 @@ dapp:
   #   - optimism-goerli
   #   - arbitrum-goerli
   #   - chiado
+  #   - localhost
   network:
 
 ## cartesi holds the configuration for the default containers images
@@ -329,7 +330,6 @@ validator:
 ## rollups-validator-node-server-manager Pod configuration
 ##
 serverManager:
-
   # -- Node labels for pods assignment
   nodeSelector: {}
 
@@ -495,7 +495,6 @@ serverManager:
 ## rollups-validator-node-endpoints Pod configuration
 ##
 endpoints:
-
   # -- Number of endpoints replicas to deploy
   replicaCount: 1
 
