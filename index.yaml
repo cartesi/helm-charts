@@ -3,6 +3,32 @@ entries:
   rollups-validator-node:
   - apiVersion: v2
     appVersion: 0.9.1
+    created: "2023-08-08T16:45:09.441546209Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.3.11
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.9
+    description: A Helm chart for a Cartesi Rollups Validator Node
+    digest: 6d4f6340536bc8ccf1b0968f7e2116b71caf85ea6c3ba1ac883d04b5ab90b26b
+    maintainers:
+    - email: endersonmaia@gmail.com
+      name: EndersonMaia
+      url: https://github.com/endersonmaia
+    - email: omid.asadpoor36@gmail.com
+      name: oap75
+      url: https://github.com/oap75
+    name: rollups-validator-node
+    type: application
+    urls:
+    - https://github.com/cartesi/helm-charts/releases/download/rollups-validator-node-0.5.2/rollups-validator-node-0.5.2.tgz
+    version: 0.5.2
+  - apiVersion: v2
+    appVersion: 0.9.1
     created: "2023-08-03T12:07:10.29499714Z"
     dependencies:
     - condition: redis.enabled
@@ -157,4 +183,4 @@ entries:
     urls:
     - https://github.com/cartesi/helm-charts/releases/download/rollups-validator-node-0.1.3/rollups-validator-node-0.1.3.tgz
     version: 0.1.3
-generated: "2023-08-03T12:07:10.295174343Z"
+generated: "2023-08-08T16:45:09.441588209Z"
