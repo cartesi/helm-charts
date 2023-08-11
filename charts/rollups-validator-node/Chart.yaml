@@ -5,7 +5,7 @@ apiVersion: v2
 name: rollups-validator-node
 description: A Helm chart for a Cartesi Rollups Validator Node
 maintainers:
-  - name: EndersonMaia
+  - name: endersonmaia
     email: endersonmaia@gmail.com
     url: https://github.com/endersonmaia
   - name: oap75

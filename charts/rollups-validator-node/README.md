@@ -2,7 +2,7 @@
 
 # Package for Cartesi Rollups validator nodes
 
-![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.1](https://img.shields.io/badge/AppVersion-0.9.1-informational?style=flat-square)
+![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.1](https://img.shields.io/badge/AppVersion-0.9.1-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -10,8 +10,8 @@ Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/ov
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Enderson Maia | <endersonmaia@gmail.com> | <https://github.com/endersonmaia> |
-| Omid Asadpour | <omid.asadpoor36@gmail.com> | <https://github.com/oap75> |
+| endersonmaia | <endersonmaia@gmail.com> | <https://github.com/endersonmaia> |
+| oap75 | <omid.asadpoor36@gmail.com> | <https://github.com/oap75> |
 
 ## Requirements
 
@@ -96,7 +96,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | dapp.mnemonic | object | `{"secretRef":null,"value":null}` | mnemonic defines the configuration for the mnemonic use value or secretRef, never both |
 | dapp.mnemonic.secretRef | string | `nil` | the name of the secret that should exist in the same namespace the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}` |
 | dapp.mnemonic.value | string | `nil` | the 12 words mnemonic for the wallet a secret will be created with its content |
-| dapp.network | string | `nil` | sthe name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - goerli   - bsc-testnet   - avalanche-fuji   - polygon-mumbai   - optimism-goerli   - arbitrum-goerli   - chiado |
+| dapp.network | string | `nil` | sthe name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - goerli   - bsc-testnet   - avalanche-fuji   - polygon-mumbai   - optimism-goerli   - arbitrum-goerli   - chiado   - localhost |
 | dapp.transactionHash | string | `nil` | dapp.transactionHash is the transaction hash of the transaction that deployed the dapp (REQUIRED) |
 | dapp.wsProvider | string | `nil` | the URL for the ws:// endpoint of the provider (REQUIRED) |
 | endpoints.affinity | object | `{}` | Affinity for pods assignment |
@@ -175,7 +175,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for serverManager container |
 | serverManager.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for serverManager container |
 | serverManager.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager container(s) |
-| serverManager.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the serverManager pod(s) # |
+| serverManager.extraVolumes | list | `[]` |  |
 | serverManager.initContainers | list | `[]` | additional init containers to the ServerManager pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | serverManager.logLevel | string | `"info"` | set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal. |
 | serverManager.nodeSelector | object | `{}` | Node labels for pods assignment |
@@ -186,8 +186,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.securityContext | object | `{}` | Set serverManager container Security Context |
 | serverManager.service.port | int | `5001` | serverManager service port |
 | serverManager.service.type | string | `"ClusterIP"` | serverManager service type |
-| serverManager.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for the serverManager |
-| serverManager.storage.machineSnapshots.storageClass | string | `"standard"` | Persistent Volume storage class for the serverManager |
 | serverManager.tolerations | list | `[]` | Tolerations for pods assignment |
 | serviceAccount.annotations | object | `{}` | defines the annotations to add to the service account |
 | serviceAccount.create | bool | `false` | defines whether a service account should be created |
@@ -220,6 +218,38 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.indexer.resources | object | `{}` | Set indexer container resources |
 | validator.indexer.securityContext | object | `{}` | Set indexer container Security Context |
 | validator.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| validator.localnode.anvil.args | list | `[]` | Override default container args (useful when using custom images) |
+| validator.localnode.anvil.command | list | `[]` | Override default container command (useful when using custom images) |
+| validator.localnode.anvil.extraArgs | list | `[]` | Extra arguments for anvil |
+| validator.localnode.anvil.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.anvil container e.g: extraEnvVars:   - name: FOO     value: "bar" |
+| validator.localnode.anvil.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for anvil container |
+| validator.localnode.anvil.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for anvil container |
+| validator.localnode.anvil.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the anvil container(s) # |
+| validator.localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"2.0.0"}` | Set the anvil docker image |
+| validator.localnode.anvil.resources | object | `{}` | Set anvil container resources |
+| validator.localnode.anvil.securityContext | object | `{}` | Set anvil container Security Context |
+| validator.localnode.deployer.args | list | `[]` | Override default container args (useful when using custom images) |
+| validator.localnode.deployer.command | list | `[]` | Override default container command (useful when using custom images) |
+| validator.localnode.deployer.extraArgs | list | `[]` | Extra arguments for deployer |
+| validator.localnode.deployer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.deployer container e.g: extraEnvVars:   - name: FOO     value: "bar" |
+| validator.localnode.deployer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for deployer container |
+| validator.localnode.deployer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for deployer container |
+| validator.localnode.deployer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the deployer container(s) |
+| validator.localnode.deployer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-cli","tag":null}` | Set the deployer docker image |
+| validator.localnode.deployer.resources | object | `{}` | Set deployer container resources |
+| validator.localnode.deployer.securityContext | object | `{}` | Set deployer container Security Context |
+| validator.localnode.enabled | bool | `false` | Specify whether to use localnode or not |
+| validator.localnode.service.port | int | `8545` | localnode service port |
+| validator.localnode.service.type | string | `"ClusterIP"` | localnode service type |
+| validator.localnode.storage.blockchainData | object | `{"size":"2Gi","storageClass":"standard"}` | PVC for localnode blockchain data |
+| validator.localnode.storage.blockchainData.size | string | `"2Gi"` | Persistent Volume storage size for localnode blockchain data |
+| validator.localnode.storage.blockchainData.storageClass | string | `"standard"` | Persistent Volume storage class for localnode blockchain data |
+| validator.localnode.storage.deployments | object | `{"size":"1Gi","storageClass":"standard"}` | PVC for loaclnode rollups deployment |
+| validator.localnode.storage.deployments.size | string | `"1Gi"` | Persistent Volume storage size for localnode rollups deployment |
+| validator.localnode.storage.deployments.storageClass | string | `"standard"` | Persistent Volume storage class for localnode rollups deployment |
+| validator.localnode.storage.machineSnapshots | object | `{"size":"2Gi","storageClass":"standard"}` | PVC for localnode shared machine snapshot |
+| validator.localnode.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for localnode shared machine snapshot |
+| validator.localnode.storage.machineSnapshots.storageClass | string | `"standard"` | Persistent Volume storage class for localnode shared machine snapshot |
 | validator.nodeSelector | object | `{}` | Node labels for validator pods assignment |
 | validator.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
 | validator.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
