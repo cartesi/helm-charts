@@ -332,6 +332,13 @@ validator:
 ## rollups-validator-node-server-manager Pod configuration
 ##
 serverManager:
+  # -- Override the image defined in dapp.image
+  image:
+    registry:
+    repository: cartesi/rollups-indexer
+    tag:
+    digest:
+
   # -- Node labels for pods assignment
   nodeSelector: {}
 
@@ -340,6 +347,10 @@ serverManager:
 
   # -- Affinity for pods assignment
   affinity: {}
+
+  # -- Share cartesi-machine snpashot from dapp.image to advanceRunner and serverManager
+  # The image must be located at /var/opt/cartesi/share/machine-snapshots/0_0
+  shareSnapshot: true
 
   # -- additional init containers to the ServerManager pod(s)
   ## Example

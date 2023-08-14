@@ -35,6 +35,10 @@ spec:
       securityContext:
         {{- toYaml .Values.serverManager.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- if .Values.serverManager.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+        {{- if .Values.serverManager.shareSnapshotFromImage }}
         - name: share-machine-snapshot
           image: {{ required "A valid .Values.dapp.image is required" .Values.dapp.image }}
           command:
@@ -47,8 +51,6 @@ spec:
             - name: shared-machine-snapshots
               mountPath: /tmp/machine-snapshots
               readOnly: false
-        {{- if .Values.serverManager.initContainers }}
-        {{- include "tplvalues.render" ( dict "value" .Values.serverManager.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
       containers:
         - name: advance-runner
@@ -106,9 +108,11 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.serverManager.shareSnapshotFromImage }}
             - name: shared-machine-snapshots
               mountPath: /var/opt/cartesi/machine-snapshots
               readOnly: false
+            {{- end }}
             {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.advanceRunner.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
@@ -156,16 +160,20 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.serverManager.shareSnapshotFromImage }}
             - name: shared-machine-snapshots
               mountPath: /var/opt/cartesi/machine-snapshots
               readOnly: false
+            {{- end }}
             {{- if .Values.serverManager.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
 
       volumes:
+        {{- if .Values.serverManager.shareSnapshotFromImage }}
         - name: shared-machine-snapshots
           emptyDir: {}
+        {{- end }}
         {{- if .Values.serverManager.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
