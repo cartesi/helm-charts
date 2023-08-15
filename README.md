@@ -1,5 +1,7 @@
 # Cartesi Kubernetes Helm Charts
 
+![Release Chart](https://github.com/cartesi/helm-charts/actions/workflows/release.yaml/badge.svg)
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 The code is provided as-is with no warranties.
