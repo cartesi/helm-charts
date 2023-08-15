@@ -49,11 +49,21 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Push Helm Chart to OCI Registries
+      - name: Check changed version
+        id: file-changed
         run: |
-          REPO_OWNER=`echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
+          shopt -s nullglob
           # Get packed chart file name
-          PKG_NAME=`ls .cr-release-packages/*.tgz`
-          # pushing chart to OCI registries
+          PKG_NAME=(.cr-release-packages/*.tgz)
+          if [ ${#PKG_NAME[@]} -gt 0 ]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Push Helm Chart to OCI Registries
+        if: steps.file-changed.outputs.changed == 'true'
+        run: |
+          shopt -s nullglob
+          REPO_OWNER=`echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
+          PKG_NAME=(.cr-release-packages/*.tgz)
           helm push ${PKG_NAME} oci://registry-1.docker.io/cartesi
           helm push ${PKG_NAME} oci://ghcr.io/${REPO_OWNER}/charts
