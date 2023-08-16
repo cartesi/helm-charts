@@ -2,7 +2,7 @@
 
 # Package for Cartesi Rollups validator nodes
 
-![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.9.1](https://img.shields.io/badge/AppVersion-0.9.1-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -17,8 +17,8 @@ Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/ov
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | postgresql | 12.1.9 |
-| https://charts.bitnami.com/bitnami | redis | 17.3.11 |
+| <https://charts.bitnami.com/bitnami> | postgresql | 12.1.9 |
+| <https://charts.bitnami.com/bitnami> | redis | 17.3.11 |
 
 ## TL;DR
 
@@ -108,6 +108,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | endpoints.graphqlServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for graphqlServer container |
 | endpoints.graphqlServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for graphqlServer container |
 | endpoints.graphqlServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s) |
+| endpoints.graphqlServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for graphqlServer |
+| endpoints.graphqlServer.healthCheck.port | int | `8085` | define healthcheck port for graphqlServer |
 | endpoints.graphqlServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-graphql-server","tag":null}` | Set the graphqlServer docker image |
 | endpoints.graphqlServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.graphqlServer.service |
 | endpoints.graphqlServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
@@ -123,6 +125,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | endpoints.inspectServer.extraEnvVarsCM | string | `""` | extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container |
 | endpoints.inspectServer.extraEnvVarsSecret | string | `""` | extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container |
 | endpoints.inspectServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s) |
+| endpoints.inspectServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for inspectServer |
+| endpoints.inspectServer.healthCheck.port | int | `8084` | define healthcheck port for inspectServer |
 | endpoints.inspectServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-inspect-server","tag":null}` | Set the inspectServer docker image |
 | endpoints.inspectServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.inspectServer.service |
 | endpoints.inspectServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
@@ -146,7 +150,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | ingress.enabled | bool | `false` | Specifies whether a Ingress should be created |
 | ingress.subDomain | string | `"local"` | Ingress Sub domain name |
 | nameOverride | string | `""` | String to partially override  name |
-| postgresql.auth | object | `{"database":"rollups","hostname":null,"password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
+| postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
 | postgresql.enabled | bool | `true` | Use bitnami postgreSQL pod. |
 | postgresql.image.tag | string | `"13.9.0-debian-11-r27"` | bitnami postgreSQL docker image tag. |
 | redis.architecture | string | `"standalone"` | Redis&reg; architecture. Allowed values: `standalone` or `replication` |
@@ -162,7 +166,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.advanceRunner.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for advanceRunner container |
 | serverManager.advanceRunner.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for advanceRunner container |
 | serverManager.advanceRunner.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s) |
-| serverManager.advanceRunner.healthCheck | object | `{"enabled":false,"port":null}` | advanceRunner healthcheck |
+| serverManager.advanceRunner.healthCheck.enabled | bool | `true` | enable/disable health check for advanceRunner |
+| serverManager.advanceRunner.healthCheck.port | int | `8083` | define the health check port for advanceRunner |
 | serverManager.advanceRunner.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-advance-runner","tag":null}` | Set the advanceRunner docker image |
 | serverManager.advanceRunner.logLevel | string | `"info"` | Set RUST_LOG env, can be trace, debug, info, warn, error, or off. |
 | serverManager.advanceRunner.resources | object | `{}` | Set advanceRunner container resources |
@@ -175,7 +180,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for serverManager container |
 | serverManager.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for serverManager container |
 | serverManager.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager container(s) |
-| serverManager.extraVolumes | list | `[]` |  |
+| serverManager.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the serverManager pod(s) # |
+| serverManager.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Override the image defined in dapp.image |
 | serverManager.initContainers | list | `[]` | additional init containers to the ServerManager pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | serverManager.logLevel | string | `"info"` | set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal. |
 | serverManager.nodeSelector | object | `{}` | Node labels for pods assignment |
@@ -186,6 +192,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.securityContext | object | `{}` | Set serverManager container Security Context |
 | serverManager.service.port | int | `5001` | serverManager service port |
 | serverManager.service.type | string | `"ClusterIP"` | serverManager service type |
+| serverManager.shareSnapshotFromImage | bool | `true` | Share cartesi-machine snpashot from dapp.image to advanceRunner and serverManager The image must be located at /var/opt/cartesi/share/machine-snapshots/0_0 |
+| serverManager.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for the serverManager |
+| serverManager.storage.machineSnapshots.storageClass | string | `"standard"` | Persistent Volume storage class for the serverManager |
 | serverManager.tolerations | list | `[]` | Tolerations for pods assignment |
 | serviceAccount.annotations | object | `{}` | defines the annotations to add to the service account |
 | serviceAccount.create | bool | `false` | defines whether a service account should be created |
@@ -198,7 +207,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.dispatcher.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for dispatcher container # |
 | validator.dispatcher.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for dispatcher container # |
 | validator.dispatcher.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the dispatcher container(s) |
-| validator.dispatcher.healthCheck | object | `{"enabled":false,"port":null}` | dispatcher healthcheck |
+| validator.dispatcher.healthCheck.enabled | bool | `true` | enable/disable health check for dispatcher |
+| validator.dispatcher.healthCheck.port | int | `8081` | define the health check port for dispatcher |
 | validator.dispatcher.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-dispatcher","tag":null}` | Set the dispatcher docker image |
 | validator.dispatcher.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
 | validator.dispatcher.resources | object | `{}` | Set dispatcher container resources |
@@ -211,10 +221,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.indexer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for indexer container # |
 | validator.indexer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for indexer container # |
 | validator.indexer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the indexer container(s) # |
-| validator.indexer.healthCheck | object | `{"enabled":false,"port":null}` | indexer healthcheck |
+| validator.indexer.healthCheck.enabled | bool | `true` | enable/disable health check for indexer |
+| validator.indexer.healthCheck.port | int | `8082` | define the health check port for indexer |
 | validator.indexer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Set the indexer docker image |
 | validator.indexer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| validator.indexer.postgresEndpoint | string | `"postgresql://postgres:postgres@database:5432/postgres"` |  |
 | validator.indexer.resources | object | `{}` | Set indexer container resources |
 | validator.indexer.securityContext | object | `{}` | Set indexer container Security Context |
 | validator.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
