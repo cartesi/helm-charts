@@ -1,0 +1,69 @@
+name: machine-download
+on:
+    workflow_call:
+    pull_request:
+        paths:
+            - .github/workflows/machine-download.yaml
+            - packages/machine-download/**
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+permissions:
+    contents: read
+    packages: write
+    id-token: write
+    actions: write
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Get package tag/version
+              id: package-version
+              if: ${{ github.event_name == 'push' }}
+              run: |
+                  jq -r '"PACKAGE_VERSION=\(.version)"' packages/machine-download/package.json >> "$GITHUB_OUTPUT"
+
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  images: |
+                      docker.io/cartesi/machine-download,enable=${{ github.event_name != 'pull_request' }}
+                      ghcr.io/cartesi/machine-download
+                  tags: |
+                      type=raw,value=${{ steps.package-version.outputs.PACKAGE_VERSION }},enable=${{ github.event_name == 'push' }}
+                      type=ref,event=pr
+                  labels: |
+                      org.opencontainers.image.title=Cartesi Machine Download
+                      org.opencontainers.image.description=Cartesi Machine Download from IPFS
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Login to DockerHub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+
+            - uses: depot/setup-action@v1
+            - name: Build and push
+              uses: depot/bake-action@v1
+              with:
+                  project: ${{ vars.DEPOT_PROJECT }}
+                  workdir: packages/machine-download
+                  files: |
+                      ./docker-bake.hcl
+                      ./docker-bake.platforms.hcl
+                      ${{ steps.meta.outputs.bake-file }}
+                  push: true
