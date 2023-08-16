@@ -1,0 +1,8 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+    name: cartesi-rollups-strip-address
+spec:
+    stripPrefixRegex:
+        regex:
+            - "/0x[a-fA-F0-9]{40}/"

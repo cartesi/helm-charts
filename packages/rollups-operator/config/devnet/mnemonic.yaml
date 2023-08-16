@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cartesi-rollups-mnemonic
+type: Opaque
+data:
+    MNEMONIC: dGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IHRlc3QgdGVzdCB0ZXN0IGp1bms= # base64('test test test test test test test test test test test junk')

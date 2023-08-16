@@ -1,0 +1,10 @@
+apiVersion: rollups.cartesi.io/v1
+kind: DApp
+metadata:
+    name: dapp-3694c82f
+spec:
+    address: "0x3694c82fde031b8462e90E8Bfee0377De2B01ECc"
+    blockHash: "0x7afe732e7bd035923c48f60991d019c588496a83b8f7082a5ae5502910395ff0"
+    blockNumber: "10"
+    cid: bafybeibdpcfqtcqhgjzmo5wzi3kraxdu6f4wm2hzna4tj2enkepzvldjtq
+    transactionHash: "0x13c75f9871d0ae6dd2337bc9ae89fad1d16f6b1bd20ca5ccb950aadd5a7232e7"

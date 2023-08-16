@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: cartesi-rollups-config
+data:
+    redis: redis://redis-master.default.svc.cluster.local:6379
+    rpc_url: http://host.docker.internal:8545
+    rpc_ws_url: ws://host.docker.internal:8545
+    chain_id: "31337"
+    epoch_duration: "3600"
+    confirmations: "1"
+    contracts.json: |
+        {
+            "contracts": {
+                "Authority": { "address": "0x5050F233F2312B1636eb7CF6c7876D9cC6ac4785" },
+                "History": { "address": "0x4FF8BD9122b7D91d56Dd5c88FE6891Fb3c0b5281" },
+                "InputBox": { "address": "0x59b22D57D4f067708AB0c00552767405926dc768" }
+            }
+        }
