@@ -1,0 +1,27 @@
+{
+    "name": "rollups-deploy",
+    "version": "0.0.0",
+    "private": true,
+    "license": "Apache-2.0",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev --parallel",
+        "lint": "turbo run lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "version-packages": "yarn changeset version && turbo run version",
+        "publish-packages": "yarn changeset tag && git push --follow-tags"
+    },
+    "devDependencies": {
+        "@changesets/cli": "^2",
+        "eslint-config-custom": "*",
+        "prettier": "^3",
+        "turbo": "^1"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "packageManager": "yarn@1.22.19"
+}
