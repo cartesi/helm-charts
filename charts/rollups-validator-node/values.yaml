@@ -263,7 +263,6 @@ validator:
     extraVolumeMounts: []
 
   indexer:
-    postgresEndpoint: postgresql://postgres:postgres@database:5432/postgres
     # -- Set the indexer docker image
     image:
       registry:
@@ -406,6 +405,43 @@ serverManager:
     # defaults to serverManager.logLevel unless you provide a different value
     logLevel:
 
+  # -- Array with extra environment variables to add to serverManager container
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
+
+  service:
+    # -- serverManager service type
+    type: ClusterIP
+    # -- serverManager service port
+    port: 5001
+
+  # -- Set serverManager container Security Context
+  securityContext:
+    {}
+    ## capabilities:
+    ##   drop:
+    ##   - ALL
+    ## readOnlyRootFilesystem: true
+    ## runAsNonRoot: true
+    ## runAsUser: 1000
+
+  # -- Set serverManager container resources
+  resources:
+    {}
+    ## limits:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+    ## requests:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+
+  # -- Optionally specify extra list of additional volumeMounts for the serverManager container(s)
+  extraVolumeMounts: []
+
   advanceRunner:
     # -- Set the advanceRunner docker image
     image:
@@ -468,43 +504,6 @@ serverManager:
 
     # -- Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s)
     extraVolumeMounts: []
-
-  # -- Array with extra environment variables to add to serverManager container
-  ## e.g:
-  ## extraEnvVars:
-  ##   - name: FOO
-  ##     value: "bar"
-  ##
-  extraEnvVars: []
-
-  service:
-    # -- serverManager service type
-    type: ClusterIP
-    # -- serverManager service port
-    port: 5001
-
-  # -- Set serverManager container Security Context
-  securityContext:
-    {}
-    ## capabilities:
-    ##   drop:
-    ##   - ALL
-    ## readOnlyRootFilesystem: true
-    ## runAsNonRoot: true
-    ## runAsUser: 1000
-
-  # -- Set serverManager container resources
-  resources:
-    {}
-    ## limits:
-    ##   cpu: 100m
-    ##   memory: 128Mi
-    ## requests:
-    ##   cpu: 100m
-    ##   memory: 128Mi
-
-  # -- Optionally specify extra list of additional volumeMounts for the serverManager container(s)
-  extraVolumeMounts: []
 
 ## rollups-validator-node-endpoints Pod configuration
 ##
@@ -719,7 +718,6 @@ postgresql:
     username: rollups
     password: rollups
     database: rollups
-    hostname:
     port: 5432
   image:
     # -- bitnami postgreSQL docker image tag.
