@@ -124,6 +124,9 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.validator.stateServer.command "context" $) | nindent 12 }}
           {{- end }}
           args:
+            {{- if .Values.validator.indexer.stateServer.enabled }}
+            - {{ print "--healthcheck-port=" (default 8082 .Values.validator.stateServer.healthCheck.port) | quote }}
+            {{- end }}
             {{- if .Values.dapp.httpProvider }}
             - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
             {{- end }}

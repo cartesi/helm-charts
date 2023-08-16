@@ -216,6 +216,12 @@ validator:
     # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
     logLevel: info
 
+    healthCheck:
+      # -- enable/disable health check for StateServer
+      enabled: false
+      # -- define the health check port for StateServer
+      port:
+
     # -- Override default container command (useful when using custom images)
     command: []
 
@@ -338,6 +344,12 @@ serverManager:
     repository: cartesi/rollups-indexer
     tag:
     digest:
+
+  healthCheck:
+    # -- enable/disable health check for ServerManager
+    enabled: false
+    # -- define the health check port for ServerManager
+    port:
 
   # -- Node labels for pods assignment
   nodeSelector: {}

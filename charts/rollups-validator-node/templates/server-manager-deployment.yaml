@@ -132,6 +132,9 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.serverManager.command "context" $) | nindent 12 }}
           {{- end }}
           args:
+            {{- if .Values.serverManager.healthCheck.enabled }}
+            - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.healthCheck.port) | quote }}
+            {{- end }}
             {{- range .Values.serverManager.args }}
             - {{ . | quote}}
             {{- end }}
