@@ -69,7 +69,9 @@ spec:
             {{- if .Values.dapp.network }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-            {{- if .Values.dapp.contractAddress }}
+           {{- if .Values.validator.localnode.enabled }}
+            - --dapp-contract-address-file=/deployments/localhost/dapp.json
+            {{- else }}
             - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
             {{- end }}
             {{- if .Values.redis.enabled }}
@@ -111,6 +113,11 @@ spec:
             {{- if .Values.serverManager.shareSnapshotFromImage }}
             - name: shared-machine-snapshots
               mountPath: /var/opt/cartesi/machine-snapshots
+              readOnly: false
+            {{- end }}
+            {{- if .Values.validator.localnode.enabled }}
+            - name: deployments
+              mountPath: /deployments
               readOnly: false
             {{- end }}
             {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
@@ -172,7 +179,17 @@ spec:
       volumes:
         {{- if .Values.serverManager.shareSnapshotFromImage }}
         - name: shared-machine-snapshots
+          {{- if .Values.validator.localnode.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "validator.fullname" . }}-machine-snapshots-pvc
+          {{- else }}
           emptyDir: {}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.validator.localnode.enabled }}
+        - name: deployments
+          persistentVolumeClaim:
+            claimName: {{ include "validator.fullname" . }}-deployments-pvc
         {{- end }}
         {{- if .Values.serverManager.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumes "context" $ ) | nindent 8 }}
