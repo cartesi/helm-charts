@@ -518,7 +518,7 @@ serverManager:
 
   # -- Override default container args (useful when using custom images)
   args:
-    - "/opt/cartesi/bin/server-manager"
+    - "server-manager"
     - "--manager-address=0.0.0.0:5001"
 
   # -- Extra arguments for serverManager
