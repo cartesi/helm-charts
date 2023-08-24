@@ -1,0 +1,23 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+{{- if .Values.validator.localnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "validator.fullname" . }}-localnode
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.validator.localnode.service.type }}
+  ports:
+    - port: {{ .Values.validator.localnode.service.port }}
+      targetPort: 8545
+      protocol: TCP
+      name: localnode
+  selector:
+    {{- include "validator.selectorLabels" . | nindent 4 }}
+    rollups.cartesi.io/component: localnode
+{{- end }}
