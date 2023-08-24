@@ -55,7 +55,7 @@ spec:
             - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (.Values.dapp.network | replace "-" "_") ".json" | quote }}
             - {{ print "--rd-dapp-deployment-file=/deployments/" (.Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
             {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.validator.localnode.enabled) }}
-            - {{ print "--tx-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
+            - {{ print "--auth-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
             {{- end }}
             {{- if .Values.validator.localnode.enabled }}
             - --tx-provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
