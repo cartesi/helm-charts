@@ -827,8 +827,11 @@ redis:
   # -- Use bitnami Redis&reg; pod.
   enabled: true
   # -- redis.endpoint: e.g.: redis://localhost:6379
-  # REQUIRED if you disabled redis
+  # REQUIRED if you disabled redis and your redis is standalone
   endpoint:
+  # -- redis.clusterEndpoints: e.g.: [ "redis://localhost:6379" ]
+  # REQUIRED if you disabled redis and your redis is cluster
+  clusterEndpoints: []
   image:
     # -- Redis&reg; docker image tag.
     tag: 6.2-debian-11

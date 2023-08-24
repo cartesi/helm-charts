@@ -151,8 +151,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | postgresql.image.tag | string | `"13.9.0-debian-11-r27"` | bitnami postgreSQL docker image tag. |
 | redis.architecture | string | `"standalone"` | Redis&reg; architecture. Allowed values: `standalone` or `replication` |
 | redis.auth.enabled | bool | `false` | Redis&reg; Enable password authentication |
+| redis.clusterEndpoints | list | `[]` | redis.clusterEndpoints: e.g.: [ "redis://localhost:6379" ] REQUIRED if you disabled redis and your redis is cluster |
 | redis.enabled | bool | `true` | Use bitnami Redis&reg; pod. |
-| redis.endpoint | string | `nil` | redis.endpoint: e.g.: redis://localhost:6379 REQUIRED if you disabled redis |
+| redis.endpoint | string | `nil` | redis.endpoint: e.g.: redis://localhost:6379 REQUIRED if you disabled redis and your redis is standalone |
 | redis.image.tag | string | `"6.2-debian-11"` | Redis&reg; docker image tag. |
 | redis.metrics.enabled | bool | `true` | sidecar prometheus exporter to expose Redis&reg; metrics |
 | serverManager.advanceRunner.args | list | `[]` | Override default container args (useful when using custom images) |

@@ -65,11 +65,7 @@ spec:
             {{- if .Values.dapp.network }}
             - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-            {{- if .Values.redis.enabled }}
-            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
-            {{- else if .Values.redis.endpoint }}
-            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
-            {{- end }}
+            - {{ print (include "validator.redisConfig" .) | quote }}
             {{- range .Values.validator.dispatcher.args }}
             - {{ . | quote}}
             {{- end }}
@@ -197,11 +193,7 @@ spec:
             {{- if .Values.dapp.network }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-            {{- if .Values.redis.enabled }}
-            - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
-            {{- else if .Values.redis.endpoint }}
-            - {{ print "--redis-endpoint=" .Values.redis.endpoint | quote }}
-            {{- end }}
+            - {{ print (include "validator.redisConfig" .) | quote }}
             {{- range .Values.validator.indexer.args }}
             - {{ . | quote}}
             {{- end }}
