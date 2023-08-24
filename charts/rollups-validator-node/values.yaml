@@ -39,14 +39,12 @@ dapp:
   # (REQUIRED)
   # Available options are:
   #   - mainnet
-  #   - goerli
-  #   - bsc-testnet
-  #   - avalanche-fuji
-  #   - polygon-mumbai
+  #   - optimism
   #   - optimism-goerli
+  #   - arbitrum
   #   - arbitrum-goerli
-  #   - chiado
   #   - localhost
+  #   - sepolia
   network:
 
 ## cartesi holds the configuration for the default containers images
