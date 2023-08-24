@@ -17,8 +17,8 @@ Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/ov
 
 | Repository | Name | Version |
 |------------|------|---------|
-| <https://charts.bitnami.com/bitnami> | postgresql | 12.1.9 |
-| <https://charts.bitnami.com/bitnami> | redis | 17.3.11 |
+| https://charts.bitnami.com/bitnami | postgresql | 12.1.9 |
+| https://charts.bitnami.com/bitnami | redis | 17.3.11 |
 
 ## TL;DR
 
@@ -96,7 +96,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | dapp.mnemonic | object | `{"secretRef":null,"value":null}` | mnemonic defines the configuration for the mnemonic use value or secretRef, never both |
 | dapp.mnemonic.secretRef | string | `nil` | the name of the secret that should exist in the same namespace the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}` |
 | dapp.mnemonic.value | string | `nil` | the 12 words mnemonic for the wallet a secret will be created with its content |
-| dapp.network | string | `nil` | sthe name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - goerli   - bsc-testnet   - avalanche-fuji   - polygon-mumbai   - optimism-goerli   - arbitrum-goerli   - chiado   - localhost |
+| dapp.network | string | `nil` | the name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - optimism   - optimism-goerli   - arbitrum   - arbitrum-goerli   - localhost   - sepolia |
 | dapp.transactionHash | string | `nil` | dapp.transactionHash is the transaction hash of the transaction that deployed the dapp (REQUIRED) |
 | dapp.wsProvider | string | `nil` | the URL for the ws:// endpoint of the provider (REQUIRED) |
 | endpoints.affinity | object | `{}` | Affinity for pods assignment |
@@ -142,12 +142,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
-| global.image.tag | string | `"0.9.1"` | Global Docker Image tag |
+| global.image.tag | string | `"1.0.0"` | Global Docker Image tag |
 | image.pullPolicy | string | `"Always"` | Pullpolicy for Docker Images |
 | image.pullSecrets | list | `[]` | Cartesi Rollups Validator Nodes pull secrets |
 | ingress.addReleaseNameAsHost | bool | `false` | dditional rules[].host |
 | ingress.annotations | object | `{}` | defines the annotations for ingresses |
 | ingress.enabled | bool | `false` | Specifies whether a Ingress should be created |
+| ingress.ingressClassName | string | `nil` | defines the IngressClass to be used If not set, the default class will be used https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class |
 | ingress.subDomain | string | `"local"` | Ingress Sub domain name |
 | nameOverride | string | `""` | String to partially override  name |
 | postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
@@ -173,14 +174,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.advanceRunner.resources | object | `{}` | Set advanceRunner container resources |
 | serverManager.advanceRunner.securityContext | object | `{}` | Set advanceRunner container Security Context |
 | serverManager.affinity | object | `{}` | Affinity for pods assignment |
-| serverManager.args | list | `["/opt/cartesi/bin/server-manager","--manager-address=0.0.0.0:5001"]` | Override default container args (useful when using custom images) |
+| serverManager.args | list | `["server-manager","--manager-address=0.0.0.0:5001"]` | Override default container args (useful when using custom images) |
 | serverManager.command | list | `[]` | Override default container command (useful when using custom images) |
 | serverManager.extraArgs | list | `[]` | Extra arguments for serverManager |
 | serverManager.extraEnvVars | list | `[]` | Array with extra environment variables to add to serverManager container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | serverManager.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for serverManager container |
 | serverManager.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for serverManager container |
 | serverManager.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager container(s) |
-| serverManager.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the serverManager pod(s) # |
+| serverManager.extraVolumes | list | `[]` |  |
 | serverManager.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Override the image defined in dapp.image |
 | serverManager.initContainers | list | `[]` | additional init containers to the ServerManager pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | serverManager.logLevel | string | `"info"` | set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal. |
@@ -193,8 +194,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.service.port | int | `5001` | serverManager service port |
 | serverManager.service.type | string | `"ClusterIP"` | serverManager service type |
 | serverManager.shareSnapshotFromImage | bool | `true` | Share cartesi-machine snpashot from dapp.image to advanceRunner and serverManager The image must be located at /var/opt/cartesi/share/machine-snapshots/0_0 |
-| serverManager.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for the serverManager |
-| serverManager.storage.machineSnapshots.storageClass | string | `"standard"` | Persistent Volume storage class for the serverManager |
 | serverManager.tolerations | list | `[]` | Tolerations for pods assignment |
 | serviceAccount.annotations | object | `{}` | defines the annotations to add to the service account |
 | serviceAccount.create | bool | `false` | defines whether a service account should be created |
@@ -228,7 +227,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.indexer.resources | object | `{}` | Set indexer container resources |
 | validator.indexer.securityContext | object | `{}` | Set indexer container Security Context |
 | validator.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
-| validator.localnode.anvil.args | list | `[]` | Override default container args (useful when using custom images) |
+| validator.localnode.anvil.args | list | `["anvil","--block-time","5","--load-state","/opt/cartesi/share/deployments/anvil_state.json"]` | Override default container args (useful when using custom images) |
 | validator.localnode.anvil.command | list | `[]` | Override default container command (useful when using custom images) |
 | validator.localnode.anvil.extraArgs | list | `[]` | Extra arguments for anvil |
 | validator.localnode.anvil.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.anvil container e.g: extraEnvVars:   - name: FOO     value: "bar" |
