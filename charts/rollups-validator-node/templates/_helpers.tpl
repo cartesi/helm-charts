@@ -11,6 +11,23 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Define redis configuration
+*/}}
+{{- define "validator.redisConfig" -}}
+{{- if .Values.redis.enabled }}
+{{- if eq .Values.redis.architecture "replication" }}
+{{- print "--redis-cluster-endpoints=redis://" .Release.Name "-redis-master" }}
+{{- else if eq .Values.redis.architecture "standalone" }}
+{{- print "--redis-endpoint=redis://" .Release.Name "-redis-master" }}
+{{- end }}
+{{- else if .Values.redis.endpoint }}
+{{- print "--redis-endpoint=" .Values.redis.endpoint }}
+{{- else if .Values.redis.clusterEndpoints }}
+{{- print "--redis-cluster-endpoints=" (join "," .Values.redis.clusterEndpoints) }}
+{{- end }}
+{{- end }}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
