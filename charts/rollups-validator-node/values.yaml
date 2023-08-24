@@ -56,7 +56,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 0.9.1
+    tag: 1.0.0
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
