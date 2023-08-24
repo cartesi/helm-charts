@@ -35,18 +35,16 @@ dapp:
   # -- the URL for the ws:// endpoint of the provider
   # (REQUIRED)
   wsProvider:
-  # -- sthe name of the network the dapp is deployed on
+  # -- the name of the network the dapp is deployed on
   # (REQUIRED)
   # Available options are:
   #   - mainnet
-  #   - goerli
-  #   - bsc-testnet
-  #   - avalanche-fuji
-  #   - polygon-mumbai
+  #   - optimism
   #   - optimism-goerli
+  #   - arbitrum
   #   - arbitrum-goerli
-  #   - chiado
   #   - localhost
+  #   - sepolia
   network:
 
 ## cartesi holds the configuration for the default containers images
