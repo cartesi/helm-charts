@@ -90,6 +90,10 @@ image:
 ingress:
   # -- Specifies whether a Ingress should be created
   enabled: false
+  # -- defines the IngressClass to be used
+  # If not set, the default class will be used
+  # https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class
+  ingressClassName:
   # -- Ingress Sub domain name
   subDomain: "local"
   ## ingress.addReleaseNameCNAME adds the helm release name to the ingress as an additional rules[].host: {}
