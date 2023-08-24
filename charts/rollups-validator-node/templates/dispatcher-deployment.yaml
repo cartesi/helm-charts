@@ -194,6 +194,9 @@ spec:
             {{- else }}
             - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
             {{- end }}
+            {{- if .Values.dapp.network }}
+            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
             {{- if .Values.redis.enabled }}
             - {{ print "--redis-endpoint=redis://" .Release.Name "-redis-master" | quote }}
             {{- else if .Values.redis.endpoint }}
