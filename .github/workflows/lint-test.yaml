@@ -20,7 +20,7 @@ jobs:
         env:
           MNEMONIC: ${{ secrets.MNEMONIC }}
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
-          TEST_VALUES_PATH: ./charts/rollups-validator-node/ci/test-values.yaml
+          TEST_VALUES_PATH: ./charts/rollups-node/ci/test-values.yaml
         run: cat $TEST_VALUES_PATH.tpl | envsubst > $TEST_VALUES_PATH
 
       - name: Set up Helm
@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
           check-latest: true
 
       - name: Set up chart-testing
@@ -46,7 +46,7 @@ jobs:
 
       - name: Add dependancies
         run: |
-          cd ./charts/rollups-validator-node
+          cd ./charts/rollups-node
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm dependency build
 

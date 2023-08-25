@@ -25,7 +25,7 @@ jobs:
         env:
           MNEMONIC: ${{ secrets.MNEMONIC }}
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
-          TEST_VALUES_PATH: ./charts/rollups-validator-node/ci/test-values.yaml
+          TEST_VALUES_PATH: ./charts/rollups-node/ci/test-values.yaml
         run: cat $TEST_VALUES_PATH.tpl | envsubst > $TEST_VALUES_PATH
 
       - name: Set up Helm
@@ -34,7 +34,7 @@ jobs:
           version: v3.12.1
 
       - name: Add dependancies
-        working-directory: ./charts/rollups-validator-node
+        working-directory: ./charts/rollups-node
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm dependency build
@@ -50,7 +50,7 @@ jobs:
 
       - name: Run kubeconform
         run: |
-          helm template test -f ./charts/rollups-validator-node/ci/test-values.yaml ./charts/rollups-validator-node | \
+          helm template test -f ./charts/rollups-node/ci/test-values.yaml ./charts/rollups-node | \
           kubeconform \
             -schema-location default \
             -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
