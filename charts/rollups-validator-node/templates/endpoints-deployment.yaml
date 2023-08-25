@@ -46,6 +46,7 @@ spec:
             initialDelaySeconds: 3
           {{- end }}
           args:
+            - {{ print "--server-manager-address=" (include "validator.fullname" .) "-server-manager:5001" }}
             {{- if .Values.endpoints.inspectServer.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8084 .Values.endpoints.inspectServer.healthCheck.port) | quote }}
             {{- end }}
