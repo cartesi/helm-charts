@@ -1,17 +1,14 @@
 dapp:
-  image: docker.io/cartesi/dapp:echo-python-0.15.0-server
-  contractAddress: 0x4c680fe34207A852218160de6c37804863880f2c
-  blockHash: "0x3aaf0bf5152d7f43f944134aee081acb4179997aef104d602bef4b36c1269d17"
-  blockNumber: "9251165"
-  transactionHash: "0x4c1ba6ebb641c542b459a1258fac921487873c6ded70794090829ab52dcb32dc"
+  image: "docker.io/cartesi/dapp:echo-python-0.16.0-server"
+  contractAddress: "0x9f12D4365806FC000D6555ACB85c5371b464E506"
+  blockHash: "0xd8c31e223c9790594594166abe91a71dee250586df6b93e2fd9079a5397f572c"
+  blockNumber: "4152308"
+  transactionHash: "0x3beea324c1db8a69829df784ed6af9edccc8f506777693e5124120535a27ab8b"
   mnemonic:
     value: "${MNEMONIC}"
-  httpProvider: https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  wsProvider: wss://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  network: goerli
-
-cartesi:
-  rollupsVersion: "0.9.1"
+  httpProvider: https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
+  wsProvider: wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
+  network: sepolia
 
 extraDeploy:
   - apiVersion: v1
@@ -66,26 +63,10 @@ extraDeploy:
     data:
       SESSION_ID: "default_rollups_id"
       INSPECT_SERVER_ADDRESS: "0.0.0.0:5005"
-      SERVER_MANAGER_ADDRESS: '{{ include "validator.fullname" . }}-server-manager:5001'
 
 validator:
   localnode:
-    enabled: true
-    anvil:
-      image:
-        registry: sunodo
-        repository: anvil
-        tag: 2.0.0
-      anvilState:
-        image:
-          registry: sunodo
-          repository: rollups-node
-          tag: 0.2.0
-    deployer:
-      image:
-        registry: cartesi
-        repository: rollups-cli
-        tag: 0.9.1
+    enabled: false
   dispatcher:
     extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
     healthCheck:
