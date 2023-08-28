@@ -10,6 +10,9 @@ dapp:
   wsProvider: wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
   network: sepolia
 
+cartesi:
+  rollupsVersion: "1.0.0"
+
 extraDeploy:
   - apiVersion: v1
     kind: ConfigMap
@@ -89,7 +92,7 @@ image:
 
 redis:
   enabled: false
-  endpoint: redis://redis-master
+  clusterEndpoints: redis://redis-master
 
 postgresql:
   enabled: false
