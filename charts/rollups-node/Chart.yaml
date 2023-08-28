@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 
 apiVersion: v2
-name: rollups-node
+name: rollups-node-chart
 description: A Helm chart for a Cartesi Rollups Validator Node
 maintainers:
   - name: endersonmaia

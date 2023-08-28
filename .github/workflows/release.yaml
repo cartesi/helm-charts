@@ -64,5 +64,5 @@ jobs:
         run: |
           shopt -s nullglob
           PKG_NAME=(.cr-release-packages/*.tgz)
-          helm push ${PKG_NAME}-chart oci://docker.io/cartesi
-          helm push ${PKG_NAME}-chart oci://ghcr.io/cartesi
+          helm push ${PKG_NAME} oci://docker.io/cartesi
+          helm push ${PKG_NAME} oci://ghcr.io/cartesi
