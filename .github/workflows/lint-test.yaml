@@ -74,7 +74,7 @@ jobs:
             --namespace default \
             --wait \
             --set auth.enabled=false \
-            --set architecture=standalone \
+            --set architecture=replication \
             --set image.tag=6.2-debian-11
 
       - name: Run chart-testing (install)
