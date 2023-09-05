@@ -1,8 +1,8 @@
-# rollups-node
+# rollups-node-chart
 
 # Package for Cartesi Rollups Nodes
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -237,15 +237,15 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.localnode.enabled | bool | `false` | Specify whether to use localnode or not |
 | validator.localnode.service.port | int | `8545` | localnode service port |
 | validator.localnode.service.type | string | `"ClusterIP"` | localnode service type |
-| validator.localnode.storage.blockchainData | object | `{"size":"2Gi","storageClass":"standard"}` | PVC for localnode blockchain data |
+| validator.localnode.storage.blockchainData | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode blockchain data |
 | validator.localnode.storage.blockchainData.size | string | `"2Gi"` | Persistent Volume storage size for localnode blockchain data |
-| validator.localnode.storage.blockchainData.storageClass | string | `"standard"` | Persistent Volume storage class for localnode blockchain data |
-| validator.localnode.storage.deployments | object | `{"size":"1Gi","storageClass":"standard"}` | PVC for loaclnode rollups deployment |
+| validator.localnode.storage.blockchainData.storageClass | string | `nil` | Persistent Volume storage class for localnode blockchain data If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
+| validator.localnode.storage.deployments | object | `{"size":"1Gi","storageClass":null}` | PVC for loaclnode rollups deployment |
 | validator.localnode.storage.deployments.size | string | `"1Gi"` | Persistent Volume storage size for localnode rollups deployment |
-| validator.localnode.storage.deployments.storageClass | string | `"standard"` | Persistent Volume storage class for localnode rollups deployment |
-| validator.localnode.storage.machineSnapshots | object | `{"size":"2Gi","storageClass":"standard"}` | PVC for localnode shared machine snapshot |
+| validator.localnode.storage.deployments.storageClass | string | `nil` | Persistent Volume storage class for localnode rollups deployment If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
+| validator.localnode.storage.machineSnapshots | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode shared machine snapshot |
 | validator.localnode.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for localnode shared machine snapshot |
-| validator.localnode.storage.machineSnapshots.storageClass | string | `"standard"` | Persistent Volume storage class for localnode shared machine snapshot |
+| validator.localnode.storage.machineSnapshots.storageClass | string | `nil` | Persistent Volume storage class for localnode shared machine snapshot If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
 | validator.nodeSelector | object | `{}` | Node labels for validator pods assignment |
 | validator.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
 | validator.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
