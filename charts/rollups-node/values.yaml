@@ -149,19 +149,22 @@ validator:
       # -- PVC for localnode blockchain data
       blockchainData:
         # -- Persistent Volume storage class for localnode blockchain data
-        storageClass: standard
+        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+        storageClass:
         # -- Persistent Volume storage size for localnode blockchain data
         size: 2Gi
       # -- PVC for loaclnode rollups deployment
       deployments:
         # -- Persistent Volume storage class for localnode rollups deployment
-        storageClass: standard
+        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+        storageClass:
         # -- Persistent Volume storage size for localnode rollups deployment
         size: 1Gi
       # -- PVC for localnode shared machine snapshot
       machineSnapshots:
         # -- Persistent Volume storage class for localnode shared machine snapshot
-        storageClass: standard
+        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+        storageClass:
         # -- Persistent Volume storage size for localnode shared machine snapshot
         size: 2Gi
 
