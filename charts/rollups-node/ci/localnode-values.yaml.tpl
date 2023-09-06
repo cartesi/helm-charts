@@ -5,7 +5,7 @@ dapp:
   network: localhost
 
 cartesi:
-  rollupsVersion: "1.0.0"
+  rollupsVersion: "1.0.1"
 
 extraDeploy:
   - apiVersion: v1
@@ -75,11 +75,6 @@ validator:
           registry: sunodo
           repository: rollups-node
           tag: 0.2.0
-    deployer:
-      image:
-        registry: cartesi
-        repository: rollups-cli
-        tag: 1.0.0
   dispatcher:
     extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
   stateServer:

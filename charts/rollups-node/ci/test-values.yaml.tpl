@@ -11,7 +11,7 @@ dapp:
   network: sepolia
 
 cartesi:
-  rollupsVersion: "1.0.0"
+  rollupsVersion: "1.0.1"
 
 extraDeploy:
   - apiVersion: v1
