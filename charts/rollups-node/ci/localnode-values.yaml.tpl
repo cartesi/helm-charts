@@ -1,6 +1,5 @@
 dapp:
   image: docker.io/cartesi/dapp:echo-python-0.16.0-server
-  network: localhost
 
 cartesi:
   rollupsVersion: "1.0.1"
