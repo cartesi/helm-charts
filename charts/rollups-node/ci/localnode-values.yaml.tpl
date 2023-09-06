@@ -1,7 +1,5 @@
 dapp:
   image: docker.io/cartesi/dapp:echo-python-0.16.0-server
-  mnemonic:
-    value: "test test test test test test test test test test test junk"
   network: localhost
 
 extraDeploy:
