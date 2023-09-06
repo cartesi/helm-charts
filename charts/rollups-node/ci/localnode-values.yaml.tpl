@@ -70,11 +70,6 @@ validator:
         registry: sunodo
         repository: anvil
         tag: 2.0.0
-      anvilState:
-        image:
-          registry: sunodo
-          repository: rollups-node
-          tag: 0.2.0
   dispatcher:
     extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
   stateServer:
