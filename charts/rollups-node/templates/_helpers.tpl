@@ -180,5 +180,10 @@ Return the chainID based on the network
 */}}
 {{- define "dapp.chainID" -}}
 {{- $networkIDs := dict "mainnet" "1" "optimism" "10" "optimism-goerli" "420" "arbitrum" "42161" "arbitrum-goerli" "421613" "localhost" "31337" "sepolia" "11155111" -}}
-{{- get $networkIDs (required "A valid .Values.dapp.network is required" .Values.dapp.network) -}}
+{{- $network := .Values.dapp.network }}
+{{- if .Values.validator.localnode.enabled }}
+  {{- $network = "localhost" }}
+{{- end }}
+{{- $chainID := index $networkIDs $network }}
+{{- $chainID }}
 {{- end -}}

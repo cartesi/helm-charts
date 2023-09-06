@@ -66,7 +66,7 @@ spec:
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.advanceRunner.healthCheck.port) | quote }}
             {{- end }}
-            {{- if .Values.dapp.network }}
+            {{- if (or .Values.dapp.network .Values.validator.localnode.enabled) }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
            {{- if .Values.validator.localnode.enabled }}
