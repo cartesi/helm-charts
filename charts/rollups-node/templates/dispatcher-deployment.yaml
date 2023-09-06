@@ -97,7 +97,7 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
             - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
@@ -267,7 +267,7 @@ spec:
             items:
               - key: "dapp.json"
                 path: "dapp.json"
-        {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+        {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
         - name: mnemonic
           secret:
             {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled) }}
