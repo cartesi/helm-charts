@@ -4,9 +4,6 @@ dapp:
     value: "test test test test test test test test test test test junk"
   network: localhost
 
-cartesi:
-  rollupsVersion: "1.0.1"
-
 extraDeploy:
   - apiVersion: v1
     kind: ConfigMap
