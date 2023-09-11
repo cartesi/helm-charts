@@ -1,9 +1,6 @@
 dapp:
   image: docker.io/cartesi/dapp:echo-python-0.16.0-server
 
-cartesi:
-  rollupsVersion: "1.0.1"
-
 extraDeploy:
   - apiVersion: v1
     kind: ConfigMap

@@ -10,9 +10,6 @@ dapp:
   wsProvider: wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
   network: sepolia
 
-cartesi:
-  rollupsVersion: "1.0.1"
-
 extraDeploy:
   - apiVersion: v1
     kind: ConfigMap
