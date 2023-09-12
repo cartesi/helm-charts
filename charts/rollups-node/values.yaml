@@ -401,6 +401,17 @@ validator:
     # -- Optionally specify extra list of additional volumeMounts for the stateServer container(s)
     extraVolumeMounts: []
 
+    # -- Specify VPA configurations for the stateServer container(s)
+    vpa:
+      # -- Specify VPA minimum allocated resources for the stateServer container(s)
+      minAllowed:
+        cpu: "250m"
+        memory: "100Mi"
+      # -- Specify VPA maximum allocated resources for the stateServer container(s)
+      maxAllowed:
+        cpu: "500m"
+        memory: "600Mi"
+
   indexer:
     # -- Set the indexer docker image
     image:

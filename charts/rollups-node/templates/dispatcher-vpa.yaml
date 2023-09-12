@@ -1,0 +1,22 @@
+---
+apiVersion: "autoscaling.k8s.io/v1"
+kind: VerticalPodAutoscaler
+metadata:
+  name: state-server-vpa
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: {{ include "validator.fullname" . }}
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: state-server
+        controlledResources: ["cpu", "memory"]
+        minAllowed:
+          cpu: {{ .Values.validator.stateServer.vpa.minAllowed.cpu | quote }}
+          memory: {{ .Values.validator.stateServer.vpa.minAllowed.memory | quote }}
+        maxAllowed:
+          cpu: {{ .Values.validator.stateServer.vpa.maxAllowed.cpu | quote }}
+          memory: {{ .Values.validator.stateServer.vpa.maxAllowed.memory | quote }}
