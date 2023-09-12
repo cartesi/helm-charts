@@ -56,8 +56,9 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --target-branch ${{ github.base_ref }}
 
-      - name: Create kind cluster
-        uses: helm/kind-action@v1.8.0
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@master
         if: steps.list-changed.outputs.changed == 'true'
 
       - name: Install postgres service to kind cluster
