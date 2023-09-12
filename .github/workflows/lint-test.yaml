@@ -78,6 +78,10 @@ jobs:
             --wait \
             --set auth.enabled=false \
             --set architecture=replication \
+            --set master.livenessProbe.enabled=false \
+            --set master.readinessProbe.enabled=false \
+            --set replica.livenessProbe.enabled=false \
+            --set replica.readinessProbe.enabled=false \
             --set image.tag=6.2-debian-11
 
       - name: Run chart-testing (install)
