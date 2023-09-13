@@ -56,8 +56,8 @@ spec:
             - --rd-rollups-deployment-file=/opt/cartesi/share/deployments/localhost.json
             - --rd-dapp-deployment-file=/deployments/localhost/dapp.json
             {{- else }}
-            - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (.Values.dapp.network | replace "-" "_") ".json" | quote }}
-            - {{ print "--rd-dapp-deployment-file=/deployments/" (.Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
+            - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (required "A valid .Values.dapp.network is required" .Values.dapp.network | replace "-" "_") ".json" | quote }}
+            - {{ print "--rd-dapp-deployment-file=/deployments/" (required "A valid .Values.dapp.network is required" .Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
             {{- end }}
             {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.validator.localnode.enabled) }}
             - {{ print "--auth-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
