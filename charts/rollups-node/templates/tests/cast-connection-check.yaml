@@ -1,0 +1,20 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+{{- if .Values.validator.localnode.enabled }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-cast-connection-check"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: cast
+      image: ghcr.io/foundry-rs/foundry
+      args: ['cast send -r http://{{ include "validator.fullname" . }}-localnode:{{ .Values.validator.localnode.service.port }} --mnemonic "test test test test test test test test test test test junk" "0x59b22D57D4f067708AB0c00552767405926dc768" "addInput(address,bytes)" "0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C" "0xdeadbeef"']
+  restartPolicy: Never
+{{- end }}
