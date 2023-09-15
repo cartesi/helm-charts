@@ -21,7 +21,7 @@ extraDeploy:
     data:
       RUST_LOG: "info"
       RD_EPOCH_DURATION: "86400"
-      SC_GRPC_ENDPOINT: "http://localhost:50051"
+      SC_GRPC_ENDPOINT: 'http://{{ include "validator.fullname" . }}-state-server:50051'
       SC_DEFAULT_CONFIRMATIONS: "1"
       TX_CHAIN_IS_LEGACY: "false"
       TX_DEFAULT_CONFIRMATIONS: "2"
@@ -64,10 +64,10 @@ validator:
         registry: sunodo
         repository: anvil
         tag: 2.0.0
-  dispatcher:
-    extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
-  stateServer:
-    extraEnvVarsCM: "{{ .Release.Name }}-state-server"
+dispatcher:
+  extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
+stateServer:
+  extraEnvVarsCM: "{{ .Release.Name }}-state-server"
 serverManager:
   advanceRunner:
     extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
