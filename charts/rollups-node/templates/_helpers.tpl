@@ -124,21 +124,21 @@ Return the proper deployer image name
 Return the proper dispatcher image name
 */}}
 {{- define "dispatcher.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.dispatcher.image "global" .Values.global) }}
+{{ include "images.image" (dict "imageRoot" .Values.dispatcher.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper stateServer image name
 */}}
 {{- define "stateServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.stateServer.image "global" .Values.global) }}
+{{ include "images.image" (dict "imageRoot" .Values.stateServer.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper indexer image name
 */}}
 {{- define "indexer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.indexer.image "global" .Values.global ) }}
+{{ include "images.image" (dict "imageRoot" .Values.indexer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*

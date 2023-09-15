@@ -1,0 +1,106 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "validator.fullname" . }}-state-server
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+      rollups.cartesi.io/component: state-server
+  template:
+    metadata:
+      {{- with .Values.stateServer.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+        rollups.cartesi.io/component: state-server
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.stateServer.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.stateServer.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.stateServer.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: state-server
+          image: {{ include "stateServer.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.stateServer.resources | nindent 12 }}
+          {{- if .Values.stateServer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.stateServer.command "context" $) | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.validator.localnode.enabled }}
+            - --bh-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
+            - --bh-ws-endpoint=ws://{{ include "validator.fullname" . }}-localnode:8545
+            {{- else }}
+            - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
+            {{- end }}
+            {{- range .Values.stateServer.args }}
+            - {{ . | quote}}
+            {{- end }}
+            {{- range .Values.stateServer.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          livenessProbe:
+            grpc:
+              port: 50051
+            initialDelaySeconds: 3
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.stateServer.logLevel }}
+            {{- if .Values.stateServer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.stateServer.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.stateServer.extraEnvVarsCM .Values.stateServer.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.stateServer.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.stateServer.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.stateServer.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.stateServer.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: 50051
+          volumeMounts:
+            {{- if .Values.stateServer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.stateServer.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+
+      volumes:
+        {{- if .Values.stateServer.extraVolumes }}
+        {{- include "tplvalues.render" ( dict "value" .Values.stateServer.extraVolumes "context" $ ) | nindent 8 }}
+        {{- end }}
+      {{- with .Values.stateServer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stateServer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stateServer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -67,14 +67,14 @@ extraDeploy:
 validator:
   localnode:
     enabled: false
-  dispatcher:
-    extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
-    healthCheck:
-      enabled: true
-  stateServer:
-    extraEnvVarsCM: "{{ .Release.Name }}-state-server"
-  indexer:
-    extraEnvVarsCM: "{{ .Release.Name }}-database"
+dispatcher:
+  extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
+  healthCheck:
+    enabled: true
+stateServer:
+  extraEnvVarsCM: "{{ .Release.Name }}-state-server"
+indexer:
+  extraEnvVarsCM: "{{ .Release.Name }}-database"
 serverManager:
   advanceRunner:
     extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
