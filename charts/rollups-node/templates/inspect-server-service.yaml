@@ -10,12 +10,12 @@ metadata:
   name: {{ include "validator.fullname" . }}-inspect-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.endpoints.inspectServer.service.type }}
+  type: {{ .Values.inspectServer.service.type }}
   ports:
-    - port: {{ .Values.endpoints.inspectServer.service.port }}
+    - port: {{ .Values.inspectServer.service.port }}
       targetPort: 5005
       protocol: TCP
       name: inspect-server
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    rollups.cartesi.io/component: endpoints
+    rollups.cartesi.io/component: inspect-server

@@ -14,7 +14,7 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- range $key, $value := .Values.endpoints.inspectServer.ingress.annotations }}
+  {{- range $key, $value := .Values.inspectServer.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -31,7 +31,7 @@ spec:
               service:
                 name: {{ include "validator.fullname" . }}-inspect-server
                 port:
-                  number: {{ .Values.endpoints.inspectServer.service.port }}
+                  number: {{ .Values.inspectServer.service.port }}
     {{- if .Values.ingress.addReleaseNameAsHost }}
     - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
       http: *http

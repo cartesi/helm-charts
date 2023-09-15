@@ -10,12 +10,12 @@ metadata:
   name: {{ include "validator.fullname" . }}-graphql-server
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.endpoints.graphqlServer.service.type }}
+  type: {{ .Values.graphqlServer.service.type }}
   ports:
-    - port: {{ .Values.endpoints.graphqlServer.service.port }}
+    - port: {{ .Values.graphqlServer.service.port }}
       targetPort: 4000
       protocol: TCP
       name: graphql
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    rollups.cartesi.io/component: endpoints
+    rollups.cartesi.io/component: graphql-server

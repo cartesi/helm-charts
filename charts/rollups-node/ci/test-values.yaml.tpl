@@ -78,11 +78,10 @@ indexer:
 serverManager:
   advanceRunner:
     extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
-endpoints:
-  inspectServer:
-    extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
-  graphqlServer:
-    extraEnvVarsCM: "{{ .Release.Name }}-database"
+inspectServer:
+  extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
+graphqlServer:
+  extraEnvVarsCM: "{{ .Release.Name }}-database"
 
 image:
   pullPolicy: Always
