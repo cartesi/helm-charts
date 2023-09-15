@@ -736,9 +736,14 @@ serverManager:
     # -- Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s)
     extraVolumeMounts: []
 
-## rollups-validator-node-endpoints Pod configuration
-##
-endpoints:
+inspectServer:
+  # -- Set the inspectServer docker image
+  image:
+    registry:
+    repository: cartesi/rollups-inspect-server
+    tag:
+    digest:
+
   # -- Number of endpoints replicas to deploy
   replicaCount: 1
 
@@ -773,153 +778,179 @@ endpoints:
   ##
   extraVolumes: []
 
-  inspectServer:
-    # -- Set the inspectServer docker image
-    image:
-      registry:
-      repository: cartesi/rollups-inspect-server
-      tag:
-      digest:
+  # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+  logLevel: info
 
-    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
-    logLevel: info
+  healthCheck:
+    # -- enable/disable healthcheck for inspectServer
+    enabled: true
+    # -- define healthcheck port for inspectServer
+    port: 8084
 
-    healthCheck:
-      # -- enable/disable healthcheck for inspectServer
-      enabled: true
-      # -- define healthcheck port for inspectServer
-      port: 8084
+  # -- Override default container command (useful when using custom images)
+  command: []
 
-    # -- Override default container command (useful when using custom images)
-    command: []
+  # -- Override default container args (useful when using custom images)
+  args: []
 
-    # -- Override default container args (useful when using custom images)
-    args: []
+  # -- Extra arguments for inspectServer
+  extraArgs: []
 
-    # -- Extra arguments for inspectServer
-    extraArgs: []
+  # -- extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
 
-    # -- extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container
-    ## e.g:
-    ## extraEnvVars:
-    ##   - name: FOO
-    ##     value: "bar"
-    ##
-    extraEnvVars: []
+  # -- extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container
+  extraEnvVarsCM: ""
 
-    # -- extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container
-    extraEnvVarsCM: ""
+  # -- extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container
+  extraEnvVarsSecret: ""
 
-    # -- extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container
-    extraEnvVarsSecret: ""
+  # -- Set inspectServer container Security Context
+  securityContext:
+    {}
+    ## capabilities:
+    ##   drop:
+    ##   - ALL
+    ## readOnlyRootFilesystem: true
+    ## runAsNonRoot: true
+    ## runAsUser: 1000
 
-    # -- Set inspectServer container Security Context
-    securityContext:
-      {}
-      ## capabilities:
-      ##   drop:
-      ##   - ALL
-      ## readOnlyRootFilesystem: true
-      ## runAsNonRoot: true
-      ## runAsUser: 1000
+  ingress:
+    # -- defines extra anotations
+    # specifically for the endpoints.inspectServer.service
+    annotations: {}
 
-    ingress:
-      # -- defines extra anotations
-      # specifically for the endpoints.inspectServer.service
-      annotations: {}
+  service:
+    # -- inspectServer service type
+    type: ClusterIP
+    # -- inspectServer service port
+    port: 5005
 
-    service:
-      # -- inspectServer service type
-      type: ClusterIP
-      # -- inspectServer service port
-      port: 5005
+  # -- Set inspectServer container resources
+  resources:
+    {}
+    ## limits:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+    ## requests:
+    ##   cpu: 100m
+    ##   memory: 128Mi
 
-    # -- Set inspectServer container resources
-    resources:
-      {}
-      ## limits:
-      ##   cpu: 100m
-      ##   memory: 128Mi
-      ## requests:
-      ##   cpu: 100m
-      ##   memory: 128Mi
+  # -- Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s)
+  extraVolumeMounts: []
 
-    # -- Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s)
-    extraVolumeMounts: []
+graphqlServer:
+  # -- Set the graphqlServer docker image
+  image:
+    registry:
+    repository: cartesi/rollups-graphql-server
+    tag:
+    digest:
 
-  graphqlServer:
-    # -- Set the graphqlServer docker image
-    image:
-      registry:
-      repository: cartesi/rollups-graphql-server
-      tag:
-      digest:
+  # -- Number of endpoints replicas to deploy
+  replicaCount: 1
 
-    # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
-    logLevel: info
+  # -- Node labels for pods assignment
+  nodeSelector: {}
 
-    healthCheck:
-      # -- enable/disable healthcheck for graphqlServer
-      enabled: true
-      # -- define healthcheck port for graphqlServer
-      port: 8085
+  # -- Tolerations for pods assignment
+  tolerations: []
 
-    # -- Override default container command (useful when using custom images)
-    command: []
+  # -- Affinity for pods assignment
+  affinity: {}
 
-    # -- Override default container args (useful when using custom images)
-    args: []
+  # -- Add additional init containers to the endpoints pod(s)
+  ## Example
+  ##
+  ## initContainers:
+  ##   - name: do-something
+  ##     image: busybox
+  ##     command: ['do', 'something']
+  ##
+  initContainers: []
 
-    # -- Extra arguments for graphqlServer
-    extraArgs: []
+  # -- Set endpoints replicas pod's Security Context
+  podSecurityContext:
+    {}
+    ## fsGroup: 2000
 
-    # -- Array with extra environment variables to add to endpoints.graphqlServer container
-    ## e.g:
-    ## extraEnvVars:
-    ##   - name: FOO
-    ##     value: "bar"
-    ##
-    extraEnvVars: []
+  # -- Annotations for endpoints replicas pods
+  podAnnotations: {}
 
-    # -- Name of existing ConfigMap containing extra env vars for graphqlServer container
-    extraEnvVarsCM: ""
+  # -- Optionally specify extra list of additional volumes for the endpoints pod(s)
+  ##
+  extraVolumes: []
 
-    # -- Name of existing Secret containing extra env vars for graphqlServer container
-    extraEnvVarsSecret: ""
+  # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+  logLevel: info
 
-    # -- Set graphqlServer container Security Context
-    securityContext:
-      {}
-      ## capabilities:
-      ##   drop:
-      ##   - ALL
-      ## readOnlyRootFilesystem: true
-      ## runAsNonRoot: true
-      ## runAsUser: 1000
+  healthCheck:
+    # -- enable/disable healthcheck for graphqlServer
+    enabled: true
+    # -- define healthcheck port for graphqlServer
+    port: 8085
 
-    ingress:
-      # -- defines extra anotations
-      # specifically for the endpoints.graphqlServer.service
-      annotations: {}
+  # -- Override default container command (useful when using custom images)
+  command: []
 
-    service:
-      # -- graphqlServer service type
-      type: ClusterIP
-      # -- graphqlServer service port
-      port: 4000
+  # -- Override default container args (useful when using custom images)
+  args: []
 
-    # -- Set graphqlServer container resources
-    resources:
-      {}
-      ## limits:
-      ##   cpu: 100m
-      ##   memory: 128Mi
-      ## requests:
-      ##   cpu: 100m
-      ##   memory: 128Mi
+  # -- Extra arguments for graphqlServer
+  extraArgs: []
 
-    # -- Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
-    extraVolumeMounts: []
+  # -- Array with extra environment variables to add to endpoints.graphqlServer container
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
+
+  # -- Name of existing ConfigMap containing extra env vars for graphqlServer container
+  extraEnvVarsCM: ""
+
+  # -- Name of existing Secret containing extra env vars for graphqlServer container
+  extraEnvVarsSecret: ""
+
+  # -- Set graphqlServer container Security Context
+  securityContext:
+    {}
+    ## capabilities:
+    ##   drop:
+    ##   - ALL
+    ## readOnlyRootFilesystem: true
+    ## runAsNonRoot: true
+    ## runAsUser: 1000
+
+  ingress:
+    # -- defines extra anotations
+    # specifically for the endpoints.graphqlServer.service
+    annotations: {}
+
+  service:
+    # -- graphqlServer service type
+    type: ClusterIP
+    # -- graphqlServer service port
+    port: 4000
+
+  # -- Set graphqlServer container resources
+  resources:
+    {}
+    ## limits:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+    ## requests:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+
+  # -- Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
+  extraVolumeMounts: []
 
 ## redis configuration
 redis:

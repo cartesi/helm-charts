@@ -71,9 +71,8 @@ stateServer:
 serverManager:
   advanceRunner:
     extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
-endpoints:
-  inspectServer:
-    extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
+inspectServer:
+  extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
 
 image:
   pullPolicy: Always

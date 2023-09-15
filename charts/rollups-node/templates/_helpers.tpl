@@ -145,14 +145,14 @@ Return the proper indexer image name
 Return the proper graphqlServer image name
 */}}
 {{- define "graphqlServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.endpoints.graphqlServer.image "global" .Values.global ) }}
+{{ include "images.image" (dict "imageRoot" .Values.graphqlServer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
 Return the proper inspectServer image name
 */}}
 {{- define "inspectServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.endpoints.inspectServer.image "global" .Values.global ) }}
+{{ include "images.image" (dict "imageRoot" .Values.inspectServer.image "global" .Values.global ) }}
 {{- end -}}
 
 {{/*
