@@ -1,4 +1,4 @@
-{{- if .Values.validator.localnode.enabled }}
+{{- if .Values.localnode.enabled }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -20,14 +20,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       serviceAccountName: {{ include "validator.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.validator.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.localnode.podSecurityContext | nindent 8 }}
       {{- end }}
       initContainers:
         - name: deployer
           image: {{ include "deployer.image" . }}
-          {{- if .Values.validator.localnode.deployer.command }}
+          {{- if .Values.localnode.deployer.command }}
           command:
-          {{- include "tplvalues.render" (dict "value" .Values.validator.localnode.deployer.command "context" $) | nindent 12 }}
+          {{- include "tplvalues.render" (dict "value" .Values.localnode.deployer.command "context" $) | nindent 12 }}
           {{- else }}
           args:
             - create
@@ -41,26 +41,26 @@ spec:
             - --outputFile
             - /deployments/localhost/dapp.json
             {{- end }}
-            {{- range .Values.validator.localnode.deployer.args }}
+            {{- range .Values.localnode.deployer.args }}
             - {{ . | quote}}
             {{- end }}
-            {{- range .Values.validator.localnode.deployer.extraArgs }}
+            {{- range .Values.localnode.deployer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
           resources:
-            {{- toYaml .Values.validator.localnode.deployer.resources | nindent 12 }}
+            {{- toYaml .Values.localnode.deployer.resources | nindent 12 }}
           env:
-            {{- if .Values.validator.localnode.deployer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.validator.localnode.deployer.extraEnvVars "context" $) | nindent 12 }}
+            {{- if .Values.localnode.deployer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.localnode.deployer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
           envFrom:
-            {{- if .Values.validator.localnode.deployer.extraEnvVarsCM }}
+            {{- if .Values.localnode.deployer.extraEnvVarsCM }}
             - configMapRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.localnode.deployer.extraEnvVarsCM "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.localnode.deployer.extraEnvVarsCM "context" $ ) }}
             {{- end }}
-            {{- if .Values.validator.localnode.deployer.extraEnvVarsSecret }}
+            {{- if .Values.localnode.deployer.extraEnvVarsSecret }}
             - secretRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.localnode.deployer.extraEnvVarsSecret "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.localnode.deployer.extraEnvVarsSecret "context" $ ) }}
             {{- end }}
           volumeMounts:
             - name: shared-machine-snapshots
@@ -72,8 +72,8 @@ spec:
             - name: deployments
               mountPath: /deployments
               readOnly: false
-            {{- if .Values.validator.localnode.deployer.extraVolumeMounts }}
-            {{- include "tplvalues.render" ( dict "value" .Values.validator.localnode.deployer.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- if .Values.localnode.deployer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.localnode.deployer.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
       containers:
         - name: anvil

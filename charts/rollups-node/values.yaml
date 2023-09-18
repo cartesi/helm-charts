@@ -109,19 +109,19 @@ ingress:
 # -- Array of extra objects to deploy with the release
 extraDeploy: []
 
-## rollups-validator-node Pod configuration
+## localnode Pod configuration
 ##
-validator:
-  # -- Node labels for validator pods assignment
+localnode:
+  # -- Node labels for localnode pod assignment
   nodeSelector: {}
 
-  # -- Tolerations for validator pods assignment
+  # -- Tolerations for localnode pod assignment
   tolerations: []
 
-  # -- Affinity for validator pods assignment
+  # -- Affinity for localnode pod assignment
   affinity: {}
 
-  # -- add additional init containers to the validator-node pod(s)
+  # -- add additional init containers to the localnode pod(s)
   ## Example
   ##
   ## initContainers:
@@ -131,7 +131,7 @@ validator:
   ##
   initContainers: []
 
-  # -- validator replicas pod's Security Context
+  # -- localnode replicas pod's Security Context
   podSecurityContext:
     {}
     ## fsGroup: 2000
@@ -142,145 +142,142 @@ validator:
   # -- Optionally specify extra list of additional volumes for the validator pod(s)
   extraVolumes: []
 
-  localnode:
-    # -- Specify whether to use localnode or not
-    enabled: false
-    storage:
-      # -- PVC for localnode blockchain data
-      blockchainData:
-        # -- Persistent Volume storage class for localnode blockchain data
-        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
-        storageClass:
-        # -- Persistent Volume storage size for localnode blockchain data
-        size: 2Gi
-      # -- PVC for loaclnode rollups deployment
-      deployments:
-        # -- Persistent Volume storage class for localnode rollups deployment
-        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
-        storageClass:
-        # -- Persistent Volume storage size for localnode rollups deployment
-        size: 1Gi
-      # -- PVC for localnode shared machine snapshot
-      machineSnapshots:
-        # -- Persistent Volume storage class for localnode shared machine snapshot
-        # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
-        storageClass:
-        # -- Persistent Volume storage size for localnode shared machine snapshot
-        size: 2Gi
+  storage:
+    # -- PVC for localnode blockchain data
+    blockchainData:
+      # -- Persistent Volume storage class for localnode blockchain data
+      # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+      storageClass:
+      # -- Persistent Volume storage size for localnode blockchain data
+      size: 2Gi
+    # -- PVC for loaclnode rollups deployment
+    deployments:
+      # -- Persistent Volume storage class for localnode rollups deployment
+      # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+      storageClass:
+      # -- Persistent Volume storage size for localnode rollups deployment
+      size: 1Gi
+    # -- PVC for localnode shared machine snapshot
+    machineSnapshots:
+      # -- Persistent Volume storage class for localnode shared machine snapshot
+      # If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+      storageClass:
+      # -- Persistent Volume storage size for localnode shared machine snapshot
+      size: 2Gi
 
-    service:
-      # -- localnode service type
-      type: ClusterIP
-      # -- localnode service port
-      port: 8545
+  service:
+    # -- localnode service type
+    type: ClusterIP
+    # -- localnode service port
+    port: 8545
 
-    anvil:
-      # -- Set the anvil docker image
-      image:
-        registry:
-        repository: sunodo/anvil
-        tag: 2.0.0
-        digest:
+  anvil:
+    # -- Set the anvil docker image
+    image:
+      registry:
+      repository: sunodo/anvil
+      tag: 2.0.0
+      digest:
 
-      # -- Override default container command (useful when using custom images)
-      command: []
-      # -- Override default container args (useful when using custom images)
-      args:
-        - anvil
-        - --block-time
-        - "5"
-        - --load-state
-        - /opt/cartesi/share/deployments/anvil_state.json
-      # -- Extra arguments for anvil
-      extraArgs: []
+    # -- Override default container command (useful when using custom images)
+    command: []
+    # -- Override default container args (useful when using custom images)
+    args:
+      - anvil
+      - --block-time
+      - "5"
+      - --load-state
+      - /opt/cartesi/share/deployments/anvil_state.json
+    # -- Extra arguments for anvil
+    extraArgs: []
 
-      # -- Array with extra environment variables to add to validator.anvil container
-      # e.g:
-      # extraEnvVars:
-      #   - name: FOO
-      #     value: "bar"
-      extraEnvVars: []
+    # -- Array with extra environment variables to add to validator.anvil container
+    # e.g:
+    # extraEnvVars:
+    #   - name: FOO
+    #     value: "bar"
+    extraEnvVars: []
 
-      # -- Name of existing ConfigMap containing extra env vars for anvil container
-      extraEnvVarsCM: ""
+    # -- Name of existing ConfigMap containing extra env vars for anvil container
+    extraEnvVarsCM: ""
 
-      # -- Name of existing Secret containing extra env vars for anvil container
-      extraEnvVarsSecret: ""
+    # -- Name of existing Secret containing extra env vars for anvil container
+    extraEnvVarsSecret: ""
 
-      # -- Set anvil container Security Context
-      securityContext:
-        {}
-        ## capabilities:
-        ##   drop:
-        ##   - ALL
-        ## readOnlyRootFilesystem: true
-        ## runAsNonRoot: true
-        ## runAsUser: 1000
+    # -- Set anvil container Security Context
+    securityContext:
+      {}
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
-      # -- Set anvil container resources
-      resources:
-        {}
-        ## limits:
-        ##   cpu: 100m
-        ##   memory: 128Mi
-        ## requests:
-        ##   cpu: 100m
-        ##   memory: 128Mi
+    # -- Set anvil container resources
+    resources:
+      {}
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
-      # -- Optionally specify extra list of additional volumeMounts for the anvil container(s)
-      ##
-      extraVolumeMounts: []
+    # -- Optionally specify extra list of additional volumeMounts for the anvil container(s)
+    ##
+    extraVolumeMounts: []
 
-    deployer:
-      # -- Set the deployer docker image
-      image:
-        registry:
-        repository: cartesi/rollups-cli
-        tag:
-        digest:
+  deployer:
+    # -- Set the deployer docker image
+    image:
+      registry:
+      repository: cartesi/rollups-cli
+      tag:
+      digest:
 
-      # -- Override default container command (useful when using custom images)
-      command: []
-      # -- Override default container args (useful when using custom images)
-      args: []
-      # -- Extra arguments for deployer
-      extraArgs: []
+    # -- Override default container command (useful when using custom images)
+    command: []
+    # -- Override default container args (useful when using custom images)
+    args: []
+    # -- Extra arguments for deployer
+    extraArgs: []
 
-      # -- Array with extra environment variables to add to validator.deployer container
-      # e.g:
-      # extraEnvVars:
-      #   - name: FOO
-      #     value: "bar"
-      extraEnvVars: []
+    # -- Array with extra environment variables to add to validator.deployer container
+    # e.g:
+    # extraEnvVars:
+    #   - name: FOO
+    #     value: "bar"
+    extraEnvVars: []
 
-      # -- Name of existing ConfigMap containing extra env vars for deployer container
-      extraEnvVarsCM: ""
+    # -- Name of existing ConfigMap containing extra env vars for deployer container
+    extraEnvVarsCM: ""
 
-      # -- Name of existing Secret containing extra env vars for deployer container
-      extraEnvVarsSecret: ""
+    # -- Name of existing Secret containing extra env vars for deployer container
+    extraEnvVarsSecret: ""
 
-      # -- Set deployer container Security Context
-      securityContext:
-        {}
-        ## capabilities:
-        ##   drop:
-        ##   - ALL
-        ## readOnlyRootFilesystem: true
-        ## runAsNonRoot: true
-        ## runAsUser: 1000
+    # -- Set deployer container Security Context
+    securityContext:
+      {}
+      ## capabilities:
+      ##   drop:
+      ##   - ALL
+      ## readOnlyRootFilesystem: true
+      ## runAsNonRoot: true
+      ## runAsUser: 1000
 
-      # -- Set deployer container resources
-      resources:
-        {}
-        ## limits:
-        ##   cpu: 100m
-        ##   memory: 128Mi
-        ## requests:
-        ##   cpu: 100m
-        ##   memory: 128Mi
+    # -- Set deployer container resources
+    resources:
+      {}
+      ## limits:
+      ##   cpu: 100m
+      ##   memory: 128Mi
+      ## requests:
+      ##   cpu: 100m
+      ##   memory: 128Mi
 
-      # -- Optionally specify extra list of additional volumeMounts for the deployer container(s)
-      extraVolumeMounts: []
+    # -- Optionally specify extra list of additional volumeMounts for the deployer container(s)
+    extraVolumeMounts: []
 
 dispatcher:
   # -- Set the dispatcher docker image

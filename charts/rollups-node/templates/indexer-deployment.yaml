@@ -52,12 +52,12 @@ spec:
             {{- if .Values.indexer.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8082 .Values.indexer.healthCheck.port) | quote }}
             {{- end }}
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - --dapp-contract-address-file=/deployments/localhost/dapp.json
             {{- else }}
             - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
             {{- end }}
-            {{- if (or .Values.dapp.network .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
             - {{ print (include "validator.redisConfig" .) | quote }}
@@ -105,7 +105,7 @@ spec:
               mountPath: /var/run/secrets/postgres
               readOnly: true
             {{- end }}
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - name: blockchain-data
               mountPath: /opt/cartesi/share/blockchain
               readOnly: false
@@ -118,7 +118,7 @@ spec:
             {{- end }}
 
       volumes:
-        {{- if .Values.validator.localnode.enabled }}
+        {{- if .Values.localnode.enabled }}
         - name: blockchain-data
           persistentVolumeClaim:
             claimName: {{ include "validator.fullname" . }}-blockchain-data-pvc
@@ -134,10 +134,10 @@ spec:
             items:
               - key: "dapp.json"
                 path: "dapp.json"
-        {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
+        {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
         - name: mnemonic
           secret:
-            {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled) }}
             secretName: {{ include "validator.fullname" . }}-mnemonic
             {{- else }}
             secretName: {{ .Values.dapp.mnemonic.secretRef }}

@@ -1,14 +1,14 @@
-{{- if .Values.validator.localnode.enabled }}
+{{- if .Values.localnode.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "validator.fullname" . }}-machine-snapshots-pvc
 spec:
-  storageClassName: {{ .Values.validator.localnode.storage.machineSnapshots.storageClass | quote }}
+  storageClassName: {{ .Values.localnode.storage.machineSnapshots.storageClass | quote }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.validator.localnode.storage.machineSnapshots.size | quote}}
+      storage: {{ .Values.localnode.storage.machineSnapshots.size | quote}}
 {{- end }}

@@ -51,22 +51,22 @@ spec:
             {{- if .Values.dispatcher.healthCheck.enabled }}
             - {{ print "--http-server-port=" (default .Values.dispatcher.healthCheck.port 8081) | quote }}
             {{- end }}
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - --rd-rollups-deployment-file=/opt/cartesi/share/deployments/localhost.json
             - --rd-dapp-deployment-file=/deployments/localhost/dapp.json
             {{- else }}
             - {{ print "--rd-rollups-deployment-file=/opt/cartesi/share/deployments/" (required "A valid .Values.dapp.network is required" .Values.dapp.network | replace "-" "_") ".json" | quote }}
             - {{ print "--rd-dapp-deployment-file=/deployments/" (required "A valid .Values.dapp.network is required" .Values.dapp.network | replace "-" "_") "/dapp.json" | quote }}
             {{- end }}
-            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.localnode.enabled) }}
             - {{ print "--auth-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
             {{- end }}
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - --tx-provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
             {{- else }}
             - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
             {{- end }}
-            {{- if (or .Values.dapp.network .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
             - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
             - {{ print (include "validator.redisConfig" .) | quote }}
@@ -101,7 +101,7 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
             - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
@@ -109,7 +109,7 @@ spec:
             - name: dispatcher-lib
               mountPath: /opt/cartesi/rollups-dispatcher/lib
               readOnly: false
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - name: blockchain-data
               mountPath: /opt/cartesi/share/deployments
               readOnly: false
@@ -126,7 +126,7 @@ spec:
             {{- end }}
 
       volumes:
-        {{- if .Values.validator.localnode.enabled }}
+        {{- if .Values.localnode.enabled }}
         - name: blockchain-data
           persistentVolumeClaim:
             claimName: {{ include "validator.fullname" . }}-blockchain-data-pvc
@@ -142,10 +142,10 @@ spec:
             items:
               - key: "dapp.json"
                 path: "dapp.json"
-        {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
+        {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
         - name: mnemonic
           secret:
-            {{- if (or .Values.dapp.mnemonic.value .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled) }}
             secretName: {{ include "validator.fullname" . }}-mnemonic
             {{- else }}
             secretName: {{ .Values.dapp.mnemonic.secretRef }}

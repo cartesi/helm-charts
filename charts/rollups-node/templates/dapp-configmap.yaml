@@ -4,7 +4,7 @@ SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 */}}
 
 ---
-{{- if not .Values.validator.localnode.enabled }}
+{{- if not .Values.localnode.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
