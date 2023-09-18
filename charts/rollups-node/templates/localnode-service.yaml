@@ -3,7 +3,7 @@
 SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 */}}
 
-{{- if .Values.validator.localnode.enabled }}
+{{- if .Values.localnode.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -11,9 +11,9 @@ metadata:
   name: {{ include "validator.fullname" . }}-localnode
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.validator.localnode.service.type }}
+  type: {{ .Values.localnode.service.type }}
   ports:
-    - port: {{ .Values.validator.localnode.service.port }}
+    - port: {{ .Values.localnode.service.port }}
       targetPort: 8545
       protocol: TCP
       name: localnode

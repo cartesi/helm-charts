@@ -19,7 +19,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- with .Values.validator.podAnnotations }}
+      {{- with .Values.serverManager.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -66,10 +66,10 @@ spec:
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.advanceRunner.healthCheck.port) | quote }}
             {{- end }}
-            {{- if (or .Values.dapp.network .Values.validator.localnode.enabled) }}
+            {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-           {{- if .Values.validator.localnode.enabled }}
+           {{- if .Values.localnode.enabled }}
             - --dapp-contract-address-file=/deployments/localhost/dapp.json
             {{- else }}
             - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
@@ -111,7 +111,7 @@ spec:
               mountPath: /var/opt/cartesi/machine-snapshots
               readOnly: false
             {{- end }}
-            {{- if .Values.validator.localnode.enabled }}
+            {{- if .Values.localnode.enabled }}
             - name: deployments
               mountPath: /deployments
               readOnly: false
@@ -175,14 +175,14 @@ spec:
       volumes:
         {{- if .Values.serverManager.shareSnapshotFromImage }}
         - name: shared-machine-snapshots
-          {{- if .Values.validator.localnode.enabled }}
+          {{- if .Values.localnode.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "validator.fullname" . }}-machine-snapshots-pvc
           {{- else }}
           emptyDir: {}
           {{- end }}
         {{- end }}
-        {{- if .Values.validator.localnode.enabled }}
+        {{- if .Values.localnode.enabled }}
         - name: deployments
           persistentVolumeClaim:
             claimName: {{ include "validator.fullname" . }}-deployments-pvc

@@ -3,7 +3,7 @@
 SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 */}}
 
-{{- if .Values.validator.localnode.enabled }}
+{{- if .Values.localnode.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -20,7 +20,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- with .Values.validator.podAnnotations }}
+      {{- with .Values.localnode.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -34,7 +34,7 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "validator.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.validator.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.localnode.podSecurityContext | nindent 8 }}
       initContainers:
         - name: anvilstate
           image: sunodo/rollups-node:0.2.0
@@ -52,16 +52,16 @@ spec:
           image: {{ include "anvil.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.validator.localnode.anvil.resources | nindent 12 }}
-          {{- if .Values.validator.localnode.anvil.command }}
+            {{- toYaml .Values.localnode.anvil.resources | nindent 12 }}
+          {{- if .Values.localnode.anvil.command }}
           command:
-          {{- include "tplvalues.render" (dict "value" .Values.validator.localnode.anvil.command "context" $) | nindent 12 }}
+          {{- include "tplvalues.render" (dict "value" .Values.localnode.anvil.command "context" $) | nindent 12 }}
           {{- end}}
           args:
-            {{- range .Values.validator.localnode.anvil.args }}
+            {{- range .Values.localnode.anvil.args }}
             - {{ . | quote}}
             {{- end }}
-            {{- range .Values.validator.localnode.anvil.extraArgs }}
+            {{- range .Values.localnode.anvil.extraArgs }}
             - {{ . | quote}}
             {{- end }}
           livenessProbe:
@@ -72,8 +72,8 @@ spec:
           env:
             - name: ANVIL_IP_ADDR
               value: "0.0.0.0"
-            {{- if .Values.validator.localnode.anvil.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.validator.localnode.anvil.extraEnvVars "context" $) | nindent 12 }}
+            {{- if .Values.localnode.anvil.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.localnode.anvil.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
           ports:
             - containerPort: 8545

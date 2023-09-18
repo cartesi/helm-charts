@@ -56,14 +56,13 @@ extraDeploy:
       INSPECT_SERVER_ADDRESS: "0.0.0.0:5005"
       SERVER_MANAGER_ADDRESS: '{{ include "validator.fullname" . }}-server-manager:5001'
 
-validator:
-  localnode:
-    enabled: true
-    anvil:
-      image:
-        registry: sunodo
-        repository: anvil
-        tag: 2.0.0
+localnode:
+  enabled: true
+  anvil:
+    image:
+      registry: sunodo
+      repository: anvil
+      tag: 2.0.0
 dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
 stateServer:

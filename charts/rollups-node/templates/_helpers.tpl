@@ -72,7 +72,7 @@ Selector labels
 TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
-{{- if not .Values.validator.localnode.enabled -}}
+{{- if not .Values.localnode.enabled -}}
 dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
 {{end -}}
 app.kubernetes.io/name: {{ include "validator.name" . }}
@@ -110,14 +110,14 @@ Return the proper image name
 Return the proper anvil image name
 */}}
 {{- define "anvil.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.localnode.anvil.image "global" .Values.global) }}
+{{ include "images.image" (dict "imageRoot" .Values.localnode.anvil.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper deployer image name
 */}}
 {{- define "deployer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.validator.localnode.deployer.image "global" .Values.global) }}
+{{ include "images.image" (dict "imageRoot" .Values.localnode.deployer.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
@@ -181,7 +181,7 @@ Return the chainID based on the network
 {{- define "dapp.chainID" -}}
 {{- $networkIDs := dict "mainnet" "1" "optimism" "10" "optimism-goerli" "420" "arbitrum" "42161" "arbitrum-goerli" "421613" "localhost" "31337" "sepolia" "11155111" -}}
 {{- $network := .Values.dapp.network }}
-{{- if .Values.validator.localnode.enabled }}
+{{- if .Values.localnode.enabled }}
   {{- $network = "localhost" }}
 {{- end }}
 {{- $chainID := index $networkIDs $network }}
