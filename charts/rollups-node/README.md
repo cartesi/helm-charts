@@ -2,7 +2,7 @@
 
 # Package for Cartesi Rollups Nodes
 
-![Version: 1.0.2-0](https://img.shields.io/badge/Version-1.0.2--0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.0.2-1](https://img.shields.io/badge/Version-1.0.2--1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -85,57 +85,143 @@ The command removes all the Kubernetes components associated with the chart and 
 | dapp.network | string | `nil` | the name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - optimism   - optimism-goerli   - arbitrum   - arbitrum-goerli   - localhost   - sepolia |
 | dapp.transactionHash | string | `nil` | dapp.transactionHash is the transaction hash of the transaction that deployed the dapp (REQUIRED) |
 | dapp.wsProvider | string | `nil` | the URL for the ws:// endpoint of the provider (REQUIRED) |
-| endpoints.affinity | object | `{}` | Affinity for pods assignment |
-| endpoints.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the endpoints pod(s) # |
-| endpoints.graphqlServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| endpoints.graphqlServer.command | list | `[]` | Override default container command (useful when using custom images) |
-| endpoints.graphqlServer.extraArgs | list | `[]` | Extra arguments for graphqlServer |
-| endpoints.graphqlServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to endpoints.graphqlServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
-| endpoints.graphqlServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for graphqlServer container |
-| endpoints.graphqlServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for graphqlServer container |
-| endpoints.graphqlServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s) |
-| endpoints.graphqlServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for graphqlServer |
-| endpoints.graphqlServer.healthCheck.port | int | `8085` | define healthcheck port for graphqlServer |
-| endpoints.graphqlServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-graphql-server","tag":null}` | Set the graphqlServer docker image |
-| endpoints.graphqlServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.graphqlServer.service |
-| endpoints.graphqlServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| endpoints.graphqlServer.resources | object | `{}` | Set graphqlServer container resources |
-| endpoints.graphqlServer.securityContext | object | `{}` | Set graphqlServer container Security Context |
-| endpoints.graphqlServer.service.port | int | `4000` | graphqlServer service port |
-| endpoints.graphqlServer.service.type | string | `"ClusterIP"` | graphqlServer service type |
-| endpoints.initContainers | list | `[]` | Add additional init containers to the endpoints pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
-| endpoints.inspectServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| endpoints.inspectServer.command | list | `[]` | Override default container command (useful when using custom images) |
-| endpoints.inspectServer.extraArgs | list | `[]` | Extra arguments for inspectServer |
-| endpoints.inspectServer.extraEnvVars | list | `[]` | extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
-| endpoints.inspectServer.extraEnvVarsCM | string | `""` | extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container |
-| endpoints.inspectServer.extraEnvVarsSecret | string | `""` | extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container |
-| endpoints.inspectServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s) |
-| endpoints.inspectServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for inspectServer |
-| endpoints.inspectServer.healthCheck.port | int | `8084` | define healthcheck port for inspectServer |
-| endpoints.inspectServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-inspect-server","tag":null}` | Set the inspectServer docker image |
-| endpoints.inspectServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.inspectServer.service |
-| endpoints.inspectServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| endpoints.inspectServer.resources | object | `{}` | Set inspectServer container resources |
-| endpoints.inspectServer.securityContext | object | `{}` | Set inspectServer container Security Context |
-| endpoints.inspectServer.service.port | int | `5005` | inspectServer service port |
-| endpoints.inspectServer.service.type | string | `"ClusterIP"` | inspectServer service type |
-| endpoints.nodeSelector | object | `{}` | Node labels for pods assignment |
-| endpoints.podAnnotations | object | `{}` | Annotations for endpoints replicas pods |
-| endpoints.podSecurityContext | object | `{}` | Set endpoints replicas pod's Security Context |
-| endpoints.replicaCount | int | `1` | Number of endpoints replicas to deploy |
-| endpoints.tolerations | list | `[]` | Tolerations for pods assignment |
+| dispatcher.affinity | object | `{}` | Affinity for validator pods assignment |
+| dispatcher.args | list | `[]` | Override default container args (useful when using custom images) |
+| dispatcher.command | list | `[]` | Override default container command (useful when using custom images) |
+| dispatcher.extraArgs | list | `[]` | Extra arguments for dispatcher |
+| dispatcher.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.dispatcher container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| dispatcher.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for dispatcher container # |
+| dispatcher.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for dispatcher container # |
+| dispatcher.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the dispatcher container(s) |
+| dispatcher.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
+| dispatcher.healthCheck.enabled | bool | `true` | enable/disable health check for dispatcher |
+| dispatcher.healthCheck.port | int | `8081` | define the health check port for dispatcher |
+| dispatcher.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-dispatcher","tag":null}` | Set the dispatcher docker image |
+| dispatcher.initContainers | list | `[]` | add additional init containers to the dispatcher pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| dispatcher.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| dispatcher.nodeSelector | object | `{}` | Node labels for validator pods assignment |
+| dispatcher.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
+| dispatcher.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
+| dispatcher.resources | object | `{}` | Set dispatcher container resources |
+| dispatcher.securityContext | object | `{}` | Set dispatcher container Security Context |
+| dispatcher.tolerations | list | `[]` | Tolerations for validator pods assignment |
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
 | global.image.tag | string | `"1.0.2"` | Global Docker Image tag |
+| graphqlServer.affinity | object | `{}` | Affinity for pods assignment |
+| graphqlServer.args | list | `[]` | Override default container args (useful when using custom images) |
+| graphqlServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| graphqlServer.extraArgs | list | `[]` | Extra arguments for graphqlServer |
+| graphqlServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to endpoints.graphqlServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| graphqlServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for graphqlServer container |
+| graphqlServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for graphqlServer container |
+| graphqlServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s) |
+| graphqlServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the endpoints pod(s) # |
+| graphqlServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for graphqlServer |
+| graphqlServer.healthCheck.port | int | `8085` | define healthcheck port for graphqlServer |
+| graphqlServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-graphql-server","tag":null}` | Set the graphqlServer docker image |
+| graphqlServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.graphqlServer.service |
+| graphqlServer.initContainers | list | `[]` | Add additional init containers to the endpoints pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| graphqlServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| graphqlServer.nodeSelector | object | `{}` | Node labels for pods assignment |
+| graphqlServer.podAnnotations | object | `{}` | Annotations for endpoints replicas pods |
+| graphqlServer.podSecurityContext | object | `{}` | Set endpoints replicas pod's Security Context |
+| graphqlServer.replicaCount | int | `1` | Number of endpoints replicas to deploy |
+| graphqlServer.resources | object | `{}` | Set graphqlServer container resources |
+| graphqlServer.securityContext | object | `{}` | Set graphqlServer container Security Context |
+| graphqlServer.service.port | int | `4000` | graphqlServer service port |
+| graphqlServer.service.type | string | `"ClusterIP"` | graphqlServer service type |
+| graphqlServer.tolerations | list | `[]` | Tolerations for pods assignment |
 | image.pullPolicy | string | `"Always"` | Pullpolicy for Docker Images |
 | image.pullSecrets | list | `[]` | Cartesi Rollups Validator Nodes pull secrets |
+| indexer.affinity | object | `{}` | Affinity for validator pods assignment |
+| indexer.args | list | `[]` | Override default container args (useful when using custom images) |
+| indexer.command | list | `[]` | Override default container command (useful when using custom images) |
+| indexer.extraArgs | list | `[]` | Extra arguments for indexer |
+| indexer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.indexer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| indexer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for indexer container # |
+| indexer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for indexer container # |
+| indexer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the indexer container(s) # |
+| indexer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
+| indexer.healthCheck.enabled | bool | `true` | enable/disable health check for indexer |
+| indexer.healthCheck.port | int | `8082` | define the health check port for indexer |
+| indexer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Set the indexer docker image |
+| indexer.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| indexer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| indexer.nodeSelector | object | `{}` | Node labels for validator pods assignment |
+| indexer.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
+| indexer.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
+| indexer.resources | object | `{}` | Set indexer container resources |
+| indexer.securityContext | object | `{}` | Set indexer container Security Context |
+| indexer.tolerations | list | `[]` | Tolerations for validator pods assignment |
 | ingress.addReleaseNameAsHost | bool | `false` | dditional rules[].host |
 | ingress.annotations | object | `{}` | defines the annotations for ingresses |
 | ingress.enabled | bool | `false` | Specifies whether a Ingress should be created |
 | ingress.ingressClassName | string | `nil` | defines the IngressClass to be used If not set, the default class will be used https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class |
 | ingress.subDomain | string | `"local"` | Ingress Sub domain name |
+| inspectServer.affinity | object | `{}` | Affinity for pods assignment |
+| inspectServer.args | list | `[]` | Override default container args (useful when using custom images) |
+| inspectServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| inspectServer.extraArgs | list | `[]` | Extra arguments for inspectServer |
+| inspectServer.extraEnvVars | list | `[]` | extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| inspectServer.extraEnvVarsCM | string | `""` | extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container |
+| inspectServer.extraEnvVarsSecret | string | `""` | extraEnvVarsSecret Name of existing Secret containing extra env vars for inspectServer container |
+| inspectServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the endpoints.inspectServer container(s) |
+| inspectServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the endpoints pod(s) # |
+| inspectServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for inspectServer |
+| inspectServer.healthCheck.port | int | `8084` | define healthcheck port for inspectServer |
+| inspectServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-inspect-server","tag":null}` | Set the inspectServer docker image |
+| inspectServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.inspectServer.service |
+| inspectServer.initContainers | list | `[]` | Add additional init containers to the endpoints pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| inspectServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| inspectServer.nodeSelector | object | `{}` | Node labels for pods assignment |
+| inspectServer.podAnnotations | object | `{}` | Annotations for endpoints replicas pods |
+| inspectServer.podSecurityContext | object | `{}` | Set endpoints replicas pod's Security Context |
+| inspectServer.replicaCount | int | `1` | Number of endpoints replicas to deploy |
+| inspectServer.resources | object | `{}` | Set inspectServer container resources |
+| inspectServer.securityContext | object | `{}` | Set inspectServer container Security Context |
+| inspectServer.service.port | int | `5005` | inspectServer service port |
+| inspectServer.service.type | string | `"ClusterIP"` | inspectServer service type |
+| inspectServer.tolerations | list | `[]` | Tolerations for pods assignment |
+| localnode.affinity | object | `{}` | Affinity for localnode pod assignment |
+| localnode.anvil.args | list | `["anvil","--block-time","5","--load-state","/opt/cartesi/share/deployments/anvil_state.json"]` | Override default container args (useful when using custom images) |
+| localnode.anvil.command | list | `[]` | Override default container command (useful when using custom images) |
+| localnode.anvil.extraArgs | list | `[]` | Extra arguments for anvil |
+| localnode.anvil.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.anvil container e.g: extraEnvVars:   - name: FOO     value: "bar" |
+| localnode.anvil.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for anvil container |
+| localnode.anvil.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for anvil container |
+| localnode.anvil.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the anvil container(s) # |
+| localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"2.0.0"}` | Set the anvil docker image |
+| localnode.anvil.resources | object | `{}` | Set anvil container resources |
+| localnode.anvil.securityContext | object | `{}` | Set anvil container Security Context |
+| localnode.deployer.args | list | `[]` | Override default container args (useful when using custom images) |
+| localnode.deployer.command | list | `[]` | Override default container command (useful when using custom images) |
+| localnode.deployer.extraArgs | list | `[]` | Extra arguments for deployer |
+| localnode.deployer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.deployer container e.g: extraEnvVars:   - name: FOO     value: "bar" |
+| localnode.deployer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for deployer container |
+| localnode.deployer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for deployer container |
+| localnode.deployer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the deployer container(s) |
+| localnode.deployer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-cli","tag":null}` | Set the deployer docker image |
+| localnode.deployer.resources | object | `{}` | Set deployer container resources |
+| localnode.deployer.securityContext | object | `{}` | Set deployer container Security Context |
+| localnode.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
+| localnode.initContainers | list | `[]` | add additional init containers to the localnode pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| localnode.nodeSelector | object | `{}` | Node labels for localnode pod assignment |
+| localnode.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
+| localnode.podSecurityContext | object | `{}` | localnode replicas pod's Security Context |
+| localnode.service.port | int | `8545` | localnode service port |
+| localnode.service.type | string | `"ClusterIP"` | localnode service type |
+| localnode.storage.blockchainData | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode blockchain data |
+| localnode.storage.blockchainData.size | string | `"2Gi"` | Persistent Volume storage size for localnode blockchain data |
+| localnode.storage.blockchainData.storageClass | string | `nil` | Persistent Volume storage class for localnode blockchain data If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
+| localnode.storage.deployments | object | `{"size":"1Gi","storageClass":null}` | PVC for loaclnode rollups deployment |
+| localnode.storage.deployments.size | string | `"1Gi"` | Persistent Volume storage size for localnode rollups deployment |
+| localnode.storage.deployments.storageClass | string | `nil` | Persistent Volume storage class for localnode rollups deployment If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
+| localnode.storage.machineSnapshots | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode shared machine snapshot |
+| localnode.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for localnode shared machine snapshot |
+| localnode.storage.machineSnapshots.storageClass | string | `nil` | Persistent Volume storage class for localnode shared machine snapshot If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
+| localnode.tolerations | list | `[]` | Tolerations for localnode pod assignment |
 | nameOverride | string | `""` | String to partially override  name |
 | postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
 | postgresql.enabled | bool | `true` | Use bitnami postgreSQL pod. |
@@ -185,82 +271,26 @@ The command removes all the Kubernetes components associated with the chart and 
 | serviceAccount.annotations | object | `{}` | defines the annotations to add to the service account |
 | serviceAccount.create | bool | `false` | defines whether a service account should be created |
 | serviceAccount.name | string | `""` | defines the name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| validator.affinity | object | `{}` | Affinity for validator pods assignment |
-| validator.dispatcher.args | list | `[]` | Override default container args (useful when using custom images) |
-| validator.dispatcher.command | list | `[]` | Override default container command (useful when using custom images) |
-| validator.dispatcher.extraArgs | list | `[]` | Extra arguments for dispatcher |
-| validator.dispatcher.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.dispatcher container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
-| validator.dispatcher.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for dispatcher container # |
-| validator.dispatcher.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for dispatcher container # |
-| validator.dispatcher.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the dispatcher container(s) |
-| validator.dispatcher.healthCheck.enabled | bool | `true` | enable/disable health check for dispatcher |
-| validator.dispatcher.healthCheck.port | int | `8081` | define the health check port for dispatcher |
-| validator.dispatcher.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-dispatcher","tag":null}` | Set the dispatcher docker image |
-| validator.dispatcher.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| validator.dispatcher.resources | object | `{}` | Set dispatcher container resources |
-| validator.dispatcher.securityContext | object | `{}` | Set dispatcher container Security Context |
-| validator.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
-| validator.indexer.args | list | `[]` | Override default container args (useful when using custom images) |
-| validator.indexer.command | list | `[]` | Override default container command (useful when using custom images) |
-| validator.indexer.extraArgs | list | `[]` | Extra arguments for indexer |
-| validator.indexer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.indexer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
-| validator.indexer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for indexer container # |
-| validator.indexer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for indexer container # |
-| validator.indexer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the indexer container(s) # |
-| validator.indexer.healthCheck.enabled | bool | `true` | enable/disable health check for indexer |
-| validator.indexer.healthCheck.port | int | `8082` | define the health check port for indexer |
-| validator.indexer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Set the indexer docker image |
-| validator.indexer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| validator.indexer.resources | object | `{}` | Set indexer container resources |
-| validator.indexer.securityContext | object | `{}` | Set indexer container Security Context |
-| validator.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
-| validator.localnode.anvil.args | list | `["anvil","--block-time","5","--load-state","/opt/cartesi/share/deployments/anvil_state.json"]` | Override default container args (useful when using custom images) |
-| validator.localnode.anvil.command | list | `[]` | Override default container command (useful when using custom images) |
-| validator.localnode.anvil.extraArgs | list | `[]` | Extra arguments for anvil |
-| validator.localnode.anvil.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.anvil container e.g: extraEnvVars:   - name: FOO     value: "bar" |
-| validator.localnode.anvil.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for anvil container |
-| validator.localnode.anvil.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for anvil container |
-| validator.localnode.anvil.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the anvil container(s) # |
-| validator.localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"2.0.0"}` | Set the anvil docker image |
-| validator.localnode.anvil.resources | object | `{}` | Set anvil container resources |
-| validator.localnode.anvil.securityContext | object | `{}` | Set anvil container Security Context |
-| validator.localnode.deployer.args | list | `[]` | Override default container args (useful when using custom images) |
-| validator.localnode.deployer.command | list | `[]` | Override default container command (useful when using custom images) |
-| validator.localnode.deployer.extraArgs | list | `[]` | Extra arguments for deployer |
-| validator.localnode.deployer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.deployer container e.g: extraEnvVars:   - name: FOO     value: "bar" |
-| validator.localnode.deployer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for deployer container |
-| validator.localnode.deployer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for deployer container |
-| validator.localnode.deployer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the deployer container(s) |
-| validator.localnode.deployer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-cli","tag":null}` | Set the deployer docker image |
-| validator.localnode.deployer.resources | object | `{}` | Set deployer container resources |
-| validator.localnode.deployer.securityContext | object | `{}` | Set deployer container Security Context |
-| validator.localnode.enabled | bool | `false` | Specify whether to use localnode or not |
-| validator.localnode.service.port | int | `8545` | localnode service port |
-| validator.localnode.service.type | string | `"ClusterIP"` | localnode service type |
-| validator.localnode.storage.blockchainData | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode blockchain data |
-| validator.localnode.storage.blockchainData.size | string | `"2Gi"` | Persistent Volume storage size for localnode blockchain data |
-| validator.localnode.storage.blockchainData.storageClass | string | `nil` | Persistent Volume storage class for localnode blockchain data If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
-| validator.localnode.storage.deployments | object | `{"size":"1Gi","storageClass":null}` | PVC for loaclnode rollups deployment |
-| validator.localnode.storage.deployments.size | string | `"1Gi"` | Persistent Volume storage size for localnode rollups deployment |
-| validator.localnode.storage.deployments.storageClass | string | `nil` | Persistent Volume storage class for localnode rollups deployment If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
-| validator.localnode.storage.machineSnapshots | object | `{"size":"2Gi","storageClass":null}` | PVC for localnode shared machine snapshot |
-| validator.localnode.storage.machineSnapshots.size | string | `"2Gi"` | Persistent Volume storage size for localnode shared machine snapshot |
-| validator.localnode.storage.machineSnapshots.storageClass | string | `nil` | Persistent Volume storage class for localnode shared machine snapshot If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
-| validator.nodeSelector | object | `{}` | Node labels for validator pods assignment |
-| validator.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
-| validator.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
-| validator.stateServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| validator.stateServer.command | list | `[]` | Override default container command (useful when using custom images) |
-| validator.stateServer.extraArgs | list | `[]` | Extra arguments for StateServer |
-| validator.stateServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.stateServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
-| validator.stateServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for stateServer container |
-| validator.stateServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for stateServer container |
-| validator.stateServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the stateServer container(s) |
-| validator.stateServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-state-server","tag":null}` | Set the stateServer docker image |
-| validator.stateServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
-| validator.stateServer.resources | object | `{}` | Set StateServer container resources |
-| validator.stateServer.securityContext | object | `{}` | Set StateServer container Security Context |
-| validator.tolerations | list | `[]` | Tolerations for validator pods assignment |
+| stateServer.affinity | object | `{}` | Affinity for validator pods assignment |
+| stateServer.args | list | `[]` | Override default container args (useful when using custom images) |
+| stateServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| stateServer.extraArgs | list | `[]` | Extra arguments for StateServer |
+| stateServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.stateServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| stateServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for stateServer container |
+| stateServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for stateServer container |
+| stateServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the stateServer container(s) |
+| stateServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
+| stateServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-state-server","tag":null}` | Set the stateServer docker image |
+| stateServer.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| stateServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| stateServer.nodeSelector | object | `{}` | Node labels for validator pods assignment |
+| stateServer.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
+| stateServer.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
+| stateServer.resources | object | `{}` | Set StateServer container resources |
+| stateServer.securityContext | object | `{}` | Set StateServer container Security Context |
+| stateServer.service.port | int | `50051` | stateServer service port |
+| stateServer.service.type | string | `"ClusterIP"` | stateServer service type |
+| stateServer.tolerations | list | `[]` | Tolerations for validator pods assignment |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
