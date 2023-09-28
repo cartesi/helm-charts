@@ -47,11 +47,6 @@ extraDeploy:
 
 localnode:
   enabled: true
-  anvil:
-    image:
-      registry: sunodo
-      repository: anvil
-      tag: 2.0.0
 dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
 stateServer:
