@@ -80,15 +80,9 @@ spec:
             {{- if .Values.indexer.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.indexer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
-            {{- if .Values.postgresql.enabled }}
-            - name: POSTGRES_PASSWORD_FILE
-              value: /var/run/secrets/postgres/PASSWORD
-            {{- end }}
           envFrom:
-          {{- if .Values.postgresql.enabled }}
-            - configMapRef:
-                name: {{ include "validator.fullname" . }}-database-config
-          {{- end }}
+            - secretRef:
+                name: {{ include "validator.fullname" . }}-database
           {{- if or .Values.indexer.extraEnvVarsCM .Values.indexer.extraEnvVarsSecret }}
             {{- if .Values.indexer.extraEnvVarsCM }}
             - configMapRef:
@@ -100,11 +94,6 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if .Values.postgresql.enabled }}
-            - name: postgres
-              mountPath: /var/run/secrets/postgres
-              readOnly: true
-            {{- end }}
             {{- if .Values.localnode.enabled }}
             - name: blockchain-data
               mountPath: /opt/cartesi/share/blockchain
@@ -142,11 +131,6 @@ spec:
             {{- else }}
             secretName: {{ .Values.dapp.mnemonic.secretRef }}
             {{- end }}
-        {{- end }}
-        {{- if .Values.postgresql.enabled }}
-        - name: postgres
-          secret:
-            secretName: {{ include "validator.fullname" . }}-postgres
         {{- end }}
         {{- if .Values.indexer.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.indexer.extraVolumes "context" $ ) | nindent 8 }}

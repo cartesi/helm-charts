@@ -6,17 +6,6 @@ extraDeploy:
     kind: ConfigMap
     metadata:
       namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-database"
-    data:
-      POSTGRES_HOSTNAME: "postgresql.default.svc.cluster.local"
-      POSTGRES_PORT: "5432"
-      POSTGRES_USER: "postgres"
-      POSTGRES_DB: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
       name: "{{ .Release.Name }}-dispatcher"
     data:
       RUST_LOG: "info"
@@ -32,7 +21,7 @@ extraDeploy:
       name: "{{ .Release.Name }}-state-server"
     data:
       RUST_LOG: "info"
-      SF_GENESIS_BLOCK: "0x1"
+      SF_GENESIS_BLOCK: "1"
       SF_SAFETY_MARGIN: "1"
       BH_BLOCK_TIMEOUT: "8"
       SS_SERVER_ADDRESS: "0.0.0.0:50051"

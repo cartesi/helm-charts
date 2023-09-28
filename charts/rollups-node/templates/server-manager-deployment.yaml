@@ -63,6 +63,11 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.command "context" $) | nindent 12 }}
           {{- end }}
           args:
+            {{- if .Values.localnode.enabled }}
+            - --provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
+            {{- else }}
+            - {{ print "--provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            {{- end }}
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.advanceRunner.healthCheck.port) | quote }}
             {{- end }}

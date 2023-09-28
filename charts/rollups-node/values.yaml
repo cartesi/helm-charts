@@ -54,7 +54,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 1.0.2
+    tag: 1.1.0
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -233,7 +233,7 @@ localnode:
     image:
       registry:
       repository: cartesi/rollups-cli
-      tag:
+      tag: 1.0.2
       digest:
 
     # -- Override default container command (useful when using custom images)
@@ -283,7 +283,7 @@ dispatcher:
   # -- Set the dispatcher docker image
   image:
     registry:
-    repository: cartesi/rollups-dispatcher
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -327,7 +327,7 @@ dispatcher:
     port: 8081
 
   # -- Override default container command (useful when using custom images)
-  command: []
+  command: ["cartesi-rollups-dispatcher"]
 
   # -- Override default container args (useful when using custom images)
   args: []
@@ -378,7 +378,7 @@ stateServer:
   # -- Set the stateServer docker image
   image:
     registry:
-    repository: cartesi/rollups-state-server
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -416,7 +416,7 @@ stateServer:
   logLevel: info
 
   # -- Override default container command (useful when using custom images)
-  command: []
+  command: ["cartesi-rollups-state-server"]
 
   # -- Override default container args (useful when using custom images)
   args: []
@@ -471,7 +471,7 @@ indexer:
   # -- Set the indexer docker image
   image:
     registry:
-    repository: cartesi/rollups-indexer
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -515,7 +515,7 @@ indexer:
     port: 8082
 
   # -- Override default container command (useful when using custom images)
-  command: []
+  command: ["cartesi-rollups-indexer"]
 
   # -- Override default container args (useful when using custom images)
   args: []
@@ -569,7 +569,7 @@ serverManager:
   # -- Override the image defined in dapp.image
   image:
     registry:
-    repository: cartesi/rollups-indexer
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -674,7 +674,7 @@ serverManager:
     # -- Set the advanceRunner docker image
     image:
       registry:
-      repository: cartesi/rollups-advance-runner
+      repository: cartesi/rollups-node
       tag:
       digest:
 
@@ -688,7 +688,7 @@ serverManager:
       port: 8083
 
     # -- verride default container command (useful when using custom images)
-    command: []
+    command: ["cartesi-rollups-advance-runner"]
 
     # -- Override default container args (useful when using custom images)
     args: []
@@ -737,7 +737,7 @@ inspectServer:
   # -- Set the inspectServer docker image
   image:
     registry:
-    repository: cartesi/rollups-inspect-server
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -785,7 +785,7 @@ inspectServer:
     port: 8084
 
   # -- Override default container command (useful when using custom images)
-  command: []
+  command: ["cartesi-rollups-inspect-server"]
 
   # -- Override default container args (useful when using custom images)
   args: []
@@ -845,7 +845,7 @@ graphqlServer:
   # -- Set the graphqlServer docker image
   image:
     registry:
-    repository: cartesi/rollups-graphql-server
+    repository: cartesi/rollups-node
     tag:
     digest:
 
@@ -893,7 +893,7 @@ graphqlServer:
     port: 8085
 
   # -- Override default container command (useful when using custom images)
-  command: []
+  command: ["cartesi-rollups-graphql-server"]
 
   # -- Override default container args (useful when using custom images)
   args: []
@@ -975,6 +975,9 @@ redis:
 postgresql:
   # -- Use bitnami postgreSQL pod.
   enabled: true
+  # -- Define an external Postgresql endpoint like postgres://host:pass@host:port/db
+  # REQUIRED if you disabled postgresql
+  endpoint:
   # -- Set bitnami postgreSQL`username`, `password`,`database`
   auth:
     username: rollups

@@ -2,7 +2,7 @@
 
 # Package for Cartesi Rollups Nodes
 
-![Version: 1.0.2-1](https://img.shields.io/badge/Version-1.0.2--1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.1.0-0](https://img.shields.io/badge/Version-1.1.0--0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -87,7 +87,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | dapp.wsProvider | string | `nil` | the URL for the ws:// endpoint of the provider (REQUIRED) |
 | dispatcher.affinity | object | `{}` | Affinity for validator pods assignment |
 | dispatcher.args | list | `[]` | Override default container args (useful when using custom images) |
-| dispatcher.command | list | `[]` | Override default container command (useful when using custom images) |
+| dispatcher.command | list | `["cartesi-rollups-dispatcher"]` | Override default container command (useful when using custom images) |
 | dispatcher.extraArgs | list | `[]` | Extra arguments for dispatcher |
 | dispatcher.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.dispatcher container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | dispatcher.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for dispatcher container # |
@@ -96,7 +96,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | dispatcher.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
 | dispatcher.healthCheck.enabled | bool | `true` | enable/disable health check for dispatcher |
 | dispatcher.healthCheck.port | int | `8081` | define the health check port for dispatcher |
-| dispatcher.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-dispatcher","tag":null}` | Set the dispatcher docker image |
+| dispatcher.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the dispatcher docker image |
 | dispatcher.initContainers | list | `[]` | add additional init containers to the dispatcher pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | dispatcher.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
 | dispatcher.nodeSelector | object | `{}` | Node labels for validator pods assignment |
@@ -108,10 +108,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
-| global.image.tag | string | `"1.0.2"` | Global Docker Image tag |
+| global.image.tag | string | `"1.1.0"` | Global Docker Image tag |
 | graphqlServer.affinity | object | `{}` | Affinity for pods assignment |
 | graphqlServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| graphqlServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| graphqlServer.command | list | `["cartesi-rollups-graphql-server"]` | Override default container command (useful when using custom images) |
 | graphqlServer.extraArgs | list | `[]` | Extra arguments for graphqlServer |
 | graphqlServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to endpoints.graphqlServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | graphqlServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for graphqlServer container |
@@ -120,7 +120,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | graphqlServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the endpoints pod(s) # |
 | graphqlServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for graphqlServer |
 | graphqlServer.healthCheck.port | int | `8085` | define healthcheck port for graphqlServer |
-| graphqlServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-graphql-server","tag":null}` | Set the graphqlServer docker image |
+| graphqlServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the graphqlServer docker image |
 | graphqlServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.graphqlServer.service |
 | graphqlServer.initContainers | list | `[]` | Add additional init containers to the endpoints pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | graphqlServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
@@ -137,7 +137,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | image.pullSecrets | list | `[]` | Cartesi Rollups Validator Nodes pull secrets |
 | indexer.affinity | object | `{}` | Affinity for validator pods assignment |
 | indexer.args | list | `[]` | Override default container args (useful when using custom images) |
-| indexer.command | list | `[]` | Override default container command (useful when using custom images) |
+| indexer.command | list | `["cartesi-rollups-indexer"]` | Override default container command (useful when using custom images) |
 | indexer.extraArgs | list | `[]` | Extra arguments for indexer |
 | indexer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.indexer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | indexer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for indexer container # |
@@ -146,7 +146,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | indexer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
 | indexer.healthCheck.enabled | bool | `true` | enable/disable health check for indexer |
 | indexer.healthCheck.port | int | `8082` | define the health check port for indexer |
-| indexer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Set the indexer docker image |
+| indexer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the indexer docker image |
 | indexer.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | indexer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
 | indexer.nodeSelector | object | `{}` | Node labels for validator pods assignment |
@@ -162,7 +162,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | ingress.subDomain | string | `"local"` | Ingress Sub domain name |
 | inspectServer.affinity | object | `{}` | Affinity for pods assignment |
 | inspectServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| inspectServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| inspectServer.command | list | `["cartesi-rollups-inspect-server"]` | Override default container command (useful when using custom images) |
 | inspectServer.extraArgs | list | `[]` | Extra arguments for inspectServer |
 | inspectServer.extraEnvVars | list | `[]` | extraEnvVars Array with extra environment variables to add to endpoints.inspectServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | inspectServer.extraEnvVarsCM | string | `""` | extraEnvVarsCM Name of existing ConfigMap containing extra env vars for inspectServer container |
@@ -171,7 +171,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | inspectServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the endpoints pod(s) # |
 | inspectServer.healthCheck.enabled | bool | `true` | enable/disable healthcheck for inspectServer |
 | inspectServer.healthCheck.port | int | `8084` | define healthcheck port for inspectServer |
-| inspectServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-inspect-server","tag":null}` | Set the inspectServer docker image |
+| inspectServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the inspectServer docker image |
 | inspectServer.ingress.annotations | object | `{}` | defines extra anotations specifically for the endpoints.inspectServer.service |
 | inspectServer.initContainers | list | `[]` | Add additional init containers to the endpoints pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | inspectServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
@@ -202,7 +202,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | localnode.deployer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for deployer container |
 | localnode.deployer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for deployer container |
 | localnode.deployer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the deployer container(s) |
-| localnode.deployer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-cli","tag":null}` | Set the deployer docker image |
+| localnode.deployer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-cli","tag":"1.0.2"}` | Set the deployer docker image |
 | localnode.deployer.resources | object | `{}` | Set deployer container resources |
 | localnode.deployer.securityContext | object | `{}` | Set deployer container Security Context |
 | localnode.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
@@ -225,6 +225,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | nameOverride | string | `""` | String to partially override  name |
 | postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
 | postgresql.enabled | bool | `true` | Use bitnami postgreSQL pod. |
+| postgresql.endpoint | string | `nil` | Define an external Postgresql endpoint like postgres://host:pass@host:port/db REQUIRED if you disabled postgresql |
 | postgresql.image.tag | string | `"13.9.0-debian-11-r27"` | bitnami postgreSQL docker image tag. |
 | redis.architecture | string | `"standalone"` | Redis&reg; architecture. Allowed values: `standalone` or `replication` |
 | redis.auth.enabled | bool | `false` | Redis&reg; Enable password authentication |
@@ -234,7 +235,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | redis.image.tag | string | `"6.2-debian-11"` | Redis&reg; docker image tag. |
 | redis.metrics.enabled | bool | `true` | sidecar prometheus exporter to expose Redis&reg; metrics |
 | serverManager.advanceRunner.args | list | `[]` | Override default container args (useful when using custom images) |
-| serverManager.advanceRunner.command | list | `[]` | verride default container command (useful when using custom images) |
+| serverManager.advanceRunner.command | list | `["cartesi-rollups-advance-runner"]` | verride default container command (useful when using custom images) |
 | serverManager.advanceRunner.extraArgs | list | `[]` | Extra arguments for advanceRunner |
 | serverManager.advanceRunner.extraEnvVars | list | `[]` | Array with extra environment variables to add to serverManager.advanceRunner container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | serverManager.advanceRunner.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for advanceRunner container |
@@ -242,7 +243,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.advanceRunner.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager.advanceRunner container(s) |
 | serverManager.advanceRunner.healthCheck.enabled | bool | `true` | enable/disable health check for advanceRunner |
 | serverManager.advanceRunner.healthCheck.port | int | `8083` | define the health check port for advanceRunner |
-| serverManager.advanceRunner.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-advance-runner","tag":null}` | Set the advanceRunner docker image |
+| serverManager.advanceRunner.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the advanceRunner docker image |
 | serverManager.advanceRunner.logLevel | string | `"info"` | Set RUST_LOG env, can be trace, debug, info, warn, error, or off. |
 | serverManager.advanceRunner.resources | object | `{}` | Set advanceRunner container resources |
 | serverManager.advanceRunner.securityContext | object | `{}` | Set advanceRunner container Security Context |
@@ -255,7 +256,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | serverManager.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for serverManager container |
 | serverManager.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the serverManager container(s) |
 | serverManager.extraVolumes | list | `[]` |  |
-| serverManager.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-indexer","tag":null}` | Override the image defined in dapp.image |
+| serverManager.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Override the image defined in dapp.image |
 | serverManager.initContainers | list | `[]` | additional init containers to the ServerManager pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | serverManager.logLevel | string | `"info"` | set SERVER_MANAGER_LOG_LEVEL env, can be set to trace, debug, info, warning, error, and fatal. |
 | serverManager.nodeSelector | object | `{}` | Node labels for pods assignment |
@@ -273,14 +274,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | serviceAccount.name | string | `""` | defines the name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | stateServer.affinity | object | `{}` | Affinity for validator pods assignment |
 | stateServer.args | list | `[]` | Override default container args (useful when using custom images) |
-| stateServer.command | list | `[]` | Override default container command (useful when using custom images) |
+| stateServer.command | list | `["cartesi-rollups-state-server"]` | Override default container command (useful when using custom images) |
 | stateServer.extraArgs | list | `[]` | Extra arguments for StateServer |
 | stateServer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.stateServer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
 | stateServer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for stateServer container |
 | stateServer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for stateServer container |
 | stateServer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the stateServer container(s) |
 | stateServer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
-| stateServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-state-server","tag":null}` | Set the stateServer docker image |
+| stateServer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the stateServer docker image |
 | stateServer.initContainers | list | `[]` | add additional init containers to the validator-node pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
 | stateServer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
 | stateServer.nodeSelector | object | `{}` | Node labels for validator pods assignment |
