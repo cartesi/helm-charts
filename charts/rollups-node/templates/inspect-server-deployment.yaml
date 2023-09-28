@@ -45,6 +45,10 @@ spec:
               port: {{ default 8084 .Values.inspectServer.healthCheck.port }}
             initialDelaySeconds: 3
           {{- end }}
+          {{- if .Values.inspectServer.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.inspectServer.command "context" $) | nindent 12 }}
+          {{- end }}
           args:
             - {{ print "--server-manager-address=" (include "validator.fullname" .) "-server-manager:5001" }}
             {{- if .Values.inspectServer.healthCheck.enabled }}
