@@ -75,6 +75,8 @@ TODO: diff between query and validator
 {{- if not .Values.localnode.enabled -}}
 dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
 {{end -}}
+dapp.cartesi.io/chain-id: {{ include "dapp.chainID" . | quote }}
+dapp.cartesi.io/network:  {{ include "dapp.network" . | quote }}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -176,14 +178,23 @@ Usage:
 {{- end -}}
 
 {{/*
+Return the network name
+*/}}
+{{- define "dapp.network" -}}
+{{- $network := "" }}
+{{- if .Values.localnode.enabled }}
+  {{- $network = "localhost" }}
+{{- else }}
+  {{- $network = .Values.dapp.network }}
+{{- end }}
+{{- $network }}
+{{- end -}}
+
+{{/*
 Return the chainID based on the network
 */}}
 {{- define "dapp.chainID" -}}
 {{- $networkIDs := dict "mainnet" "1" "optimism" "10" "optimism-goerli" "420" "arbitrum" "42161" "arbitrum-goerli" "421613" "localhost" "31337" "sepolia" "11155111" -}}
-{{- $network := .Values.dapp.network }}
-{{- if .Values.localnode.enabled }}
-  {{- $network = "localhost" }}
-{{- end }}
-{{- $chainID := index $networkIDs $network }}
+{{- $chainID := index $networkIDs (include "dapp.network" .) }}
 {{- $chainID }}
 {{- end -}}
