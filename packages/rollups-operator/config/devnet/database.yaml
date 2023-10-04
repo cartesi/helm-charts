@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cartesi-rollups-database
+type: Opaque
+data:
+    database: cG9zdGdyZXM= # base64('postgres')
+    hostname: cG9zdGdyZXMtcG9zdGdyZXNxbC5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2Fs # base64('postgresql-postgresql.svc.cluster.local')
+    password: R0J3SlBmT1p5dA== # base64('GBwJPfOZyt')
+    port: NTQzMg== # base64('5432')
+    username: cG9zdGdyZXM= # base64('postgres')
