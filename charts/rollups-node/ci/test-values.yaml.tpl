@@ -77,4 +77,5 @@ redis:
 
 postgresql:
   enabled: false
-  endpoint: postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres
+  endpoint:
+    value: postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres

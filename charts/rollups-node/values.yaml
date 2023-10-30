@@ -975,10 +975,15 @@ redis:
 postgresql:
   # -- Use bitnami postgreSQL pod.
   enabled: true
-  # -- Define an external Postgresql endpoint like postgres://host:pass@host:port/db
-  # REQUIRED if you disabled postgresql
+  # -- Define an external Postgresql endpoint
   endpoint:
-  # -- Set bitnami postgreSQL`username`, `password`,`database`
+    # -- Connection detail like postgres://host:pass@host:port/db.
+    # REQUIRED if you don't have an existing secret.
+    value:
+    # -- Define an existing secret name.
+    # REQUIRED if you don't want to define an endpoint value.
+    secretRef:
+  # -- Set bitnami postgreSQL`username`, `password`,`database`.
   auth:
     username: rollups
     password: rollups
