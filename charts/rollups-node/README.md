@@ -192,7 +192,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | localnode.anvil.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for anvil container |
 | localnode.anvil.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for anvil container |
 | localnode.anvil.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the anvil container(s) # |
-| localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"2.0.0"}` | Set the anvil docker image |
+| localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"3.0.0"}` | Set the anvil docker image |
 | localnode.anvil.resources | object | `{}` | Set anvil container resources |
 | localnode.anvil.securityContext | object | `{}` | Set anvil container Security Context |
 | localnode.deployer.args | list | `[]` | Override default container args (useful when using custom images) |
@@ -223,9 +223,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | localnode.storage.machineSnapshots.storageClass | string | `nil` | Persistent Volume storage class for localnode shared machine snapshot If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner |
 | localnode.tolerations | list | `[]` | Tolerations for localnode pod assignment |
 | nameOverride | string | `""` | String to partially override  name |
-| postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database` |
+| postgresql.auth | object | `{"database":"rollups","password":"rollups","port":5432,"username":"rollups"}` | Set bitnami postgreSQL`username`, `password`,`database`. |
 | postgresql.enabled | bool | `true` | Use bitnami postgreSQL pod. |
-| postgresql.endpoint | string | `nil` | Define an external Postgresql endpoint like postgres://host:pass@host:port/db REQUIRED if you disabled postgresql |
+| postgresql.endpoint | object | `{"secretRef":null,"value":null}` | Define an external Postgresql endpoint |
+| postgresql.endpoint.secretRef | string | `nil` | Define an existing secret name. REQUIRED if you don't want to define an endpoint value. |
+| postgresql.endpoint.value | string | `nil` | Connection detail like postgres://host:pass@host:port/db. REQUIRED if you don't have an existing secret. |
 | postgresql.image.tag | string | `"13.9.0-debian-11-r27"` | bitnami postgreSQL docker image tag. |
 | redis.architecture | string | `"standalone"` | Redis&reg; architecture. Allowed values: `standalone` or `replication` |
 | redis.auth.enabled | bool | `false` | Redis&reg; Enable password authentication |
