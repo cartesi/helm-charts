@@ -12,8 +12,17 @@ extraDeploy:
       RD_EPOCH_DURATION: "86400"
       SC_GRPC_ENDPOINT: 'http://{{ include "validator.fullname" . }}-state-server:50051'
       SC_DEFAULT_CONFIRMATIONS: "1"
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      namespace: "{{ .Release.Namespace }}"
+      name: "{{ .Release.Name }}-authority-claimer"
+    data:
+      RUST_LOG: "info"
+      RD_EPOCH_DURATION: "86400"
+      SC_GRPC_ENDPOINT: 'http://{{ include "validator.fullname" . }}-state-server:50051'
       TX_CHAIN_IS_LEGACY: "false"
-      TX_DEFAULT_CONFIRMATIONS: "2"
+      SC_DEFAULT_CONFIRMATIONS: "1"
   - apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -49,6 +58,8 @@ localnode:
   enabled: true
 dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
+authorityClaimer:
+  extraEnvVarsCM: "{{ .Release.Name }}-authority-claimer"
 stateServer:
   extraEnvVarsCM: "{{ .Release.Name }}-state-server"
 serverManager:

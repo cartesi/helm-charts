@@ -142,6 +142,13 @@ Return the proper dispatcher image name
 {{- end -}}
 
 {{/*
+Return the proper authorityClaimer image name
+*/}}
+{{- define "authorityClaimer.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.authorityClaimer.image "global" .Values.global) }}
+{{- end -}}
+
+{{/*
 Return the proper stateServer image name
 */}}
 {{- define "stateServer.image" -}}

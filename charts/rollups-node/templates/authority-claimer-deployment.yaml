@@ -7,23 +7,23 @@ SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "validator.fullname" . }}-dispatcher
+  name: {{ include "validator.fullname" . }}-authority-claimer
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "validator.selectorLabels" . | nindent 6 }}
-      rollups.cartesi.io/component: dispatcher
+      rollups.cartesi.io/component: authority-claimer
   template:
     metadata:
-      {{- with .Values.dispatcher.podAnnotations }}
+      {{- with .Values.authorityClaimer.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "validator.selectorLabels" . | nindent 8 }}
-        rollups.cartesi.io/component: dispatcher
+        rollups.cartesi.io/component: authority-claimer
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -31,25 +31,24 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "validator.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.dispatcher.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.authorityClaimer.podSecurityContext | nindent 8 }}
       initContainers:
-        {{- if .Values.dispatcher.initContainers }}
-        {{- include "tplvalues.render" ( dict "value" .Values.dispatcher.initContainers "context" $ ) | nindent 8 }}
+        {{- if .Values.authorityClaimer.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.authorityClaimer.initContainers "context" $ ) | nindent 8 }}
         {{- end }}
       containers:
-        - name: rollups-dispatcher
-          image: {{ include "dispatcher.image" . }}
+        - name: rollups-authority-claimer
+          image: {{ include "authorityClaimer.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.dispatcher.resources | nindent 12 }}
-          {{- if .Values.dispatcher.command }}
+            {{- toYaml .Values.authorityClaimer.resources | nindent 12 }}
+          {{- if .Values.authorityClaimer.command }}
           command:
-          {{- include "tplvalues.render" (dict "value" .Values.dispatcher.command "context" $) | nindent 12 }}
+          {{- include "tplvalues.render" (dict "value" .Values.authorityClaimer.command "context" $) | nindent 12 }}
           {{- end }}
           args:
-            - {{ print "--sc-grpc-endpoint=http://" (include "validator.fullname" .) "-state-server:50051" | quote }}
-            {{- if .Values.dispatcher.healthCheck.enabled }}
-            - {{ print "--http-server-port=" (default .Values.dispatcher.healthCheck.port 8081) | quote }}
+            {{- if .Values.authorityClaimer.healthCheck.enabled }}
+            - {{ print "--http-server-port=" (default .Values.authorityClaimer.healthCheck.port 8086) | quote }}
             {{- end }}
             {{- if .Values.localnode.enabled }}
             - --rollups-deployment-file=/opt/cartesi/share/deployments/localhost.json
@@ -58,37 +57,46 @@ spec:
             - {{ print "--dapp-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress) | quote }}
             - {{ print "--dapp-deploy-block-hash=" (required "A valid .Values.dapp.blockHash is required" .Values.dapp.blockHash) | quote }}
             {{- end }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef .Values.localnode.enabled) }}
+            - {{ print "--tx-signing-mnemonic-file=/var/run/secrets/mnemonic/MNEMONIC" | quote }}
+            {{- end }}
+            {{- if .Values.localnode.enabled }}
+            - --tx-provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
+            {{- else }}
+            - {{ print "--tx-provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
+            {{- end }}
             {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
-            - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
             - {{ print (include "validator.redisConfig" .) | quote }}
-            {{- range .Values.dispatcher.args }}
-            {{- end }}
-            {{- range .Values.dispatcher.extraArgs }}
+            {{- range .Values.authorityClaimer.args }}
             - {{ . | quote}}
             {{- end }}
-          {{- if .Values.dispatcher.healthCheck.enabled }}
+            {{- range .Values.authorityClaimer.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          {{- if .Values.authorityClaimer.healthCheck.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
-              port: {{ (default 8081 .Values.dispatcher.healthCheck.port) }}
+              port: {{ (default 8086 .Values.authorityClaimer.healthCheck.port) }}
             initialDelaySeconds: 3
           {{- end }}
           env:
             - name: RUST_LOG
-              value: {{ .Values.dispatcher.logLevel }}
-            {{- if .Values.dispatcher.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.dispatcher.extraEnvVars "context" $) | nindent 12 }}
+              value: {{ .Values.authorityClaimer.logLevel }}
+            {{- if .Values.authorityClaimer.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.authorityClaimer.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
-          {{- if or .Values.dispatcher.extraEnvVarsCM .Values.dispatcher.extraEnvVarsSecret }}
+          {{- if or .Values.authorityClaimer.extraEnvVarsCM .Values.authorityClaimer.extraEnvVarsSecret }}
           envFrom:
-            {{- if .Values.dispatcher.extraEnvVarsCM }}
+            {{- if .Values.authorityClaimer.extraEnvVarsCM }}
             - configMapRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.dispatcher.extraEnvVarsCM "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.authorityClaimer.extraEnvVarsCM "context" $ ) }}
             {{- end }}
-            {{- if .Values.dispatcher.extraEnvVarsSecret }}
+            {{- if .Values.authorityClaimer.extraEnvVarsSecret }}
             - secretRef:
-                name: {{ include "tplvalues.render" ( dict "value" .Values.dispatcher.extraEnvVarsSecret "context" $ ) }}
+                name: {{ include "tplvalues.render" ( dict "value" .Values.authorityClaimer.extraEnvVarsSecret "context" $ ) }}
             {{- end }}
           {{- end }}
           volumeMounts:
@@ -97,6 +105,9 @@ spec:
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
             {{- end }}
+            - name: authority-claimer-lib
+              mountPath: /opt/cartesi/rollups-authority-claimer/lib
+              readOnly: false
             {{- if .Values.localnode.enabled }}
             - name: blockchain-data
               mountPath: /opt/cartesi/share/deployments
@@ -105,8 +116,8 @@ spec:
               mountPath: /deployments
               readOnly: false
             {{- end}}
-            {{- if .Values.dispatcher.extraVolumeMounts }}
-            {{- include "tplvalues.render" ( dict "value" .Values.dispatcher.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- if .Values.authorityClaimer.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.authorityClaimer.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
 
       volumes:
@@ -118,6 +129,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "validator.fullname" . }}-deployments-pvc
         {{- end }}
+        - name: authority-claimer-lib
+          emptyDir: {}
         {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
         - name: mnemonic
           secret:
@@ -127,18 +140,18 @@ spec:
             secretName: {{ .Values.dapp.mnemonic.secretRef }}
             {{- end }}
         {{- end }}
-        {{- if .Values.dispatcher.extraVolumes }}
-        {{- include "tplvalues.render" ( dict "value" .Values.dispatcher.extraVolumes "context" $ ) | nindent 8 }}
+        {{- if .Values.authorityClaimer.extraVolumes }}
+        {{- include "tplvalues.render" ( dict "value" .Values.authorityClaimer.extraVolumes "context" $ ) | nindent 8 }}
         {{- end }}
-      {{- with .Values.dispatcher.nodeSelector }}
+      {{- with .Values.authorityClaimer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.dispatcher.affinity }}
+      {{- with .Values.authorityClaimer.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.dispatcher.tolerations }}
+      {{- with .Values.authorityClaimer.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
