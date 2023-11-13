@@ -13,12 +13,6 @@ dapp:
   # -- the block hash of the block where the dapp was deployed
   # (REQUIRED)
   blockHash:
-  # -- the block number of the block where the dapp was deployed
-  # (REQUIRED)
-  blockNumber:
-  # -- dapp.transactionHash is the transaction hash of the transaction that deployed the dapp
-  # (REQUIRED)
-  transactionHash:
 
   # -- mnemonic defines the configuration for the mnemonic
   # use value or secretRef, never both
@@ -54,7 +48,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 1.1.0
+    tag: 1.2.0
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -372,6 +366,101 @@ dispatcher:
     ##   memory: 128Mi
 
   # -- Optionally specify extra list of additional volumeMounts for the dispatcher container(s)
+  extraVolumeMounts: []
+
+authorityClaimer:
+  # -- Set the authorityClaimer docker image
+  image:
+    registry:
+    repository: cartesi/rollups-node
+    tag:
+    digest:
+
+  # -- Node labels for validator pods assignment
+  nodeSelector: {}
+
+  # -- Tolerations for validator pods assignment
+  tolerations: []
+
+  # -- Affinity for validator pods assignment
+  affinity: {}
+
+  # -- add additional init containers to the authorityClaimer pod(s)
+  ## Example
+  ##
+  ## initContainers:
+  ##   - name: do-something
+  ##     image: busybox
+  ##     command: ['do', 'something']
+  ##
+  initContainers: []
+
+  # -- validator replicas pod's Security Context
+  podSecurityContext:
+    {}
+    ## fsGroup: 2000
+
+  # -- Annotations for Validator replicas pods
+  podAnnotations: {}
+
+  # -- Optionally specify extra list of additional volumes for the validator pod(s)
+  extraVolumes: []
+
+  # -- The RUST_LOG level can be set to trace, debug, info, warn, error, or off.
+  logLevel: info
+
+  healthCheck:
+    # -- enable/disable health check for authorityClaimer
+    enabled: true
+    # -- define the health check port for authorityClaimer
+    port: 8086
+
+  # -- Override default container command (useful when using custom images)
+  command: ["cartesi-rollups-authority-claimer"]
+
+  # -- Override default container args (useful when using custom images)
+  args: []
+
+  # -- Extra arguments for authorityClaimer
+  extraArgs: []
+
+  # -- Array with extra environment variables to add to validator.authorityClaimer container
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
+
+  # -- Name of existing ConfigMap containing extra env vars for authorityClaimer container
+  ##
+  extraEnvVarsCM: ""
+
+  # -- Name of existing Secret containing extra env vars for authorityClaimer container
+  ##
+  extraEnvVarsSecret: ""
+
+  # -- Set authorityClaimer container Security Context
+  securityContext:
+    {}
+    ## capabilities:
+    ##   drop:
+    ##   - ALL
+    ## readOnlyRootFilesystem: true
+    ## runAsNonRoot: true
+    ## runAsUser: 1000
+
+  # -- Set authorityClaimer container resources
+  resources:
+    {}
+    ## limits:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+    ## requests:
+    ##   cpu: 100m
+    ##   memory: 128Mi
+
+  # -- Optionally specify extra list of additional volumeMounts for the authorityClaimer container(s)
   extraVolumeMounts: []
 
 stateServer:

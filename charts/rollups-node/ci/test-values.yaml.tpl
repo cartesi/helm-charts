@@ -15,14 +15,39 @@ extraDeploy:
     kind: ConfigMap
     metadata:
       namespace: "{{ .Release.Namespace }}"
+      name: "{{ .Release.Name }}-sepolia-deployment"
+    data:
+      "sepolia.json": |
+        {
+          "contracts": {
+            "Authority": { "address": "0x5827Ec9365D3a9b27bF1dB982d258Ad234D37242" },
+            "History": { "address": "0x76f4dCaC0920826541EE718214EEE4be07346cEE" },
+            "InputBox": { "address": "0x59b22D57D4f067708AB0c00552767405926dc768" }
+          }
+        }
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      namespace: "{{ .Release.Namespace }}"
       name: "{{ .Release.Name }}-dispatcher"
     data:
       RUST_LOG: "info"
       RD_EPOCH_DURATION: "86400"
       SC_GRPC_ENDPOINT: "http://localhost:50051"
       SC_DEFAULT_CONFIRMATIONS: "1"
+      ROLLUPS_DEPLOYMENT_FILE: "/opt/cartesi/share/deployments/sepolia.json"
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      namespace: "{{ .Release.Namespace }}"
+      name: "{{ .Release.Name }}-authority-claimer"
+    data:
+      RUST_LOG: "info"
+      RD_EPOCH_DURATION: "86400"
+      SC_GRPC_ENDPOINT: 'http://{{ include "validator.fullname" . }}-state-server:50051'
       TX_CHAIN_IS_LEGACY: "false"
-      TX_DEFAULT_CONFIRMATIONS: "2"
+      SC_DEFAULT_CONFIRMATIONS: "1"
+      ROLLUPS_DEPLOYMENT_FILE: "/opt/cartesi/share/deployments/sepolia.json"
   - apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -60,6 +85,24 @@ dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
   healthCheck:
     enabled: true
+  extraVolumes:
+    - name: sepolia-deployment
+      configMap:
+        name: "{{ .Release.Name }}-sepolia-deployment"
+  extraVolumeMounts:
+    - name: sepolia-deployment
+      mountPath: /opt/cartesi/share/deployments
+      readOnly: true
+authorityClaimer:
+  extraEnvVarsCM: "{{ .Release.Name }}-authority-claimer"
+  extraVolumes:
+    - name: sepolia-deployment
+      configMap:
+        name: "{{ .Release.Name }}-sepolia-deployment"
+  extraVolumeMounts:
+    - name: sepolia-deployment
+      mountPath: /opt/cartesi/share/deployments
+      readOnly: true
 stateServer:
   extraEnvVarsCM: "{{ .Release.Name }}-state-server"
 serverManager:
