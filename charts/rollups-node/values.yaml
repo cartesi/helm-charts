@@ -170,7 +170,7 @@ localnode:
     image:
       registry:
       repository: sunodo/anvil
-      tag: 3.0.0
+      tag: 3.1.0
       digest:
 
     # -- Override default container command (useful when using custom images)
