@@ -2,7 +2,7 @@
 
 # Package for Cartesi Rollups Nodes
 
-![Version: 1.1.0-0](https://img.shields.io/badge/Version-1.1.0--0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.2.0-0](https://img.shields.io/badge/Version-1.2.0--0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/overview/) for more information about Cartesi Rollups.
 
@@ -74,8 +74,27 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| authorityClaimer.affinity | object | `{}` | Affinity for validator pods assignment |
+| authorityClaimer.args | list | `[]` | Override default container args (useful when using custom images) |
+| authorityClaimer.command | list | `["cartesi-rollups-authority-claimer"]` | Override default container command (useful when using custom images) |
+| authorityClaimer.extraArgs | list | `[]` | Extra arguments for authorityClaimer |
+| authorityClaimer.extraEnvVars | list | `[]` | Array with extra environment variables to add to validator.authorityClaimer container # e.g: # extraEnvVars: #   - name: FOO #     value: "bar" # |
+| authorityClaimer.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for authorityClaimer container # |
+| authorityClaimer.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for authorityClaimer container # |
+| authorityClaimer.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the authorityClaimer container(s) |
+| authorityClaimer.extraVolumes | list | `[]` | Optionally specify extra list of additional volumes for the validator pod(s) |
+| authorityClaimer.healthCheck.enabled | bool | `true` | enable/disable health check for authorityClaimer |
+| authorityClaimer.healthCheck.port | int | `8086` | define the health check port for authorityClaimer |
+| authorityClaimer.image | object | `{"digest":null,"registry":null,"repository":"cartesi/rollups-node","tag":null}` | Set the authorityClaimer docker image |
+| authorityClaimer.initContainers | list | `[]` | add additional init containers to the authorityClaimer pod(s) # Example # # initContainers: #   - name: do-something #     image: busybox #     command: ['do', 'something'] # |
+| authorityClaimer.logLevel | string | `"info"` | The RUST_LOG level can be set to trace, debug, info, warn, error, or off. |
+| authorityClaimer.nodeSelector | object | `{}` | Node labels for validator pods assignment |
+| authorityClaimer.podAnnotations | object | `{}` | Annotations for Validator replicas pods |
+| authorityClaimer.podSecurityContext | object | `{}` | validator replicas pod's Security Context |
+| authorityClaimer.resources | object | `{}` | Set authorityClaimer container resources |
+| authorityClaimer.securityContext | object | `{}` | Set authorityClaimer container Security Context |
+| authorityClaimer.tolerations | list | `[]` | Tolerations for validator pods assignment |
 | dapp.blockHash | string | `nil` | the block hash of the block where the dapp was deployed (REQUIRED) |
-| dapp.blockNumber | string | `nil` | the block number of the block where the dapp was deployed (REQUIRED) |
 | dapp.contractAddress | string | `nil` | the contract address of the dapp deployed on the blockchain (REQUIRED) |
 | dapp.httpProvider | string | `nil` | the URL for the http:// endpoint of the provider (REQUIRED) |
 | dapp.image | string | `nil` | the complete image name, e.g. "cartesi/dapp:echo-python-0.8.0-server" (REQUIRED) |
@@ -83,7 +102,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | dapp.mnemonic.secretRef | string | `nil` | the name of the secret that should exist in the same namespace the secret MUST contain a mnemonic element like `{"mnemonic":"twelve words ..."}` |
 | dapp.mnemonic.value | string | `nil` | the 12 words mnemonic for the wallet a secret will be created with its content |
 | dapp.network | string | `nil` | the name of the network the dapp is deployed on (REQUIRED) Available options are:   - mainnet   - optimism   - optimism-goerli   - arbitrum   - arbitrum-goerli   - localhost   - sepolia |
-| dapp.transactionHash | string | `nil` | dapp.transactionHash is the transaction hash of the transaction that deployed the dapp (REQUIRED) |
 | dapp.wsProvider | string | `nil` | the URL for the ws:// endpoint of the provider (REQUIRED) |
 | dispatcher.affinity | object | `{}` | Affinity for validator pods assignment |
 | dispatcher.args | list | `[]` | Override default container args (useful when using custom images) |
@@ -108,7 +126,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
-| global.image.tag | string | `"1.1.0"` | Global Docker Image tag |
+| global.image.tag | string | `"1.2.0"` | Global Docker Image tag |
 | graphqlServer.affinity | object | `{}` | Affinity for pods assignment |
 | graphqlServer.args | list | `[]` | Override default container args (useful when using custom images) |
 | graphqlServer.command | list | `["cartesi-rollups-graphql-server"]` | Override default container command (useful when using custom images) |
@@ -192,7 +210,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | localnode.anvil.extraEnvVarsCM | string | `""` | Name of existing ConfigMap containing extra env vars for anvil container |
 | localnode.anvil.extraEnvVarsSecret | string | `""` | Name of existing Secret containing extra env vars for anvil container |
 | localnode.anvil.extraVolumeMounts | list | `[]` | Optionally specify extra list of additional volumeMounts for the anvil container(s) # |
-| localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"3.0.0"}` | Set the anvil docker image |
+| localnode.anvil.image | object | `{"digest":null,"registry":null,"repository":"sunodo/anvil","tag":"3.1.0"}` | Set the anvil docker image |
 | localnode.anvil.resources | object | `{}` | Set anvil container resources |
 | localnode.anvil.securityContext | object | `{}` | Set anvil container Security Context |
 | localnode.deployer.args | list | `[]` | Override default container args (useful when using custom images) |
