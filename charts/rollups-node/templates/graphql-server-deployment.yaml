@@ -70,12 +70,6 @@ spec:
             - name: GRAPHQL_PORT
               value: "4000"
           envFrom:
-            - secretRef:
-            {{- if (empty .Values.postgresql.endpoint.secretRef) }}
-                name: {{ include "validator.fullname" . }}-database
-            {{- else }}
-                name: {{ .Values.postgresql.endpoint.secretRef }}
-            {{- end }}
           {{- if or .Values.graphqlServer.extraEnvVarsCM .Values.graphqlServer.extraEnvVarsSecret }}
             {{- if .Values.graphqlServer.extraEnvVarsCM }}
             - configMapRef:
