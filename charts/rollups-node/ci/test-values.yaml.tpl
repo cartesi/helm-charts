@@ -80,6 +80,9 @@ extraDeploy:
 
 dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
+  extraEnvVars:
+    - name: "REDIS_ENDPOINT"
+      value: "redis://redis-master"
   healthCheck:
     enabled: true
   extraVolumes:
@@ -92,6 +95,9 @@ dispatcher:
       readOnly: true
 authorityClaimer:
   extraEnvVarsCM: "{{ .Release.Name }}-authority-claimer"
+  extraEnvVars:
+    - name: "REDIS_ENDPOINT"
+      value: "redis://redis-master"
   extraVolumes:
     - name: sepolia-deployment
       configMap:
@@ -105,15 +111,18 @@ stateServer:
 serverManager:
   advanceRunner:
     extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
+    extraEnvVars:
+      - name: "REDIS_ENDPOINT"
+        value: "redis://redis-master"
 inspectServer:
   extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
+indexer:
+  extraEnvVars:
+    - name: "REDIS_ENDPOINT"
+      value: "redis://redis-master"
 
 image:
   pullPolicy: Always
-
-redis:
-  enabled: false
-  clusterEndpoints: redis://redis-master
 
 postgresql:
   enabled: false
