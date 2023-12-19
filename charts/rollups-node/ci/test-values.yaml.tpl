@@ -120,11 +120,12 @@ indexer:
   extraEnvVars:
     - name: "REDIS_ENDPOINT"
       value: "redis://redis-master"
+    - name: "POSTGRES_ENDPOINT"
+      value: "postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres"
+graphqlServer:
+  extraEnvVars:
+    - name: "POSTGRES_ENDPOINT"
+      value: "postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres"
 
 image:
   pullPolicy: Always
-
-postgresql:
-  enabled: false
-  endpoint:
-    value: postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres
