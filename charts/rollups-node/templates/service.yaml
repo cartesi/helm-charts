@@ -7,15 +7,14 @@ SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "validator.fullname" . }}-graphql-server
+  name: {{ include "validator.fullname" . }}-validator
   labels: {{- include "validator.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.graphqlServer.service.type }}
+  type: {{ .Values.validator.service.type }}
   ports:
-    - port: {{ .Values.graphqlServer.service.port }}
-      targetPort: 4000
+    - port: {{ .Values.validator.service.port }}
+      targetPort: {{ .Values.validator.config.CARTESI_HTTP_PORT }}
       protocol: TCP
-      name: graphql
+      name: rollups-node
   selector:
     {{- include "validator.selectorLabels" . | nindent 4 }}
-    rollups.cartesi.io/component: graphql-server
