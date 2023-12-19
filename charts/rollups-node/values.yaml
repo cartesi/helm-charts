@@ -868,28 +868,6 @@ graphqlServer:
   # -- Optionally specify extra list of additional volumeMounts for the endpoints.graphqlServer container(s)
   extraVolumeMounts: []
 
-## redis configuration
-redis:
-  # -- Use bitnami Redis&reg; pod.
-  enabled: true
-  # -- redis.endpoint: e.g.: redis://localhost:6379
-  # REQUIRED if you disabled redis and your redis is standalone
-  endpoint:
-  # -- redis.clusterEndpoints: e.g.: [ "redis://localhost:6379" ]
-  # REQUIRED if you disabled redis and your redis is cluster
-  clusterEndpoints: []
-  image:
-    # -- Redis&reg; docker image tag.
-    tag: 6.2-debian-11
-  # -- Redis&reg; architecture. Allowed values: `standalone` or `replication`
-  architecture: standalone
-  auth:
-    # -- Redis&reg; Enable password authentication
-    enabled: false
-  metrics:
-    # -- sidecar prometheus exporter to expose Redis&reg; metrics
-    enabled: true
-
 ## PostgreSQL configuration
 postgresql:
   # -- Use bitnami postgreSQL pod.

@@ -71,7 +71,6 @@ spec:
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
             - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress) | quote }}
-            - {{ print (include "validator.redisConfig" .) | quote }}
             {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
             {{- end }}

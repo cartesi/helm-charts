@@ -68,16 +68,6 @@ jobs:
             --set auth.postgresPassword=postgres \
             --set image.tag=13.9.0-debian-11-r27
 
-      - name: Install redis service to kind cluster
-        if: steps.list-changed.outputs.changed == 'true'
-        run: |
-          helm install redis bitnami/redis \
-            --namespace default \
-            --wait \
-            --set auth.enabled=false \
-            --set architecture=replication \
-            --set image.tag=6.2-debian-11
-
       - name: Run chart-testing (install)
         run: |
           ct install \
