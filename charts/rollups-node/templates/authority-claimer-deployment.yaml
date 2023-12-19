@@ -59,7 +59,6 @@ spec:
             {{- if (or .Values.dapp.network) }}
             - {{ print "--tx-chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-            - {{ print (include "validator.redisConfig" .) | quote }}
             {{- range .Values.authorityClaimer.args }}
             - {{ . | quote}}
             {{- end }}
