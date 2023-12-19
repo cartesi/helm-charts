@@ -63,22 +63,14 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.command "context" $) | nindent 12 }}
           {{- end }}
           args:
-            {{- if .Values.localnode.enabled }}
-            - --provider-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
-            {{- else }}
             - {{ print "--provider-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
-            {{- end }}
             {{- if .Values.serverManager.advanceRunner.healthCheck.enabled }}
             - {{ print "--healthcheck-port=" (default 8083 .Values.serverManager.advanceRunner.healthCheck.port) | quote }}
             {{- end }}
-            {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
+            {{- if .Values.dapp.network }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
-           {{- if .Values.localnode.enabled }}
-            - --dapp-contract-address-file=/deployments/localhost/dapp.json
-            {{- else }}
-            - {{ print "--dapp-contract-address=" .Values.dapp.contractAddress | quote }}
-            {{- end }}
+            - {{ print "--dapp-contract-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress) | quote }}
             - {{ print (include "validator.redisConfig" .) | quote }}
             {{- range .Values.serverManager.advanceRunner.args }}
             - {{ . | quote}}
@@ -114,11 +106,6 @@ spec:
             {{- if .Values.serverManager.shareSnapshotFromImage }}
             - name: shared-machine-snapshots
               mountPath: /var/opt/cartesi/machine-snapshots
-              readOnly: false
-            {{- end }}
-            {{- if .Values.localnode.enabled }}
-            - name: deployments
-              mountPath: /deployments
               readOnly: false
             {{- end }}
             {{- if .Values.serverManager.advanceRunner.extraVolumeMounts }}
@@ -180,17 +167,7 @@ spec:
       volumes:
         {{- if .Values.serverManager.shareSnapshotFromImage }}
         - name: shared-machine-snapshots
-          {{- if .Values.localnode.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ include "validator.fullname" . }}-machine-snapshots-pvc
-          {{- else }}
           emptyDir: {}
-          {{- end }}
-        {{- end }}
-        {{- if .Values.localnode.enabled }}
-        - name: deployments
-          persistentVolumeClaim:
-            claimName: {{ include "validator.fullname" . }}-deployments-pvc
         {{- end }}
         {{- if .Values.serverManager.extraVolumes }}
         {{- include "tplvalues.render" ( dict "value" .Values.serverManager.extraVolumes "context" $ ) | nindent 8 }}

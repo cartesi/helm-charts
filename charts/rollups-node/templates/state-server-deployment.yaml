@@ -47,13 +47,8 @@ spec:
           {{- include "tplvalues.render" (dict "value" .Values.stateServer.command "context" $) | nindent 12 }}
           {{- end }}
           args:
-            {{- if .Values.localnode.enabled }}
-            - --bh-http-endpoint=http://{{ include "validator.fullname" . }}-localnode:8545
-            - --bh-ws-endpoint=ws://{{ include "validator.fullname" . }}-localnode:8545
-            {{- else }}
             - {{ print "--bh-http-endpoint=" (required "A valid .Values.dapp.httpProvider is required" .Values.dapp.httpProvider) | quote }}
             - {{ print "--bh-ws-endpoint=" (required "A valid .Values.dapp.wsProvider is required" .Values.dapp.wsProvider) | quote }}
-            {{- end }}
             {{- range .Values.stateServer.args }}
             - {{ . | quote}}
             {{- end }}
