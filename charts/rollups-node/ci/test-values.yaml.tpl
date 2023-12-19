@@ -78,9 +78,6 @@ extraDeploy:
       SESSION_ID: "default_rollups_id"
       INSPECT_SERVER_ADDRESS: "0.0.0.0:5005"
 
-validator:
-  localnode:
-    enabled: false
 dispatcher:
   extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
   healthCheck:

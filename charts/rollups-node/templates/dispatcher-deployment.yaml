@@ -51,14 +51,9 @@ spec:
             {{- if .Values.dispatcher.healthCheck.enabled }}
             - {{ print "--http-server-port=" (default .Values.dispatcher.healthCheck.port 8081) | quote }}
             {{- end }}
-            {{- if .Values.localnode.enabled }}
-            - --rollups-deployment-file=/opt/cartesi/share/deployments/localhost.json
-            - --dapp-deployment-file=/deployments/localhost/dapp.json
-            {{- else }}
             - {{ print "--dapp-address=" (required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress) | quote }}
             - {{ print "--dapp-deploy-block-hash=" (required "A valid .Values.dapp.blockHash is required" .Values.dapp.blockHash) | quote }}
-            {{- end }}
-            {{- if (or .Values.dapp.network .Values.localnode.enabled) }}
+            {{- if .Values.dapp.network }}
             - {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
             {{- end }}
             - {{ print (include "validator.redisConfig" .) | quote }}
@@ -92,36 +87,20 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
             - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
             {{- end }}
-            {{- if .Values.localnode.enabled }}
-            - name: blockchain-data
-              mountPath: /opt/cartesi/share/deployments
-              readOnly: false
-            - name: deployments
-              mountPath: /deployments
-              readOnly: false
-            {{- end}}
             {{- if .Values.dispatcher.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.dispatcher.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
 
       volumes:
-        {{- if .Values.localnode.enabled }}
-        - name: blockchain-data
-          persistentVolumeClaim:
-            claimName: {{ include "validator.fullname" . }}-blockchain-data-pvc
-        - name: deployments
-          persistentVolumeClaim:
-            claimName: {{ include "validator.fullname" . }}-deployments-pvc
-        {{- end }}
-        {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled .Values.dapp.mnemonic.secretRef) }}
+        {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
         - name: mnemonic
           secret:
-            {{- if (or .Values.dapp.mnemonic.value .Values.localnode.enabled) }}
+            {{- if .Values.dapp.mnemonic.value }}
             secretName: {{ include "validator.fullname" . }}-mnemonic
             {{- else }}
             secretName: {{ .Values.dapp.mnemonic.secretRef }}
