@@ -11,18 +11,6 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Return POSTGRES_ENDPOINT values
-*/}}
-{{- define "validator.postgresEndpoint" -}}
-{{- if .Values.postgresql.enabled }}
-{{- print "postgres://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql." .Release.Namespace ":" .Values.postgresql.auth.port "/" .Values.postgresql.auth.database -}}
-{{- else if not (empty .Values.postgresql.endpoint.secretRef) }}
-{{- else }}
-{{- print (required "A valid .Values.postgresql.endpoint.value is required when .Values.postgresql is false" .Values.postgresql.endpoint.value) -}}
-{{- end }}
-{{- end }}
-
-{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
