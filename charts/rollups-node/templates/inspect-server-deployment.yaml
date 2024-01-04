@@ -60,12 +60,14 @@ spec:
             {{- range .Values.inspectServer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          {{- if .Values.inspectServer.extraEnvVars }}
+          {{- with .Values.inspectServer.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.inspectServer.logLevel }}
-            {{- if .Values.inspectServer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.inspectServer.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
           {{- if or .Values.inspectServer.extraEnvVarsCM .Values.inspectServer.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.inspectServer.extraEnvVarsCM }}

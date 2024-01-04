@@ -74,12 +74,14 @@ spec:
               port: {{ (default 8081 .Values.dispatcher.healthCheck.port) }}
             initialDelaySeconds: 3
           {{- end }}
+          {{- if .Values.dispatcher.extraEnvVars }}
+          {{- with .Values.dispatcher.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.dispatcher.logLevel }}
-            {{- if .Values.dispatcher.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.dispatcher.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
           {{- if or .Values.dispatcher.extraEnvVarsCM .Values.dispatcher.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.dispatcher.extraEnvVarsCM }}

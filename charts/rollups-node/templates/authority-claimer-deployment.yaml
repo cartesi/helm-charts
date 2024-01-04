@@ -82,12 +82,14 @@ spec:
               port: {{ (default 8086 .Values.authorityClaimer.healthCheck.port) }}
             initialDelaySeconds: 3
           {{- end }}
+          {{- if .Values.authorityClaimer.extraEnvVars }}
+          {{- with .Values.authorityClaimer.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.authorityClaimer.logLevel }}
-            {{- if .Values.authorityClaimer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.authorityClaimer.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
           {{- if or .Values.authorityClaimer.extraEnvVarsCM .Values.authorityClaimer.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.authorityClaimer.extraEnvVarsCM }}

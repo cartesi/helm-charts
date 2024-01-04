@@ -64,12 +64,14 @@ spec:
             grpc:
               port: 50051
             initialDelaySeconds: 3
+          {{- if .Values.stateServer.extraEnvVars }}
+          {{- with .Values.stateServer.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.stateServer.logLevel }}
-            {{- if .Values.stateServer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.stateServer.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
           {{- if or .Values.stateServer.extraEnvVarsCM .Values.stateServer.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.stateServer.extraEnvVarsCM }}

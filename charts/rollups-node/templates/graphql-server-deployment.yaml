@@ -59,12 +59,14 @@ spec:
             {{- range .Values.graphqlServer.extraArgs }}
             - {{ . | quote}}
             {{- end }}
+          {{- if .Values.graphqlServer.extraEnvVars }}
+          {{- with .Values.graphqlServer.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.graphqlServer.logLevel }}
-            {{- if .Values.graphqlServer.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.graphqlServer.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
             - name: GRAPHQL_HOST
               value: "0.0.0.0"
             - name: GRAPHQL_PORT

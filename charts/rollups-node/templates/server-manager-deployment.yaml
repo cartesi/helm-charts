@@ -93,12 +93,14 @@ spec:
               port: {{ default 8083 .Values.serverManager.advanceRunner.healthCheck.port }}
             initialDelaySeconds: 3
           {{- end }}
+          {{- if .Values.serverManager.advanceRunner.extraEnvVars }}
+          {{- with .Values.serverManager.advanceRunner.extraEnvVars }}
           env:
-            - name: RUST_LOG
-              value: {{ .Values.serverManager.advanceRunner.logLevel }}
-            {{- if .Values.serverManager.advanceRunner.extraEnvVars }}
-            {{- include "tplvalues.render" (dict "value" .Values.serverManager.advanceRunner.extraEnvVars "context" $) | nindent 12 }}
-            {{- end }}
+              {{- range $key, $value := . }}
+              {{- toYaml $value | nindent 12 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
           {{- if or .Values.serverManager.advanceRunner.extraEnvVarsCM .Values.serverManager.advanceRunner.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.serverManager.advanceRunner.extraEnvVarsCM }}
