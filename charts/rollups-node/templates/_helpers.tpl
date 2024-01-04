@@ -55,9 +55,8 @@ Selector labels
 TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
-dapp.cartesi.io/contract-address: {{ required "A valid .Values.dapp.contractAddress is required" .Values.dapp.contractAddress | lower | quote }}
-dapp.cartesi.io/chain-id: {{ include "dapp.chainID" . | quote }}
-dapp.cartesi.io/network:  {{ .Values.dapp.network | quote }}
+dapp.cartesi.io/contract-address: {{ required "A valid .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS is required" .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | lower | quote }}
+dapp.cartesi.io/chain-id: {{ .Values.validator.config.CARTESI_BLOCKCHAIN_ID | quote }}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -90,52 +89,10 @@ Return the proper image name
 {{- end -}}
 
 {{/*
-Return the proper dispatcher image name
+Return the proper validator image name
 */}}
-{{- define "dispatcher.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.dispatcher.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper authorityClaimer image name
-*/}}
-{{- define "authorityClaimer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.authorityClaimer.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper stateServer image name
-*/}}
-{{- define "stateServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.stateServer.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper indexer image name
-*/}}
-{{- define "indexer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.indexer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper graphqlServer image name
-*/}}
-{{- define "graphqlServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.graphqlServer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper inspectServer image name
-*/}}
-{{- define "inspectServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.inspectServer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper serverManager.advanceRunner image name
-*/}}
-{{- define "serverManager.advanceRunner.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.serverManager.advanceRunner.image "global" .Values.global ) }}
+{{- define "validator.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.validator.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
@@ -149,13 +106,4 @@ Usage:
     {{- else }}
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
-{{- end -}}
-
-{{/*
-Return the chainID based on the network
-*/}}
-{{- define "dapp.chainID" -}}
-{{- $networkIDs := dict "mainnet" "1" "optimism" "10" "optimism-goerli" "420" "arbitrum" "42161" "arbitrum-goerli" "421613" "localhost" "31337" "sepolia" "11155111" -}}
-{{- $chainID := index $networkIDs .Values.dapp.network }}
-{{- $chainID }}
 {{- end -}}

@@ -8,13 +8,10 @@ SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "validator.fullname" . }}-graphql-server
+  name: {{ include "validator.fullname" . }}-validator
   labels: {{- include "validator.labels" . | nindent 4 }}
   annotations:
   {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-  {{- range $key, $value := .Values.graphqlServer.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -22,18 +19,18 @@ spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.dapp.contractAddress | lower }}.{{ .Values.ingress.subDomain }}
-      http: &http
+    - host: {{ .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | lower }}.{{ .Values.ingress.subDomain }}
+      http: &basic
         paths:
           - pathType: Prefix
             path: /
             backend:
               service:
-                name: {{ include "validator.fullname" . }}-graphql-server
+                name: {{ include "validator.fullname" . }}-validator
                 port:
-                  number: {{ .Values.graphqlServer.service.port }}
+                  number: {{ .Values.validator.service.port }}
     {{- if .Values.ingress.addReleaseNameAsHost }}
     - host: {{ .Release.Name | lower }}.{{ .Values.ingress.subDomain }}
-      http: *http
+      http: *basic
     {{- end }}
 {{- end }}

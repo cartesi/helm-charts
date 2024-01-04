@@ -9,6 +9,11 @@ spec:
   containers:
     - name: http-check
       image: busybox
-      command: ['wget']
-      args: ['--spider', '--timeout=5', 'http://{{ include "validator.fullname" . }}-graphql-server:{{ .Values.graphqlServer.service.port }}/graphql']
+      command: ["wget"]
+      args:
+        [
+          "--spider",
+          "--timeout=5",
+          'http://{{ include "validator.fullname" . }}-validator:{{ .Values.validator.service.port }}/graphql',
+        ]
   restartPolicy: Never
