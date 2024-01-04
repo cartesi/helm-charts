@@ -10,5 +10,5 @@ spec:
     - name: http-check
       image: busybox
       command: ['wget']
-      args: ['--spider', '--timeout=5', 'http://{{ include "validator.fullname" . }}-graphql-server:{{ .Values.graphqlServer.service.port }}/graphql']
+      args: ['--spider', '--timeout=5', 'http://{{ include "validator.fullname" . }}-graphql-server:4000/graphql']
   restartPolicy: Never

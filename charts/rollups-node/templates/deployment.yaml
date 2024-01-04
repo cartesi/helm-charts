@@ -1,0 +1,131 @@
+{{- /*
+(c) Cartesi and individual authors (see AUTHORS)
+SPDX-License-Identifier: Apache-2.0 (see LICENSE)
+*/}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "validator.fullname" . }}-validator
+  labels: {{- include "validator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "validator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.validator.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "validator.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "validator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.validator.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.validator.initContainers }}
+        {{- include "tplvalues.render" ( dict "value" .Values.validator.initContainers "context" $ ) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: rollups-node
+          image: {{ include "validator.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.validator.resources | nindent 12 }}
+          {{- if .Values.validator.command }}
+          command:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.command "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.validator.args }}
+          args:
+          {{- include "tplvalues.render" (dict "value" .Values.validator.args "context" $) | nindent 12 }}
+            {{- range .Values.validator.extraArgs }}
+            - {{ . | quote}}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.validator.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ (default 8081 .Values.validator.healthCheck.port) }}
+            initialDelaySeconds: 3
+          {{- end }}
+          env:
+            - name: CARTESI_LOG_LEVEL
+              value: {{ .Values.validator.logLevel }}
+            {{- if .Values.dapp.network }}
+            - name: CARTESI_BLOCKCHAIN_ID
+              value: {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+            {{- end }}
+            {{- if .Values.dapp.contractAddress }}
+            - name: CARTESI_CONTRACTS_DAPP_ADDRESS
+              value: {{ .Values.dapp.contractAddress | quote }}
+            {{- end }}
+            {{- if .Values.dapp.blockNumber }}
+            - name: CARTESI_CONTRACTS_DAPP_DEPLOYMENT_BLOCK_NUMBER
+              value: {{ .Values.dapp.blockNumber | quote }}
+            {{- end }}
+            {{- if .Values.dapp.httpProvider }}
+            - name: CARTESI_BLOCKCHAIN_HTTP_ENDPOINT
+              value: {{ .Values.dapp.httpProvider | quote }}
+            {{- end }}
+            {{- if .Values.dapp.wsProvider }}
+            - name: CARTESI_BLOCKCHAIN_WS_ENDPOINT
+              value: {{ .Values.dapp.wsProvider | quote }}
+            {{- end }}
+            {{- if .Values.validator.extraEnvVars }}
+            {{- include "tplvalues.render" (dict "value" .Values.validator.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.validator.extraEnvVarsCM .Values.validator.extraEnvVarsSecret }}
+          envFrom:
+            {{- if .Values.validator.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.extraEnvVarsCM "context" $ ) }}
+            {{- end }}
+            {{- if .Values.validator.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "tplvalues.render" ( dict "value" .Values.validator.extraEnvVarsSecret "context" $ ) }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            - name: mnemonic
+              mountPath: /var/run/secrets/mnemonic
+              readOnly: true
+            {{- end }}
+            {{- if .Values.validator.extraVolumeMounts }}
+            {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumeMounts "context" $ ) | nindent 12 }}
+            {{- end }}
+      volumes:
+        {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+        - name: mnemonic
+          secret:
+            {{- if .Values.dapp.mnemonic.value }}
+            secretName: {{ include "validator.fullname" . }}-mnemonic
+            {{- else }}
+            secretName: {{ .Values.dapp.mnemonic.secretRef }}
+            {{- end }}
+        {{- end }}
+        {{- if .Values.validator.extraVolumes }}
+        {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumes "context" $ ) | nindent 8 }}
+        {{- end }}
+      {{- with .Values.validator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.validator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

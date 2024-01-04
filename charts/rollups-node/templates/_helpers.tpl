@@ -90,52 +90,10 @@ Return the proper image name
 {{- end -}}
 
 {{/*
-Return the proper dispatcher image name
+Return the proper validator image name
 */}}
-{{- define "dispatcher.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.dispatcher.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper authorityClaimer image name
-*/}}
-{{- define "authorityClaimer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.authorityClaimer.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper stateServer image name
-*/}}
-{{- define "stateServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.stateServer.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper indexer image name
-*/}}
-{{- define "indexer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.indexer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper graphqlServer image name
-*/}}
-{{- define "graphqlServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.graphqlServer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper inspectServer image name
-*/}}
-{{- define "inspectServer.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.inspectServer.image "global" .Values.global ) }}
-{{- end -}}
-
-{{/*
-Return the proper serverManager.advanceRunner image name
-*/}}
-{{- define "serverManager.advanceRunner.image" -}}
-{{ include "images.image" (dict "imageRoot" .Values.serverManager.advanceRunner.image "global" .Values.global ) }}
+{{- define "validator.image" -}}
+{{ include "images.image" (dict "imageRoot" .Values.validator.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
