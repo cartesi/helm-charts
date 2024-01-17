@@ -63,7 +63,7 @@ spec:
               value: {{ .Values.validator.logLevel }}
             {{- if .Values.dapp.network }}
             - name: CARTESI_BLOCKCHAIN_ID
-              value: {{ print "--chain-id=" (include "dapp.chainID" .) | quote }}
+              value: {{ include "dapp.chainID" . | quote }}
             {{- end }}
             {{- if .Values.dapp.contractAddress }}
             - name: CARTESI_CONTRACTS_DAPP_ADDRESS
@@ -80,6 +80,10 @@ spec:
             {{- if .Values.dapp.wsProvider }}
             - name: CARTESI_BLOCKCHAIN_WS_ENDPOINT
               value: {{ .Values.dapp.wsProvider | quote }}
+            {{- end }}
+            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            - name: CARTESI_AUTH_MNEMONIC_FILE
+              value: "/var/run/secrets/mnemonic/MNEMONIC"
             {{- end }}
             {{- if .Values.validator.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.validator.extraEnvVars "context" $) | nindent 12 }}
