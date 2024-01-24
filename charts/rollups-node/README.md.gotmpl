@@ -7,8 +7,6 @@ Refer to the [official documentation](https://docs.cartesi.io/cartesi-rollups/ov
 
 {{ template "chart.maintainersSection" . }}
 
-{{ template "chart.requirementsSection" . }}
-
 ## TL;DR
 
 ```console
@@ -28,8 +26,8 @@ This chart bootstraps [Cartesi Rollups Nodes](https://docs.cartesi.io/cartesi-ro
 ## Prerequisites
 
 - Kubernetes 1.19+
-- Helm 3.8.0+
-- PersistentVolume provisioner support in the underlying infrastructure
+- [Helm 3.8.0+](https://helm.sh) must be installed to use the charts.
+Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ## Installing the Chart
 
@@ -65,13 +63,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 helm install my-node \
-  --set postgresql.auth.password=secretpassword \
+  --set dapp.network=sepolia \
     oci://docker.io/cartesi/rollups-node-chart
 ```
 
-The above command sets the bitnami PostgreSQL server password to `secretpassword`.
-
-> NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent volumes (PVs) used by the chart and re-deploy it, or use the application's built-in administrative tools if available.
+The above command sets the network to sepolia `network`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -88,10 +84,6 @@ helm install my-node -f values.yaml oci://docker.io/cartesi/rollups-node-chart
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
 Cartesi will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
-
-## Persistence
-
-By default, the chart uses StorageClass named `standard` for the [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/). The volume is created using dynamic volume provisioning. If a your default StorageClass name is different, specify it during installation.
 
 ### Setting Pod's affinity
 
