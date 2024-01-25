@@ -59,31 +59,27 @@ spec:
             initialDelaySeconds: 3
           {{- end }}
           env:
-            - name: CARTESI_LOG_LEVEL
-              value: {{ .Values.validator.logLevel }}
             {{- if .Values.dapp.network }}
             - name: CARTESI_BLOCKCHAIN_ID
               value: {{ include "dapp.chainID" . | quote }}
             {{- end }}
-            {{- if .Values.dapp.contractAddress }}
-            - name: CARTESI_CONTRACTS_DAPP_ADDRESS
-              value: {{ .Values.dapp.contractAddress | quote }}
+            {{- range $key, $value := .Values.validator.config }}
+            {{- if and (ne $value "") (not (in $key (list "CARTESI_AUTH_MNEMONIC" "CARTESI_AUTH_MNEMONIC_FILE" "CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX" "CARTESI_AUTH_AWS_KMS_KEY_ID" "CARTESI_AUTH_AWS_KMS_REGION"))) }}
+              - name: {{ $key }}
+                value: {{ quote $value }}
             {{- end }}
-            {{- if .Values.dapp.blockNumber }}
-            - name: CARTESI_CONTRACTS_DAPP_DEPLOYMENT_BLOCK_NUMBER
-              value: {{ .Values.dapp.blockNumber | quote }}
             {{- end }}
-            {{- if .Values.dapp.httpProvider }}
-            - name: CARTESI_BLOCKCHAIN_HTTP_ENDPOINT
-              value: {{ .Values.dapp.httpProvider | quote }}
-            {{- end }}
-            {{- if .Values.dapp.wsProvider }}
-            - name: CARTESI_BLOCKCHAIN_WS_ENDPOINT
-              value: {{ .Values.dapp.wsProvider | quote }}
-            {{- end }}
-            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            {{- if (or .Values.validator.config.CARTESI_AUTH_MNEMONIC .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE) }}
             - name: CARTESI_AUTH_MNEMONIC_FILE
               value: "/var/run/secrets/mnemonic/MNEMONIC"
+            - name: CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX
+              value: {{ .Values.validator.config.CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX }}
+            {{- end }}
+            {{- if .Values.validator.config.CARTESI_AUTH_AWS_KMS_KEY_ID }}
+            - name: CARTESI_AUTH_AWS_KMS_KEY_ID
+              value: {{ .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION | quote }}
+            - name: CARTESI_AUTH_AWS_KMS_REGION
+              value: {{ required "A valid .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION is required" .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION | quote }}
             {{- end }}
             {{- if .Values.validator.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.validator.extraEnvVars "context" $) | nindent 12 }}
@@ -100,7 +96,7 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+            {{- if (or .Values.validator.config.CARTESI_AUTH_MNEMONIC .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE) }}
             - name: mnemonic
               mountPath: /var/run/secrets/mnemonic
               readOnly: true
@@ -109,13 +105,13 @@ spec:
             {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
       volumes:
-        {{- if (or .Values.dapp.mnemonic.value .Values.dapp.mnemonic.secretRef) }}
+        {{- if (or .Values.validator.config.CARTESI_AUTH_MNEMONIC .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE) }}
         - name: mnemonic
           secret:
-            {{- if .Values.dapp.mnemonic.value }}
+            {{- if .Values.validator.config.CARTESI_AUTH_MNEMONIC }}
             secretName: {{ include "validator.fullname" . }}-mnemonic
             {{- else }}
-            secretName: {{ .Values.dapp.mnemonic.secretRef }}
+            secretName: {{ .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE }}
             {{- end }}
         {{- end }}
         {{- if .Values.validator.extraVolumes }}
