@@ -62,7 +62,7 @@ spec:
             {{- range $key, $value := .Values.validator.config }}
             {{- if and (ne $value "") (ne $key "CARTESI_AUTH_MNEMONIC") }}
             - name: {{ $key }}
-              value: {{ quote $value }}
+              value: {{ tpl $value $ | quote }}
             {{- end }}
             {{- end }}
             {{- if .Values.validator.config.CARTESI_AUTH_MNEMONIC }}
