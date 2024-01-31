@@ -56,8 +56,7 @@ TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
 dapp.cartesi.io/contract-address: {{ required "A valid .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS is required" .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | lower | quote }}
-dapp.cartesi.io/chain-id: {{ include "dapp.chainID" . | quote }}
-dapp.cartesi.io/network:  {{ .Values.dapp.network | quote }}
+dapp.cartesi.io/chain-id: {{ .Values.validator.config.CARTESI_BLOCKCHAIN_ID | quote }}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -107,13 +106,4 @@ Usage:
     {{- else }}
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
-{{- end -}}
-
-{{/*
-Return the chainID based on the network
-*/}}
-{{- define "dapp.chainID" -}}
-{{- $networkIDs := dict "mainnet" "1" "optimism" "10" "optimism-goerli" "420" "arbitrum" "42161" "arbitrum-goerli" "421613" "localhost" "31337" "sepolia" "11155111" -}}
-{{- $chainID := index $networkIDs .Values.dapp.network }}
-{{- $chainID }}
 {{- end -}}

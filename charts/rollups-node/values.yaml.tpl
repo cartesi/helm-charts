@@ -7,17 +7,6 @@ dapp:
   # -- the complete image name, e.g. "cartesi/dapp:echo-python-0.8.0-server"
   # (REQUIRED)
   image:
-  # -- the name of the network the dapp is deployed on
-  # (REQUIRED)
-  # Available options are:
-  #   - mainnet
-  #   - optimism
-  #   - optimism-goerli
-  #   - arbitrum
-  #   - arbitrum-goerli
-  #   - localhost
-  #   - sepolia
-  network:
 
 ## cartesi holds the configuration for the default containers images
 ##
