@@ -1,3 +1,8 @@
+global:
+  image:
+    registry: ghcr.io
+    tag: main
+
 validator:
   healthCheck:
     enabled: true
