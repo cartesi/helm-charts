@@ -1,131 +1,48 @@
-dapp:
-  image: "docker.io/cartesi/dapp:echo-python-0.16.0-server"
-  contractAddress: "0x9f12D4365806FC000D6555ACB85c5371b464E506"
-  blockHash: "0xd8c31e223c9790594594166abe91a71dee250586df6b93e2fd9079a5397f572c"
-  blockNumber: "4152308"
-  transactionHash: "0x3beea324c1db8a69829df784ed6af9edccc8f506777693e5124120535a27ab8b"
-  mnemonic:
-    value: "${MNEMONIC}"
-  httpProvider: https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  wsProvider: wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}
-  network: sepolia
-
-extraDeploy:
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-sepolia-deployment"
-    data:
-      "sepolia.json": |
-        {
-          "contracts": {
-            "Authority": { "address": "0x5827Ec9365D3a9b27bF1dB982d258Ad234D37242" },
-            "History": { "address": "0x76f4dCaC0920826541EE718214EEE4be07346cEE" },
-            "InputBox": { "address": "0x59b22D57D4f067708AB0c00552767405926dc768" }
-          }
-        }
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-dispatcher"
-    data:
-      RUST_LOG: "info"
-      RD_EPOCH_DURATION: "86400"
-      SC_GRPC_ENDPOINT: "http://localhost:50051"
-      SC_DEFAULT_CONFIRMATIONS: "1"
-      ROLLUPS_DEPLOYMENT_FILE: "/opt/cartesi/share/deployments/sepolia.json"
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-authority-claimer"
-    data:
-      RUST_LOG: "info"
-      RD_EPOCH_DURATION: "86400"
-      SC_GRPC_ENDPOINT: 'http://{{ include "validator.fullname" . }}-state-server:50051'
-      TX_CHAIN_IS_LEGACY: "false"
-      SC_DEFAULT_CONFIRMATIONS: "1"
-      ROLLUPS_DEPLOYMENT_FILE: "/opt/cartesi/share/deployments/sepolia.json"
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-state-server"
-    data:
-      RUST_LOG: "info"
-      SF_GENESIS_BLOCK: "3963384"
-      SF_SAFETY_MARGIN: "1"
-      BH_BLOCK_TIMEOUT: "8"
-      SS_SERVER_ADDRESS: "0.0.0.0:50051"
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-advance-runner"
-    data:
-      SESSION_ID: "default_rollups_id"
-      SERVER_MANAGER_ENDPOINT: "http://localhost:5001"
-      SNAPSHOT_DIR: "/var/opt/cartesi/machine-snapshots"
-      SNAPSHOT_LATEST: "/var/opt/cartesi/machine-snapshots/latest"
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      namespace: "{{ .Release.Namespace }}"
-      name: "{{ .Release.Name }}-inspect-server"
-    data:
-      SESSION_ID: "default_rollups_id"
-      INSPECT_SERVER_ADDRESS: "0.0.0.0:5005"
-
-dispatcher:
-  extraEnvVarsCM: "{{ .Release.Name }}-dispatcher"
-  extraEnvVars:
-    - name: "REDIS_ENDPOINT"
-      value: "redis://redis-master"
+validator:
+  application:
+    image: cartesi/dapp:echo-python-0.16.0-server
   healthCheck:
     enabled: true
+  config:
+    CARTESI_LOG_LEVEL: "info"
+    CARTESI_HTTP_ADDRESS: "0.0.0.0"
+    CARTESI_HTTP_PORT: "10000"
+    CARTESI_POSTGRES_ENDPOINT: "postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres"
+    CARTESI_BLOCKCHAIN_ID: "11155111"
+    CARTESI_BLOCKCHAIN_HTTP_ENDPOINT: "https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+    CARTESI_BLOCKCHAIN_WS_ENDPOINT: "wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+    CARTESI_BLOCKCHAIN_IS_LEGACY: "false"
+    CARTESI_BLOCKCHAIN_FINALITY_OFFSET: "1"
+    CARTESI_CONTRACTS_APPLICATION_ADDRESS: "0x9f12D4365806FC000D6555ACB85c5371b464E506"
+    CARTESI_CONTRACTS_APPLICATION_DEPLOYMENT_BLOCK_NUMBER: "4152308"
+    CARTESI_CONTRACTS_HISTORY_ADDRESS: "0x76f4dCaC0920826541EE718214EEE4be07346cEE"
+    CARTESI_CONTRACTS_AUTHORITY_ADDRESS: "0x5827Ec9365D3a9b27bF1dB982d258Ad234D37242"
+    CARTESI_CONTRACTS_INPUT_BOX_ADDRESS: "0x59b22D57D4f067708AB0c00552767405926dc768"
+    CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER: "3963384"
+    CARTESI_EPOCH_DURATION: "86400"
+    CARTESI_FEATURE_READER_MODE: "true"
+    CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK: "true"
+    CARTESI_SNAPSHOT_DIR: "/usr/share/cartesi/snapshot"
+    CARTESI_AUTH_MNEMONIC: "${MNEMONIC}"
+  initContainers:
+    - image: "{{ .Values.validator.application.image }}"
+      name: snapshot-provisioner
+      command:
+        - cp
+        - -rv
+        - /var/opt/cartesi/machine-snapshots/0_0/.
+        - /destination/machine-snapshots/
+      volumeMounts:
+        - name: snapshots
+          mountPath: /destination/machine-snapshots
+          readOnly: false
   extraVolumes:
-    - name: sepolia-deployment
-      configMap:
-        name: "{{ .Release.Name }}-sepolia-deployment"
+    - name: snapshots
+      emptyDir: {}
   extraVolumeMounts:
-    - name: sepolia-deployment
-      mountPath: /opt/cartesi/share/deployments
-      readOnly: true
-authorityClaimer:
-  extraEnvVarsCM: "{{ .Release.Name }}-authority-claimer"
-  extraEnvVars:
-    - name: "REDIS_ENDPOINT"
-      value: "redis://redis-master"
-  extraVolumes:
-    - name: sepolia-deployment
-      configMap:
-        name: "{{ .Release.Name }}-sepolia-deployment"
-  extraVolumeMounts:
-    - name: sepolia-deployment
-      mountPath: /opt/cartesi/share/deployments
-      readOnly: true
-stateServer:
-  extraEnvVarsCM: "{{ .Release.Name }}-state-server"
-serverManager:
-  advanceRunner:
-    extraEnvVarsCM: "{{ .Release.Name }}-advance-runner"
-    extraEnvVars:
-      - name: "REDIS_ENDPOINT"
-        value: "redis://redis-master"
-inspectServer:
-  extraEnvVarsCM: "{{ .Release.Name }}-inspect-server"
-indexer:
-  extraEnvVars:
-    - name: "REDIS_ENDPOINT"
-      value: "redis://redis-master"
-    - name: "POSTGRES_ENDPOINT"
-      value: "postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres"
-graphqlServer:
-  extraEnvVars:
-    - name: "POSTGRES_ENDPOINT"
-      value: "postgres://postgres:postgres@postgresql.default.svc.cluster.local:5432/postgres"
+    - name: snapshots
+      mountPath: /usr/share/cartesi/snapshot
+      readOnly: false
 
 image:
   pullPolicy: Always
