@@ -59,27 +59,15 @@ spec:
             initialDelaySeconds: 3
           {{- end }}
           env:
-            {{- if .Values.dapp.network }}
-            - name: CARTESI_BLOCKCHAIN_ID
-              value: {{ include "dapp.chainID" . | quote }}
-            {{- end }}
             {{- range $key, $value := .Values.validator.config }}
-            {{- if and (ne $value "") (not (in $key (list "CARTESI_AUTH_MNEMONIC" "CARTESI_AUTH_MNEMONIC_FILE" "CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX" "CARTESI_AUTH_AWS_KMS_KEY_ID" "CARTESI_AUTH_AWS_KMS_REGION"))) }}
+            {{- if and (ne $value "") (ne $key "CARTESI_AUTH_MNEMONIC") }}
               - name: {{ $key }}
                 value: {{ quote $value }}
             {{- end }}
             {{- end }}
-            {{- if (.Values.validator.config.CARTESI_AUTH_MNEMONIC) }}
+            {{- if .Values.validator.config.CARTESI_AUTH_MNEMONIC }}
             - name: CARTESI_AUTH_MNEMONIC_FILE
-              value: {{ required "A valid .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE is required" .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE }}
-            - name: CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX
-              value: {{ .Values.validator.config.CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX }}
-            {{- end }}
-            {{- if .Values.validator.config.CARTESI_AUTH_AWS_KMS_KEY_ID }}
-            - name: CARTESI_AUTH_AWS_KMS_KEY_ID
-              value: {{ .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION | quote }}
-            - name: CARTESI_AUTH_AWS_KMS_REGION
-              value: {{ required "A valid .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION is required" .Values.validator.config.CARTESI_AUTH_AWS_KMS_REGION | quote }}
+              value: /var/run/secrets/mnemonic/MNEMONIC
             {{- end }}
             {{- if .Values.validator.extraEnvVars }}
             {{- include "tplvalues.render" (dict "value" .Values.validator.extraEnvVars "context" $) | nindent 12 }}
@@ -96,16 +84,16 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-            {{- if (.Values.validator.config.CARTESI_AUTH_MNEMONIC) }}
+            {{- if .Values.validator.config.CARTESI_AUTH_MNEMONIC }}
             - name: mnemonic
-              mountPath: {{ required "A valid .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE is required" .Values.validator.config.CARTESI_AUTH_MNEMONIC_FILE }}
+              mountPath: /var/run/secrets/mnemonic/MNEMONIC
               readOnly: true
             {{- end }}
             {{- if .Values.validator.extraVolumeMounts }}
             {{- include "tplvalues.render" ( dict "value" .Values.validator.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
       volumes:
-        {{- if (.Values.validator.config.CARTESI_AUTH_MNEMONIC) }}
+        {{- if .Values.validator.config.CARTESI_AUTH_MNEMONIC }}
         - name: mnemonic
           secret:
             secretName: {{ include "validator.fullname" . }}-mnemonic
