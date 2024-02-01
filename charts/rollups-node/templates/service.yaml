@@ -13,7 +13,7 @@ spec:
   type: {{ .Values.validator.service.type }}
   ports:
     - port: 4000
-      targetPort: 4000
+      targetPort: 10000
       protocol: TCP
       name: graphql-server
     - port: 5005
