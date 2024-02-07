@@ -71,6 +71,11 @@ validator:
     tag:
     digest:
 
+  # -- Set the application docker image
+  ## The image is used to get the snapshot if needed.
+  application:
+    image: ""
+
   # -- Node labels for validator pods assignment
   nodeSelector: {}
 
