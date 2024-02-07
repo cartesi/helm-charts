@@ -1,4 +1,6 @@
 validator:
+  application:
+    image: cartesi/dapp:echo-python-0.16.0-server
   healthCheck:
     enabled: true
   config:
@@ -22,7 +24,7 @@ validator:
     CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK: "true"
     CARTESI_SNAPSHOT_DIR: "/usr/share/cartesi/snapshot"
   initContainers:
-    - image: "docker.io/cartesi/dapp:echo-python-0.16.0-server"
+    - image: "{{ .Values.validator.application.image }}"
       name: snapshot-provisioner
       command:
         - cp
