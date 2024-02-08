@@ -64,7 +64,7 @@ ingress:
 extraDeploy: []
 
 validator:
-  # -- Set the dispatcher docker image
+  # -- Set the validator docker image
   image:
     registry:
     repository: cartesi/rollups-node
