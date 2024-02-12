@@ -4,12 +4,13 @@ set -euo pipefail
 [[ -n ${DEBUG:-} ]] && set -x
 
 VALUES_FILE="values.yaml"
-ROLLUPS_NODE_VERSION="$(yq .global.image.tag "$VALUES_FILE")"
 
 # Process TOML file using yq and transform to YAML format
 echo "Processing Config.toml using yq and transforming it to YAML format..."
 
 cat "$VALUES_FILE".tpl > "$VALUES_FILE"
+
+ROLLUPS_NODE_VERSION="$(yq .global.image.tag "$VALUES_FILE")"
 
 # Convert TOML to YAML format and structure, keeping descriptions
 curl -fsSL https://raw.githubusercontent.com/cartesi/rollups-node/v${ROLLUPS_NODE_VERSION}/internal/config/generate/Config.toml \
