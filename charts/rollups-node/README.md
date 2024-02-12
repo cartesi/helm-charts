@@ -97,18 +97,18 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.config.CARTESI_BLOCKCHAIN_ID | string | `""` | An unique identifier representing a blockchain network. |
 | validator.config.CARTESI_BLOCKCHAIN_IS_LEGACY | string | `"false"` | If set to true the node will send transactions using the legacy gas fee model (instead of EIP-1559). |
 | validator.config.CARTESI_BLOCKCHAIN_WS_ENDPOINT | string | `""` | WebSocket endpoint for the blockchain RPC provider. |
+| validator.config.CARTESI_CONTRACTS_APPLICATION_ADDRESS | string | `""` | Address of the DApp's contract. |
+| validator.config.CARTESI_CONTRACTS_APPLICATION_DEPLOYMENT_BLOCK_NUMBER | string | `""` | Block in which the DApp's contract was deployed. |
 | validator.config.CARTESI_CONTRACTS_AUTHORITY_ADDRESS | string | `""` | Address of the Authority contract. |
-| validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | string | `""` | Address of the DApp's contract. |
-| validator.config.CARTESI_CONTRACTS_DAPP_DEPLOYMENT_BLOCK_NUMBER | string | `""` | Block in which the DApp's contract was deployed. |
 | validator.config.CARTESI_CONTRACTS_HISTORY_ADDRESS | string | `""` | Address of the History contract. |
 | validator.config.CARTESI_CONTRACTS_INPUT_BOX_ADDRESS | string | `""` | Address of the InputBox contract. |
 | validator.config.CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER | string | `""` | The deployment block for the input box contract. The node will begin to read blockchain events from this block. |
 | validator.config.CARTESI_EPOCH_DURATION | string | `"86400"` | Duration of a rollups epoch in seconds. At the end of each epoch, the node will send claims to the blockchain. |
 | validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED | string | `"false"` | When enabled, the node does not start the authority-claimer service and the Redis server. |
 | validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_REDIS_ENDPOINT | string | `""` | External Redis endpoint for the node when running in the experimental sunodo validator mode. |
+| validator.config.CARTESI_FEATURE_DISABLE_CLAIMER | string | `"false"` | If set to true, the node will not make claims. |
 | validator.config.CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK | string | `"false"` | If set to true, the node will *not* check whether the Cartesi machine hash from the snapshot matches the hash in the Application contract. |
 | validator.config.CARTESI_FEATURE_HOST_MODE | string | `"false"` | If set to true, the node will run in host mode. In host mode, computations will not be performed by the cartesi machine. You should only use host mode for development and debugging! |
-| validator.config.CARTESI_FEATURE_READER_MODE | string | `"false"` | If set to true, the node will run in reader mode. In reader mode, the node does not make claims. |
 | validator.config.CARTESI_HTTP_ADDRESS | string | `"127.0.0.1"` | HTTP address for the node. |
 | validator.config.CARTESI_HTTP_PORT | string | `"10000"` | HTTP port for the node. The node will also use the 20 ports after this one for internal services. |
 | validator.config.CARTESI_LOG_LEVEL | string | `"info"` |  |
