@@ -19,7 +19,7 @@ spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
   rules:
-    - host: {{ .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | lower }}.{{ .Values.ingress.subDomain }}
+    - host: {{ .Values.validator.config.CARTESI_CONTRACTS_APPLICATION_ADDRESS | lower }}.{{ .Values.ingress.subDomain }}
       http: &basic
         paths:
           - pathType: Prefix

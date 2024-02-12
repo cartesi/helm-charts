@@ -55,7 +55,7 @@ Selector labels
 TODO: diff between query and validator
 */}}
 {{- define "validator.selectorLabels" -}}
-dapp.cartesi.io/contract-address: {{ required "A valid .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS is required" .Values.validator.config.CARTESI_CONTRACTS_DAPP_ADDRESS | lower | quote }}
+dapp.cartesi.io/contract-address: {{ required "A valid .Values.validator.config.CARTESI_CONTRACTS_APPLICATION_ADDRESS is required" .Values.validator.config.CARTESI_CONTRACTS_APPLICATION_ADDRESS | lower | quote }}
 dapp.cartesi.io/chain-id: {{ .Values.validator.config.CARTESI_BLOCKCHAIN_ID | quote }}
 app.kubernetes.io/name: {{ include "validator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
