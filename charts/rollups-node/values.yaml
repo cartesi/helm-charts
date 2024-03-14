@@ -8,7 +8,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 1.3.0
+    tag: 1.3.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -237,3 +237,8 @@ validator:
     CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED: "false"
     # -- External Redis endpoint for the node when running in the experimental sunodo validator mode.
     CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_REDIS_ENDPOINT: ""
+    # -- When enabled, prints server-manager output to stdout and stderr directly.
+    # All other log configurations are ignored.
+    CARTESI_EXPERIMENTAL_SERVER_MANAGER_BYPASS_LOG: "false"
+    # -- Disables all log entries related to the node's configuration
+    CARTESI_EXPERIMENTAL_DISABLE_CONFIG_LOG: "false"
