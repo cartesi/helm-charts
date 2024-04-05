@@ -10,10 +10,10 @@ echo "Processing Config.toml using yq and transforming it to YAML format..."
 
 cat "$VALUES_FILE".tpl > "$VALUES_FILE"
 
-ROLLUPS_NODE_VERSION="$(yq .global.image.tag "$VALUES_FILE")"
+ROLLUPS_NODE_VERSION="$(yq .global.image.tag "$VALUES_FILE.tpl")"
 
 # Convert TOML to YAML format and structure, keeping descriptions
-curl -fsSL https://raw.githubusercontent.com/cartesi/rollups-node/v${ROLLUPS_NODE_VERSION}/internal/config/generate/Config.toml \
+curl -fsSL https://raw.githubusercontent.com/cartesi/rollups-node/v${ROLLUPS_NODE_VERSION}/internal/node/config/generate/Config.toml \
 | yq -ptoml -oy '
 {"validator": { "config":  (
 .[] as $entry ireduce   ({};
