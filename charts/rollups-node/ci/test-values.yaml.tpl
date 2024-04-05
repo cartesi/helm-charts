@@ -23,6 +23,7 @@ validator:
     CARTESI_FEATURE_READER_MODE: "true"
     CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK: "true"
     CARTESI_SNAPSHOT_DIR: "/usr/share/cartesi/snapshot"
+    CARTESI_AUTH_KIND: "mnemonic_file"
     CARTESI_AUTH_MNEMONIC: "${MNEMONIC}"
   initContainers:
     - image: "{{ .Values.validator.application.image }}"
