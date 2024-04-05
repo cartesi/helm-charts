@@ -70,7 +70,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
-| global.image.tag | string | `"1.3.1"` | Global Docker Image tag |
+| global.image.tag | string | `"1.4.0"` | Global Docker Image tag |
 | image.pullPolicy | string | `"Always"` | Pullpolicy for Docker Images |
 | image.pullSecrets | list | `[]` | Cartesi Rollups Validator Nodes pull secrets |
 | ingress.addReleaseNameAsHost | bool | `false` | dditional rules[].host |
@@ -88,9 +88,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.command | list | `["cartesi-rollups-node"]` | Override default container command (useful when using custom images) |
 | validator.config.CARTESI_AUTH_AWS_KMS_KEY_ID | string | `""` | If set, the node will use the AWS KMS service with this key ID to sign transactions. Must be set alongside `CARTESI_AUTH_AWS_KMS_REGION`. |
 | validator.config.CARTESI_AUTH_AWS_KMS_REGION | string | `""` | An AWS KMS Region. Must be set alongside `CARTESI_AUTH_AWS_KMS_KEY_ID`. |
-| validator.config.CARTESI_AUTH_MNEMONIC | string | `""` | The node will use the private key generated from this mnemonic to sign transactions. Overrides `CARTESI_AUTH_MNEMONIC_FILE` and `CARTESI_AUTH_AWS_KMS_*`. |
+| validator.config.CARTESI_AUTH_KIND | string | `"mnemonic"` | One of "private_key", "private_key_file", "mnemonic", "mnemonic_file", "aws". |
+| validator.config.CARTESI_AUTH_MNEMONIC | string | `""` | The node will use the private key generated from this mnemonic to sign transactions. |
 | validator.config.CARTESI_AUTH_MNEMONIC_ACCOUNT_INDEX | string | `"0"` | When using mnemonics to sign transactions, the node will use this account index to generate the private key. |
-| validator.config.CARTESI_AUTH_MNEMONIC_FILE | string | `""` | The node will use the private key generated from the mnemonic contained in this file to sign transactions. Overrides `CARTESI_AUTH_AWS_KMS_*`. |
+| validator.config.CARTESI_AUTH_MNEMONIC_FILE | string | `""` | The node will use the private key generated from the mnemonic contained in this file to sign transactions. |
+| validator.config.CARTESI_AUTH_PRIVATE_KEY | string | `""` | The node will use this private key to sign transactions. |
+| validator.config.CARTESI_AUTH_PRIVATE_KEY_FILE | string | `""` | The node will use the private key contained in this file to sign transactions. |
 | validator.config.CARTESI_BLOCKCHAIN_BLOCK_TIMEOUT | string | `"60"` | Block subscription timeout in seconds. |
 | validator.config.CARTESI_BLOCKCHAIN_FINALITY_OFFSET | string | `"10"` | The node assumes that blocks offseted by N from the current block have reached finality (N is the read depth). |
 | validator.config.CARTESI_BLOCKCHAIN_HTTP_ENDPOINT | string | `""` | HTTP endpoint for the blockchain RPC provider. |
@@ -104,7 +107,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.config.CARTESI_CONTRACTS_INPUT_BOX_ADDRESS | string | `""` | Address of the InputBox contract. |
 | validator.config.CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER | string | `""` | The deployment block for the input box contract. The node will begin to read blockchain events from this block. |
 | validator.config.CARTESI_EPOCH_DURATION | string | `"86400"` | Duration of a rollups epoch in seconds. At the end of each epoch, the node will send claims to the blockchain. |
-| validator.config.CARTESI_EXPERIMENTAL_DISABLE_CONFIG_LOG | string | `"false"` | Disables all log entries related to the node's configuration |
 | validator.config.CARTESI_EXPERIMENTAL_SERVER_MANAGER_BYPASS_LOG | string | `"false"` | When enabled, prints server-manager output to stdout and stderr directly. All other log configurations are ignored. |
 | validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED | string | `"false"` | When enabled, the node does not start the authority-claimer service and the Redis server. |
 | validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_REDIS_ENDPOINT | string | `""` | External Redis endpoint for the node when running in the experimental sunodo validator mode. |
@@ -113,8 +115,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.config.CARTESI_FEATURE_HOST_MODE | string | `"false"` | If set to true, the node will run in host mode. In host mode, computations will not be performed by the cartesi machine. You should only use host mode for development and debugging! |
 | validator.config.CARTESI_HTTP_ADDRESS | string | `"127.0.0.1"` | HTTP address for the node. |
 | validator.config.CARTESI_HTTP_PORT | string | `"10000"` | HTTP port for the node. The node will also use the 20 ports after this one for internal services. |
-| validator.config.CARTESI_LOG_LEVEL | string | `"info"` | One of "debug", "info", "warning", "error". |
-| validator.config.CARTESI_LOG_TIMESTAMP | string | `"false"` | If set to true, the node will print the timestamp when logging. |
+| validator.config.CARTESI_LOG_LEVEL | string | `"info"` | One of "debug", "info", "warn", "error". |
+| validator.config.CARTESI_LOG_PRETTY | string | `"false"` | If set to true, the node will add colors to its log output. |
 | validator.config.CARTESI_POSTGRES_ENDPOINT | string | `""` | Postgres endpoint in the 'postgres://user:password@hostname:port/database' format. If not set, or set to empty string, will defer the behaviour to the PG driver. See [this](https://www.postgresql.org/docs/current/libpq-envars.html) for more information. It is also possible to set the endpoint without a password and load it from Postgres' passfile. See [this](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNECT-PASSFILE) for more information. |
 | validator.config.CARTESI_SNAPSHOT_DIR | string | `""` | Path to the directory with the cartesi-machine snapshot that will be loaded by the node. |
 | validator.extraArgs | list | `[]` | Extra arguments for dispatcher |
