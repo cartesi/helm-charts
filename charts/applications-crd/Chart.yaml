@@ -1,0 +1,11 @@
+apiVersion: v2
+name: cartesi-applications-crd
+description: A Helm chart for Cartesi Application Custom Resource Definitions (CRDs)
+maintainers:
+  - name: endersonmaia
+    email: endersonmaia@gmail.com
+    url: https://github.com/endersonmaia
+type: application
+version: 0.1.0
+sources:
+  - https://github.com/cartesi/helm-charts/
