@@ -8,9 +8,9 @@ jobs:
     strategy:
       matrix:
         k8s_version:
-          - "1.27.9"
-          - "1.28.5"
-          - "1.29.0"
+          - "1.28.12"
+          - "1.29.7"
+          - "1.30.3"
     permissions:
       contents: read
       packages: read
