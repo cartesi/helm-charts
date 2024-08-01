@@ -8,7 +8,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 1.4.0
+    tag: 1.5.0
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -173,9 +173,9 @@ validator:
     # -- If set to true, the node will *not* check whether the Cartesi machine hash from
     # the snapshot matches the hash in the Application contract.
     CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK: "false"
-    # -- Duration of a rollups epoch in seconds.
+    # -- Length of a rollups epoch in blocks.
     # At the end of each epoch, the node will send claims to the blockchain.
-    CARTESI_EPOCH_DURATION: "86400"
+    CARTESI_EPOCH_LENGTH: "7200"
     # -- An unique identifier representing a blockchain network.
     CARTESI_BLOCKCHAIN_ID: ""
     # -- HTTP endpoint for the blockchain RPC provider.
@@ -190,19 +190,17 @@ validator:
     CARTESI_BLOCKCHAIN_FINALITY_OFFSET: "10"
     # -- Block subscription timeout in seconds.
     CARTESI_BLOCKCHAIN_BLOCK_TIMEOUT: "60"
-    # -- The deployment block for the input box contract.
-    # The node will begin to read blockchain events from this block.
-    CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER: ""
     # -- Address of the DApp's contract.
     CARTESI_CONTRACTS_APPLICATION_ADDRESS: ""
-    # -- Block in which the DApp's contract was deployed.
-    CARTESI_CONTRACTS_APPLICATION_DEPLOYMENT_BLOCK_NUMBER: ""
     # -- Address of the History contract.
     CARTESI_CONTRACTS_HISTORY_ADDRESS: ""
     # -- Address of the Authority contract.
     CARTESI_CONTRACTS_AUTHORITY_ADDRESS: ""
     # -- Address of the InputBox contract.
     CARTESI_CONTRACTS_INPUT_BOX_ADDRESS: ""
+    # -- The deployment block for the input box contract.
+    # The node will begin to read blockchain events from this block.
+    CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER: ""
     # -- Path to the directory with the cartesi-machine snapshot that will be loaded by the node.
     CARTESI_SNAPSHOT_DIR: ""
     # -- One of "private_key", "private_key_file", "mnemonic", "mnemonic_file", "aws".
