@@ -2,6 +2,22 @@ apiVersion: v1
 entries:
   rollups-node-chart:
   - apiVersion: v2
+    created: "2024-08-02T11:11:32.333191232Z"
+    description: A Helm chart for a Cartesi Rollups Validator Node
+    digest: 371e01070778eca8cf0acf8f4eb3e116cce9aea056fea311daac2c09704428db
+    maintainers:
+    - email: endersonmaia@gmail.com
+      name: endersonmaia
+      url: https://github.com/endersonmaia
+    - email: omid.asadpoor36@gmail.com
+      name: oap75
+      url: https://github.com/oap75
+    name: rollups-node-chart
+    type: application
+    urls:
+    - https://github.com/cartesi/helm-charts/releases/download/rollups-node-chart-1.5.0-0/rollups-node-chart-1.5.0-0.tgz
+    version: 1.5.0-0
+  - apiVersion: v2
     created: "2024-04-10T09:17:19.074655436Z"
     description: A Helm chart for a Cartesi Rollups Validator Node
     digest: c4eb00a091b7b367ab4b074f83ba36ccf2b5320fc1271ab6770226d12655fc7b
@@ -432,4 +448,4 @@ entries:
     urls:
     - https://github.com/cartesi/helm-charts/releases/download/rollups-validator-node-0.1.3/rollups-validator-node-0.1.3.tgz
     version: 0.1.3
-generated: "2024-04-10T09:17:19.074736518Z"
+generated: "2024-08-02T11:11:32.333258939Z"
