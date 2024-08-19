@@ -8,7 +8,7 @@ global:
     # -- Global Docker image registry
     registry: docker.io
     # -- Global Docker Image tag
-    tag: 1.5.0
+    tag: 1.5.1
 
 ## seviceAccount configuration to be used by the rollups-validator-node
 ##
@@ -168,7 +168,9 @@ validator:
     # In host mode, computations will not be performed by the cartesi machine.
     # You should only use host mode for development and debugging!
     CARTESI_FEATURE_HOST_MODE: "false"
-    # -- If set to true, the node will not make claims.
+    # -- If set to true, the node will not generate any claims.
+    CARTESI_FEATURE_READER_MODE_ENABLED: "false"
+    # -- If set to true, the authority-claimer service is disabled.
     CARTESI_FEATURE_DISABLE_CLAIMER: "false"
     # -- If set to true, the node will *not* check whether the Cartesi machine hash from
     # the snapshot matches the hash in the Application contract.
@@ -235,7 +237,8 @@ validator:
     # -- HTTP port for the node.
     # The node will also use the 20 ports after this one for internal services.
     CARTESI_HTTP_PORT: "10000"
-    # -- When enabled, the node does not start the authority-claimer service and the Redis server.
+    # -- When enabled, the node does not start Redis.
+    # It must be configured with an external Redis endpoint.
     CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED: "false"
     # -- External Redis endpoint for the node when running in the experimental sunodo validator mode.
     CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_REDIS_ENDPOINT: ""
