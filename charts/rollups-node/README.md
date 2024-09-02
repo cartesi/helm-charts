@@ -70,7 +70,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | extraDeploy | list | `[]` | Array of extra objects to deploy with the release |
 | fullnameOverride | string | `""` | String to fully override name |
 | global.image.registry | string | `"docker.io"` | Global Docker image registry |
-| global.image.tag | string | `"1.5.0"` | Global Docker Image tag |
+| global.image.tag | string | `"1.5.1"` | Global Docker Image tag |
 | image.pullPolicy | string | `"Always"` | Pullpolicy for Docker Images |
 | image.pullSecrets | list | `[]` | Cartesi Rollups Validator Nodes pull secrets |
 | ingress.addReleaseNameAsHost | bool | `false` | dditional rules[].host |
@@ -107,11 +107,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | validator.config.CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER | string | `""` | The deployment block for the input box contract. The node will begin to read blockchain events from this block. |
 | validator.config.CARTESI_EPOCH_LENGTH | string | `"7200"` | Length of a rollups epoch in blocks. At the end of each epoch, the node will send claims to the blockchain. |
 | validator.config.CARTESI_EXPERIMENTAL_SERVER_MANAGER_BYPASS_LOG | string | `"false"` | When enabled, prints server-manager output to stdout and stderr directly. All other log configurations are ignored. |
-| validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED | string | `"false"` | When enabled, the node does not start the authority-claimer service and the Redis server. |
+| validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_ENABLED | string | `"false"` | When enabled, the node does not start Redis. It must be configured with an external Redis endpoint. |
 | validator.config.CARTESI_EXPERIMENTAL_SUNODO_VALIDATOR_REDIS_ENDPOINT | string | `""` | External Redis endpoint for the node when running in the experimental sunodo validator mode. |
-| validator.config.CARTESI_FEATURE_DISABLE_CLAIMER | string | `"false"` | If set to true, the node will not make claims. |
+| validator.config.CARTESI_FEATURE_DISABLE_CLAIMER | string | `"false"` | If set to true, the authority-claimer service is disabled. |
 | validator.config.CARTESI_FEATURE_DISABLE_MACHINE_HASH_CHECK | string | `"false"` | If set to true, the node will *not* check whether the Cartesi machine hash from the snapshot matches the hash in the Application contract. |
 | validator.config.CARTESI_FEATURE_HOST_MODE | string | `"false"` | If set to true, the node will run in host mode. In host mode, computations will not be performed by the cartesi machine. You should only use host mode for development and debugging! |
+| validator.config.CARTESI_FEATURE_READER_MODE_ENABLED | string | `"false"` | If set to true, the node will not generate any claims. |
 | validator.config.CARTESI_HTTP_ADDRESS | string | `"127.0.0.1"` | HTTP address for the node. |
 | validator.config.CARTESI_HTTP_PORT | string | `"10000"` | HTTP port for the node. The node will also use the 20 ports after this one for internal services. |
 | validator.config.CARTESI_LOG_LEVEL | string | `"info"` | One of "debug", "info", "warn", "error". |
